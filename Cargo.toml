@@ -1,0 +1,7 @@
+[workspace]
+
+members = ["projects/*"]
+default-members = [
+    "projects/arc-parser",
+    "projects/arc-ast",
+]
