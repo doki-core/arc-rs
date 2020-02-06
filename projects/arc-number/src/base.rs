@@ -1,4 +1,4 @@
-use num::{BigUint, BigInt};
+use num::{BigInt, BigUint};
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub enum Number {

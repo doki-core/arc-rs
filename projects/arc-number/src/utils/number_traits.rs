@@ -1,6 +1,6 @@
+use crate::Number;
 use num::{BigInt, BigUint, Num};
 use std::fmt::{self, Display};
-use crate::Number;
 
 impl Display for Number {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {

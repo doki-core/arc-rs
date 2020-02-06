@@ -1,82 +1,81 @@
-use num::{BigInt, Num, BigUint};
 use crate::Number;
-use std::num::ParseFloatError;
-
+use num::{BigInt, BigUint, Num};
+use std::num::{ParseFloatError, ParseIntError};
 
 #[allow(unused_variables)]
 impl Number {
-    pub fn parse(h: &str, data: &str) -> Result<Number, &'static str> {
-        let e = match h {
-            "i8" => {
-                let number = data.parse::<i8>().expect("Error: Parse failed");
-                return Ok(Number::Integer8(number));
-            }
-            "i16" => {
-                let number = data.parse::<i16>().expect("Error: Parse failed");
-                return Ok(Number::Integer16(number));
-            }
-            "i32" => {
-                let number = data.parse::<i32>().expect("Error: Parse failed");
-                return Ok(Number::Integer32(number));
-            }
-            "i64" => {
-                let number = data.parse::<i64>().expect("Error: Parse failed");
-                return Ok(Number::Integer64(number));
-            }
-            "i128" => {
-                let number = data.parse::<i128>().expect("Error: Parse failed");
-                return Ok(Number::Integer128(number));
-            }
-            "u8" => {
-                let number = data.parse::<u8>().expect("Error: Parse failed");
-                return Ok(Number::Unsigned8(number));
-            }
-            "u16" => {
-                let number = data.parse::<u16>().expect("Error: Parse failed");
-                return Ok(Number::Unsigned16(number));
-            }
-            "u32" => {
-                let number = data.parse::<u32>().expect("Error: Parse failed");
-                return Ok(Number::Unsigned32(number));
-            }
-            "u64" => {
-                let number = data.parse::<u64>().expect("Error: Parse failed");
-                return Ok(Number::Unsigned64(number));
-            }
-            "u128" => {
-                let number = data.parse::<u128>().expect("Error: Parse failed");
-                return Ok(Number::Unsigned128(number));
-            }
-            "int" => {
-                let number = BigInt::from_str_radix(&data, 10).expect("Error: Parse failed");
-                return Ok(Number::Integer(number));
-            }
-            "unt" => {
-                let number = BigUint::from_str_radix(&data, 10).expect("Error: Parse failed");
-                return Ok(Number::Unsigned(number));
-            }
-            "x0" => {
-                let number = BigInt::from_str_radix(&data, 16).expect("Error: Parse failed");
-                return Ok(Number::Integer(number));
-            }
-            "o0" => {
-                let number = BigInt::from_str_radix(&data, 8).expect("Error: Parse failed");
-                return Ok(Number::Integer(number));
-            }
-            "b0" => {
-                let number = BigInt::from_str_radix(&data, 2).expect("Error: Parse failed");
-                return Ok(Number::Integer(number));
-            }
-            "f32" => {
-                let number = data.parse::<f32>().expect("Error: Parse failed");
-                return Ok(Number::Decimal32(number));
-            }
-            "f64" => {
-                let number = data.parse::<f64>().expect("Error: Parse failed");
-                return Ok(Number::Decimal64(number));
-            }
-            _ => Err("Error: Unsupported number type"),
+    #[inline]
+    pub fn parse(h: &str, data: &str) -> Option<Number> {
+        return match h {
+            "i8" => match data.parse::<i8>() {
+                Ok(i) => Some(Number::Integer8(i)),
+                _ => None,
+            },
+            "i16" => match data.parse::<i16>() {
+                Ok(i) => Some(Number::Integer16(i)),
+                _ => None,
+            },
+            "i32" => match data.parse::<i32>() {
+                Ok(i) => Some(Number::Integer32(i)),
+                _ => None,
+            },
+            "i64" => match data.parse::<i64>() {
+                Ok(i) => return Some(Number::Integer64(i)),
+                _ => None,
+            },
+            "i128" => match data.parse::<i128>() {
+                Ok(i) => Some(Number::Integer128(i)),
+                _ => None,
+            },
+            "u8" => match data.parse::<u8>() {
+                Ok(i) => Some(Number::Unsigned8(i)),
+                _ => None,
+            },
+            "u16" => match data.parse::<u16>() {
+                Ok(i) => Some(Number::Unsigned16(i)),
+                _ => None,
+            },
+            "u32" => match data.parse::<u32>() {
+                Ok(i) => Some(Number::Unsigned32(i)),
+                _ => None,
+            },
+            "u64" => match data.parse::<u64>() {
+                Ok(i) => Some(Number::Unsigned64(i)),
+                _ => None,
+            },
+            "u128" => match data.parse::<u128>() {
+                Ok(i) => Some(Number::Unsigned128(i)),
+                _ => None,
+            },
+            "int" => match BigInt::from_str_radix(&data, 10) {
+                Ok(i) => Some(Number::Integer(i)),
+                _ => None,
+            },
+            "unt" => match BigUint::from_str_radix(&data, 10) {
+                Ok(i) => Some(Number::Unsigned(i)),
+                _ => None,
+            },
+            "x0" => match BigInt::from_str_radix(&data, 16) {
+                Ok(i) => Some(Number::Integer(i)),
+                _ => None,
+            },
+            "o0" => match BigInt::from_str_radix(&data, 8) {
+                Ok(i) => Some(Number::Integer(i)),
+                _ => None,
+            },
+            "b0" => match BigInt::from_str_radix(&data, 2) {
+                Ok(i) => Some(Number::Integer(i)),
+                _ => None,
+            },
+            "f32" => match data.parse::<f32>() {
+                Ok(i) => Some(Number::Decimal32(i)),
+                _ => None,
+            },
+            "f64" => match data.parse::<f64>() {
+                Ok(i) => Some(Number::Decimal64(i)),
+                _ => None,
+            },
+            _ => None,
         };
-        return e;
     }
 }
