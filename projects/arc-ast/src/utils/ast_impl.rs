@@ -16,7 +16,7 @@ impl Arc {
     pub fn new_boolean(bool: bool) -> Arc {
         Arc::Boolean(bool)
     }
-    pub fn new_string(handler: &str, data: &str) -> Arc {
+    pub fn new_string(_handler: &str, _data: &str) -> Arc {
         Arc::String(String::new())
     }
     pub fn new_number(handler: &str, data: &str) -> Arc {

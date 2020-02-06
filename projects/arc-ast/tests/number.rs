@@ -6,5 +6,4 @@ use arc_ast::Arc;
 fn test() {
     let s = Arc::new_number("i32", "2147483647");
     println!("{}", s);
-    unreachable!()
 }

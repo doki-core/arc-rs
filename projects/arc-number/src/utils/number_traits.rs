@@ -1,5 +1,4 @@
 use crate::Number;
-use num::{BigInt, BigUint, Num};
 use std::fmt::{self, Display};
 
 impl Display for Number {

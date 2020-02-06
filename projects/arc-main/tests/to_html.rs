@@ -1,5 +1,5 @@
 #[macro_use]
-extern crate arc;
+extern crate arc_rs as arc;
 
 use arc::Arc;
 

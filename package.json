@@ -6,7 +6,7 @@
         "build": "cargo build --release",
         "test": "cargo build",
         "fmt": "cargo fmt --all",
-        "push": "yarn test && git push",
+        "fix": "cargo fix --allow-dirty",
         "reset": "git reset Head~ --soft",
         "pub": "cargo-publish-all --yes --allow-dirty"
     }

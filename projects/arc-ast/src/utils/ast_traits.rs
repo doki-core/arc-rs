@@ -2,7 +2,6 @@ use crate::ast::null;
 use crate::Arc;
 use serde::export::fmt::Error;
 use serde::export::Formatter;
-use std::collections::HashMap;
 use std::fmt::Display;
 use std::ops::{Deref, Index};
 

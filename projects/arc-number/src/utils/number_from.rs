@@ -38,7 +38,7 @@ impl From<u8> for Number {
 
 impl From<u16> for Number {
     fn from(u: u16) -> Self {
-        Number::Unsigned16(16)
+        Number::Unsigned16(u)
     }
 }
 

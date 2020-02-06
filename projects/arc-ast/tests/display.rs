@@ -11,5 +11,4 @@ fn test() {
         "Cite:    {}",
         Arc::new_cite(vec!["father".to_string(), "a.b".to_string()])
     );
-    unreachable!()
 }

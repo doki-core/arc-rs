@@ -11,4 +11,4 @@ extern crate proc_macro;
 mod pre_build;
 
 mod arc_parser;
-pub use arc_parser::{ArcParser, Rule};
+pub use crate::arc_parser::{ArcParser, Rule};

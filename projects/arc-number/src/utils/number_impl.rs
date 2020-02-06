@@ -1,6 +1,5 @@
 use crate::Number;
 use num::{BigInt, BigUint, Num};
-use std::num::{ParseFloatError, ParseIntError};
 
 #[allow(unused_variables)]
 impl Number {

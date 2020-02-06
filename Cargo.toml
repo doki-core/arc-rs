@@ -5,4 +5,9 @@ default-members = [
     "projects/arc-main",
     "projects/arc-ast",
     "projects/arc-parser",
+    "projects/arc-number",
 ]
+
+[profile.release]
+lto = true
+opt-level = "s"

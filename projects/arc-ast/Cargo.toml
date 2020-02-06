@@ -4,7 +4,7 @@ version = "0.0.1"
 authors = ["192607617@qq.com"]
 edition = "2018"
 description = "..."
-repository = "https://github.com/nyar-lang/NyarNative"
+repository = "https://github.com/Moe-Net/arc-rs"
 license = "MPL-2.0"
 
 [dependencies]
@@ -16,7 +16,3 @@ arc_number = {path = "../arc-number", version = "0.0.1"}
 [dev-dependencies]
 
 [features]
-
-[profile.release]
-lto = true
-opt-level = "s"
