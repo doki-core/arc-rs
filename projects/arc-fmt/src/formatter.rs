@@ -3,6 +3,8 @@ use std::io::Write;
 use arc_parser::{ArcParser, Rule};
 use pest::Parser;
 use pest::iterators::Pair;
+use textwrap::indent;
+
 macro_rules! debug_cases {
     ($i:ident) => {
         {
@@ -16,9 +18,11 @@ macro_rules! debug_cases {
 
 #[derive(Debug)]
 pub struct Settings {
-    pub symbol_set: String,
-    pub pest_indent: usize,
-    pub pest_sequence_first: bool,
+    pub arc_indent: usize,
+    pub arc_symbol_set: String,
+    pub arc_dict_separator: String,
+    pub arc_list_separator: String,
+    pub arc_list_max_length: usize,
 }
 
 impl Settings {
@@ -43,28 +47,56 @@ impl Settings {
                 _ => debug_cases!(pair),
             };
         }
+        //        println!("{:#?}", codes);
+        //        unreachable!();
         return code;
     }
     fn format_json_dict(&self, pairs: Pair<Rule>) -> String {
-        let mut code = String::new();
+        let mut codes = vec![];
         for pair in pairs.into_inner() {
             match pair.as_rule() {
                 Rule::WHITESPACE => continue,
                 Rule::SEPARATOR => continue,
                 Rule::dict_pair => {
-                    let s = self.format_dict_pair(pair);
-                    code.push_str(&s)
+                    codes.push(self.format_dict_pair(pair))
                 }
                 _ => debug_cases!(pair),
             };
         }
-        return code;
+        return codes.join("\n");
     }
     fn format_dict_literal(&self, pairs: Pair<Rule>) -> String {
-        let mut code = String::new();
-        let o = self.format_json_dict(pairs);
-        code.push_str(&o);
-        return code;
+        let mut codes = vec![];
+        for pair in pairs.into_inner() {
+            match pair.as_rule() {
+                Rule::WHITESPACE => continue,
+                Rule::SEPARATOR => continue,
+                Rule::dict_pair => {
+                    codes.push(self.format_dict_pair(pair))
+                }
+                _ => debug_cases!(pair),
+            };
+        }
+        match codes.len() {
+            0 => String::from("{}"),
+            1 => format!("{{{}}}", codes[0]),
+            _ => {
+                let i = &" ".repeat(self.arc_indent);
+                let s = match self.arc_dict_separator.as_str() {
+                    "," => ",",
+                    ";" => ";",
+                    _ => ""
+                };
+                let mut code = String::new();
+                for c in &codes {
+                    code.push_str(i);
+                    code.push_str(c);
+                    code.push_str(s);
+                    code.push('\n')
+                }
+                format!("{{\n{}}}", code)
+            }
+        }
     }
     fn format_list_literal(&self, pairs: Pair<Rule>) -> String {
         let mut code = String::new();
@@ -97,10 +129,10 @@ impl Settings {
                 _ => debug_cases!(pair),
             };
         }
-        return match self.symbol_set.as_str() {
+        match self.arc_symbol_set.as_str() {
             "=" => format!("{} = {}", key, value),
             _ => format!("{}: {}", key, value),
-        };
+        }
     }
     fn format_name_space(&self, pairs: Pair<Rule>) -> String {
         let mut codes = vec![];
@@ -118,7 +150,13 @@ impl Settings {
         for pair in pairs.into_inner() {
             match pair.as_rule() {
                 Rule::StringNormal => {
-                    return pair.as_str().to_string();
+                    let s = pair.as_str();
+                    //FIXME
+                    return if s.contains('.') {
+                        pair.as_str().to_string()
+                    } else {
+                        s.trim_matches('"').to_string()
+                    };
                 }
                 _ => debug_cases!(pair),
             };
