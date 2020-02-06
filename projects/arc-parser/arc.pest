@@ -44,9 +44,9 @@ False   = @{"false"}
 /*====================================================================================================================*/
 ///#D19A66
 Byte     = ${Byte_BIN|Byte_OCT|Byte_HEX}
-Byte_BIN = ${Zero ~ B ~ (Underline? ~ ASCII_BIN_DIGIT)+}
-Byte_OCT = ${Zero ~ O ~ (Underline? ~ ASCII_OCT_DIGIT)+}
-Byte_HEX = ${Zero ~ X ~ (Underline? ~ ASCII_HEX_DIGIT)+}
+Byte_BIN = ${Zero ~ ("b"|"B") ~ (Underline? ~ ASCII_BIN_DIGIT)+}
+Byte_OCT = ${Zero ~ ("o"|"O") ~ (Underline? ~ ASCII_OCT_DIGIT)+}
+Byte_HEX = ${Zero ~ ("x"|"X") ~ (Underline? ~ ASCII_HEX_DIGIT)+}
 /*====================================================================================================================*/
 ///#D19A66
 Number       = ${Complex|DecimalBad|SignedNumber}
@@ -56,9 +56,6 @@ DecimalBad   = ${Integer ~ Dot|Dot ~ ASCII_DIGIT+}
 Integer      = @{Zero|ASCII_NONZERO_DIGIT ~ (Underline? ~ ASCII_DIGIT)*}
 Complex      =  {SignedNumber ~ SYMBOL}
 
-X    = _{"x"|"X"}
-O    = _{"o"|"O"}
-B    = _{"b"|"B"}
 Zero = _{"0"}
 /*====================================================================================================================*/
 //!#3C963C: String

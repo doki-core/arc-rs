@@ -2,7 +2,7 @@ use pest_generator::derive_parser;
 use std::{fs::File, io::prelude::*, path::Path};
 
 #[test]
-pub fn gen_note_down() {
+pub fn gen_parser() {
     let pest = Path::new(concat!(env!("CARGO_MANIFEST_DIR"), "./arc.pest"));
     let rs = Path::new(concat!(env!("CARGO_MANIFEST_DIR"), "./src/arc_parser.rs"));
 
@@ -10,7 +10,7 @@ pub fn gen_note_down() {
         let path = pest.to_string_lossy();
         let pest = quote! {
             #[grammar = #path]
-            pub struct NoteDownParser;
+            pub struct ArcParser;
         };
         derive_parser(pest, false)
     };

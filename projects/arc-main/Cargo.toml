@@ -1,5 +1,6 @@
 [package]
-name = "arc_ast"
+name = "arc"
+publish = ["arc-rs"]
 version = "0.0.1"
 authors = ["192607617@qq.com"]
 edition = "2018"
@@ -7,15 +8,14 @@ description = "..."
 repository = "https://github.com/nyar-lang/NyarNative"
 license = "MPL-2.0"
 
+
 [dependencies]
 serde = "^1.0.104"
 serde_derive = "^1.0.104"
 serde_json = "^1.0.45"
-
-[dependencies.num]
-version = "^0.2.1"
-default-features = false
-features =  ["serde", "std"]
+json = "0.12.1"
+arc_ast = {path = "../arc-ast",version = "0.0.1"}
+arc_parser = {path = "../arc-parser",version = "0.1.0"}
 
 [dev-dependencies]
 

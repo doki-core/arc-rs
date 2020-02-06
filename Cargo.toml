@@ -2,6 +2,7 @@
 
 members = ["projects/*"]
 default-members = [
-    "projects/arc-parser",
+    "projects/arc-main",
     "projects/arc-ast",
+    "projects/arc-parser",
 ]

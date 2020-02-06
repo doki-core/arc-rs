@@ -1,77 +1,36 @@
-use crate::{HTMLConfig, ToHTML};
 use std::collections::HashMap;
-use std::fmt::{self, Display, Formatter};
+use num::{BigUint, BigInt};
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub enum AST {
-    /// - `None`: It doesn't look like anything to me
-    None,
-    /// - ``
-    Statements(Vec<AST>),
-
-    /// - `Header`: TEXT, level, args
-    Header(Box<AST>, u8, HashMap<String, String>),
-
-    /// - `String`: Normal string with no style
+    Null,
+    Boolean(bool),
+    Number(Number),
     String(String),
-    /// - `Bold`:
-    Bold(Box<AST>, u8),
-    /// - `Italic`:
-    Italic(Box<AST>, u8),
-    /// - `Underline`:
-    Underline(Box<AST>, u8),
-    /// - `Font`:
-    Font(Box<AST>, HashMap<String, String>),
-
-    /// - `Math`:
-    MathInline(String),
-    MathDisplay(String),
-    /// - `Code`:
-    Code(String, HashMap<String, String>),
-
-    /// - `Text`: For inline style
-    Text(Box<AST>),
-    /// -
-    Word(String),
-    Escaped(String),
-    Newline,
-    ///  - `Paragraph`:
-    Paragraph(Box<AST>),
-    /// - `Function`: input, args, kvs
-    Function(String, Vec<AST>, HashMap<String, String>),
+    Cite(Vec<String>),
+    List(Vec<AST>),
+    Dict(HashMap<String, AST>),
+    Macro,
 }
 
-impl Display for AST {
-    fn fmt(&self, f: &mut Formatter) -> fmt::Result {
-        match *self {
-            AST::Statements(ref e) => {
-                let fs: Vec<String> = e.iter().map(|ast| format!("{}", ast)).collect();
-                write!(f, "{}", fs.join(""))
-            }
-            AST::Paragraph(ref e) => {
-                let fs: Vec<String> = format!("{}", e)
-                    .lines()
-                    .map(|k| k.trim_end().to_string())
-                    .collect();
-                write!(f, "{}\n\n", fs.join("\n"))
-            }
-            AST::Newline => write!(f, "\n"),
+#[allow(non_upper_case_globals)]
+pub const null: AST = AST::Null;
 
-            AST::Word(ref s) => write!(f, "{} ", s),
-
-            AST::MathInline(ref s) => write!(f, "${}$ ", s),
-
-            _ => {
-                let a = format!("unimplemented AST::{:?}", self);
-                println!("{}", a.split("(").next().unwrap_or("Unknown"));
-                write!(f, "UnimplementedError")
-            }
-        }
-    }
-}
-
-impl From<&str> for AST {
-    fn from(s: &str) -> Self {
-        AST::String(s.to_string())
-    }
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub enum Number {
+    Integer(BigInt),
+    Integer8(i8),
+    Integer16(i16),
+    Integer32(i32),
+    Integer64(i64),
+    Integer128(i128),
+    Unsigned(BigUint),
+    Unsigned8(u8),
+    Unsigned16(u16),
+    Unsigned32(u32),
+    Unsigned64(u64),
+    Unsigned128(u128),
+    Decimal(String),
+    Decimal32(f32),
+    Decimal64(f64),
 }
