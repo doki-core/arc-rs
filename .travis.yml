@@ -1,5 +1,9 @@
 language: rust
 cache: cargo
+os:
+  - linux
+  - osx
+  - windows
 rust:
   - nightly
 matrix:

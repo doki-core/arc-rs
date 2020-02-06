@@ -12,12 +12,12 @@ RestOfLine =  {(!NEWLINE ~ ANY)*}
 /*====================================================================================================================*/
 dict_scope = {dict_head ~ (SEPARATOR? ~ dict_pair)*}
 dict_empty = {"{" ~ "}"}
-dict_head  = {"{" ~ NameSpace ~ "}"}
+dict_head  = {"{" ~ (Append|Insert)? ~ NameSpace ~ "}"}
 dict_pair  = {NameSpace ~ Set ~ Value}
 /*====================================================================================================================*/
 list_scope = {list_head ~ (SEPARATOR? ~ list_pair)*}
 list_empty = {"[" ~ "]"}
-list_head  = {"[" ~ NameSpace ~ "]"}
+list_head  = {"[" ~ (Append|Insert)? ~ NameSpace ~ "]"}
 list_pair  = {
     Insert ~ dict_pair+
   | Append ~ Value
@@ -32,15 +32,17 @@ list_literal = {
   | "[" ~ (SEPARATOR? ~ Value)+ ~ SEPARATOR? ~ "]"
 }
 /*====================================================================================================================*/
-Value = {Byte|Number|Boolean|Null|Unit|String|dict_literal|list_literal}
+Value = {Byte|Number|Boolean|Null|String|cite_value|dict_literal|list_literal}
 //!#D19A66: Null|Unit
 Null = @{"null"}
-Unit = !{"(" ~ ")"}
 /*====================================================================================================================*/
 ///#D19A66
 Boolean = !{True|False}
 True    = @{"true"}
 False   = @{"false"}
+/*====================================================================================================================*/
+///#56B6C2
+cite_value = {Cite ~ NameSpace}
 /*====================================================================================================================*/
 ///#D19A66
 Byte     = ${Byte_BIN|Byte_OCT|Byte_HEX}
@@ -60,16 +62,12 @@ Zero = _{"0"}
 /*====================================================================================================================*/
 //!#3C963C: String
 //!#98C379: StringText|StringLiteralText
-String            = ${SYMBOL? ~ (StringLines|StringNormal|StringLiteral|StringEmpty)}
-StringLines       =  {(NEWLINE? ~ WHITESPACE* ~ Accent ~ RestOfLine?)+}
-StringLiteral     =  {StringStart ~ StringLiteralText ~ StringEnd}
+String            =  {SYMBOL? ~ (StringNormal|StringLines|StringCharacter)}
+StringLines       =  {(Accent ~ RestOfLine?)+}
+StringCharacter   =  {Apostrophe ~ StringLiteralText ~ Apostrophe}
 StringNormal      =  {Quotation ~ StringText ~ Quotation}
-StringEmpty       =  {Quotation{2}|Apostrophe{2}}
-StringLiteralText =  {(!(Apostrophe ~ PEEK) ~ ANY)*}
+StringLiteralText =  {(Escape ~ (Escape|Apostrophe)|!Apostrophe ~ ANY)*}
 StringText        =  {(Escape ~ (Escape|Quotation)|!Quotation ~ ANY)*}
-StringStart       = @{Apostrophe{1} ~ PUSH(Apostrophe*)}
-StringEnd         = @{POP ~ Apostrophe{1}}
-
 
 Accent     = @{"`"}
 Apostrophe = @{"'"}
@@ -77,31 +75,28 @@ Quotation  = @{"\""}
 Escape     = @{"\\"}
 /*====================================================================================================================*/
 ///#61AFEF
-NameSpace = @{Dots? ~ Key ~ (Dot ~ Key)*}
-Key       = {String|SYMBOL|Integer}
-Dot       = @{"."}
-Dots      = @{Dot+}
+NameSpace = @{Key ~ (Dot ~ Key)*}
+Key       =  {String|SYMBOL|Integer}
 SYMBOL    = @{XID_CONTINUE+}
 /*====================================================================================================================*/
 // NEWLINE = @{"\r" ~ "\n"|"\r"|"\n"}
 
 ///Gray
 COMMENT          =  {MultiLineComment|LineComment}
-WHITESPACE       = _{NEWLINE|SPACE_SEPARATOR|"\t"}
+WHITESPACE       =  {NEWLINE|SPACE_SEPARATOR|"\t"}
 LineComment      = ${"%" ~ (!NEWLINE ~ ANY)*}
 MultiLineComment = ${"%%%" ~ (MultiLineComment | !"%%%" ~ ANY)* ~ "%%%"}
 
 
 
-At         = @{"@"}
-Sharp      = @{"#"}
+Cite = @{"$"}
+
+Dot    = @{"."}
+Insert = @{"*"}
+Append = @{">"}
+
 Underline  = @{"_"}
-Asterisk   = @{"*"}
 SEPARATOR  = @{","|";"}
 
 Set      = @{"="|":"}
-Vertical = @{"|"}
 Sign     = @{"+"|"-"}
-
-Insert = @{"*"}
-Append = @{">"}

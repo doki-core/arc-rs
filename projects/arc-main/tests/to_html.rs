@@ -15,7 +15,7 @@ fn test_dict() {
         "boolean": true,
         "string": "hello world",
         "list": list![],
-        "null": Arc::Null
+        "null": Arc::Null,
     };
     println!("{}", d);
 }
