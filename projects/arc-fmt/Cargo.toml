@@ -1,5 +1,5 @@
 [package]
-name = "arc-rs"
+name = "arc-fmt"
 version = "0.0.1"
 authors = ["192607617@qq.com"]
 edition = "2018"
@@ -9,8 +9,9 @@ license = "MPL-2.0"
 
 
 [dependencies]
-arc_ast = {path = "../arc-ast",version = "0.0.1"}
+pest = "2.1.2"
 arc_parser = {path = "../arc-parser",version = "0.2.0"}
+
 
 [dev-dependencies]
 

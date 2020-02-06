@@ -1,4 +1,4 @@
-program = _{SOI ~ (dict_literal|list_literal|statement*) ~ EOI}
+program = _{SOI ~ (dict_literal|statement*) ~ EOI}
 statement = _{
     SEPARATOR
   | empty_line{1,}
@@ -75,8 +75,8 @@ Quotation  = @{"\""}
 Escape     = @{"\\"}
 /*====================================================================================================================*/
 ///#61AFEF
-NameSpace = @{Key ~ (Dot ~ Key)*}
-Key       =  {String|SYMBOL|Integer}
+NameSpace = ${Key ~ (Dot ~ Key)*}
+Key       =  {StringNormal|SYMBOL|Integer}
 SYMBOL    = @{XID_CONTINUE+}
 /*====================================================================================================================*/
 // NEWLINE = @{"\r" ~ "\n"|"\r"|"\n"}
