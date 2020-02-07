@@ -10,7 +10,7 @@ pub enum Arc {
     Cite(Vec<String>),
     List(Vec<Arc>),
     Dict(HashMap<String, Arc>),
-    Macro,
+    Macro(String, String),
 }
 
 #[allow(non_upper_case_globals)]

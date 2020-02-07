@@ -1,4 +1,4 @@
-{Number}
+{I.Number}
 int1 =+99
 int2 = 42
 int3 = 0
@@ -13,11 +13,3 @@ dec3 =+5_0.
 dec4 = 3.1415
 dec5 =-0.01
 dec6 = 224_617.445_991_228
-% infinity
-sf1 = infinity % positive infinity
-sf2 =+Infinity % positive infinity
-sf3 =-INFINITY % negative infinity
-% not a number
-sf4 = nan % actual sNaN/qNaN encoding is implementation specific
-sf5 =+NaN % same as `nan`
-sf6 =-NAN % valid, actual encoding is implementation specific

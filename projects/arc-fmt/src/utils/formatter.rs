@@ -5,7 +5,7 @@ use std::{
     fs::{read_to_string, File},
     io::Write,
 };
-use textwrap::indent;
+use crate::utils::{split_once,indent};
 
 macro_rules! debug_cases {
     ($i:ident) => {{
@@ -31,6 +31,9 @@ impl Settings {
             match pair.as_rule() {
                 Rule::EOI => continue,
                 Rule::WHITESPACE => continue,
+                Rule::dict_scope => {
+                    code.push_str(&self.format_dict_scope(pair))
+                }
                 Rule::dict_literal => {
                     return self.format_json_dict(pair);
                 }
@@ -76,13 +79,11 @@ impl Settings {
         if codes.len() == 1 {
             if max <= 1 {
                 format!("{{{}}}", codes[0])
-            }
-            else {
+            } else {
                 println!("{:#?}", codes);
                 unreachable!();
             }
-        }
-        else {
+        } else {
             let s = match self.arc_dict_separator.as_str() {
                 "," => ",",
                 ";" => ";",
@@ -120,11 +121,9 @@ impl Settings {
         let i = &" ".repeat(self.arc_indent);
         if codes.len() == 1 {
             if max <= 1 { format!("[{}]", codes[0]) } else { format!("[\n{}]", indent(&codes[0], i)) }
-        }
-        else if lens <= self.arc_list_max_length && max <= 1 {
+        } else if lens <= self.arc_list_max_length && max <= 1 {
             format!("[{}]", codes.join(", "))
-        }
-        else {
+        } else {
             let s = match self.arc_list_separator.as_str() {
                 "," => ",",
                 ";" => ";",
@@ -138,6 +137,52 @@ impl Settings {
             }
             format!("[\n{}]", indent(&code, i))
         }
+    }
+    fn format_dict_scope(&self, pairs: Pair<Rule>) -> String {
+        let mut codes = vec![];
+        for pair in pairs.into_inner() {
+            match pair.as_rule() {
+                Rule::WHITESPACE => continue,
+                Rule::dict_head => {
+                    codes.push(format!("{{{}}}", self.format_scope_head(pair)))
+                }
+                Rule::dict_pair => {
+                    let s = self.format_dict_pair(pair);
+                    codes.push(s)
+                }
+                //FIXME
+                Rule::COMMENT => continue,
+                _ => debug_cases!(pair),
+            };
+        }
+        return codes.join("\n");
+    }
+    fn format_scope_head(&self, pairs: Pair<Rule>) -> String {
+        let mut codes = vec![];
+        for pair in pairs.into_inner() {
+            match pair.as_rule() {
+                Rule::NameSpace => {
+                    let s = self.format_name_space(pair);
+                    codes.push(s)
+                }
+                _ => debug_cases!(pair),
+            };
+        }
+        return codes.join(".");
+    }
+
+    fn format_name_space(&self, pairs: Pair<Rule>) -> String {
+        let mut codes = vec![];
+        for pair in pairs.into_inner() {
+            match pair.as_rule() {
+                Rule::Key => {
+                    codes.push(self.format_key(pair));
+                }
+                Rule::Dot => continue,
+                _ => debug_cases!(pair),
+            };
+        }
+        return codes.join(".");
     }
     fn format_dict_pair(&self, pairs: Pair<Rule>) -> String {
         let mut key = String::new();
@@ -160,18 +205,7 @@ impl Settings {
             _ => format!("{}: {}", key, value),
         }
     }
-    fn format_name_space(&self, pairs: Pair<Rule>) -> String {
-        let mut codes = vec![];
-        for pair in pairs.into_inner() {
-            match pair.as_rule() {
-                Rule::Key => {
-                    codes.push(self.format_key(pair));
-                }
-                _ => debug_cases!(pair),
-            };
-        }
-        return codes.join(".");
-    }
+
     fn format_key(&self, pairs: Pair<Rule>) -> String {
         for pair in pairs.into_inner() {
             match pair.as_rule() {
@@ -179,6 +213,9 @@ impl Settings {
                     let s = pair.as_str();
                     // FIXME
                     return if s.contains('.') { pair.as_str().to_string() } else { s.trim_matches('"').to_string() };
+                }
+                Rule::SYMBOL => {
+                    return pair.as_str().to_string();
                 }
                 _ => debug_cases!(pair),
             };
@@ -225,35 +262,85 @@ impl Settings {
     fn format_number(&self, pairs: Pair<Rule>) -> String {
         for pair in pairs.into_inner() {
             match pair.as_rule() {
-                Rule::Integer => {
-                    return self.format_integer(pair.as_str());
-                }
+                //FIXME
+                Rule::Complex => continue,
                 Rule::SignedNumber => {
+                    let mut sign = "";
+                    let mut num = String::new();
                     for inner in pair.into_inner() {
-                        let mut sign = "";
-                        let mut num = String::new();
                         match inner.as_rule() {
-                            Rule::Integer => num = self.format_integer(inner.as_str()),
                             Rule::Sign => {
                                 if inner.as_str() == "-" {
                                     sign = "-"
                                 }
                             }
+                            Rule::Integer => num = self.format_integer(inner.as_str()),
+                            Rule::Decimal => num = self.format_decimal(inner.as_str()),
+                            Rule::DecimalBad => num = self.format_decimal_bad(inner),
                             _ => debug_cases!(inner),
                         }
-
-                        return format!("{}{}", sign, num);
                     }
+                    return format!("{}{}", sign, num);
+                }
+                Rule::Integer => {
+                    return self.format_integer(pair.as_str());
+                }
+                Rule::Decimal => {
+                    //FIXME
+                    continue;
                 }
                 _ => debug_cases!(pair),
             };
         }
         return String::new();
     }
+    fn format_decimal(&self, s:&str) -> String {
+        let (a,b) = split_once(s);
+        let mut codes = vec![];
+        for pair in pairs.into_inner() {
+            match pair.as_rule() {
+                Rule::Integer => {
+                    codes.push(self.format_integer(pair.as_str()));
+                }
+                Rule::Dot => continue,
+                _ => debug_cases!(pair),
+            };
+        }
+        println!("{:#?}", pairs);
+        unreachable!();
+        return codes.join(".");
+    }
+    fn format_decimal_bad(&self, pairs: Pair<Rule>) -> String {
+        let has_head = pairs.as_str().starts_with('.');
+        let mut digits = String::new();
+        for pair in pairs.into_inner() {
+            match pair.as_rule() {
+                Rule::Integer => {
+                    digits.push_str(&self.format_integer(pair.as_str()))
+                }
+                Rule::Dot => continue,
+                _ => debug_cases!(pair),
+            };
+        }
+        if has_head {
+            format!("0.{}", digits)
+        } else {
+            format!("{}.0", digits)
+        }
+    }
     fn format_integer(&self, i: &str) -> String {
+        let mut code = String::new();
         let p = self.arc_number_separate;
-        let mut s = i.to_string();
-        s.retain(|c| !"_".contains(c));
-        return s;
+        if p == 0 {
+            return i.replace("_", "");
+        }
+        let mut count = 0;
+        for c in i.chars() {
+            if c != '_' {
+                code.push(c);
+                count += 1
+            }
+        }
+        return code;
     }
 }

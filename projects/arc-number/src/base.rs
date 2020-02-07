@@ -1,6 +1,7 @@
 use num::{BigInt, BigUint};
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize)]
 pub enum Number {
     Integer(BigInt),
     Integer8(i8),

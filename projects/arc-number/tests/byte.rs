@@ -1,6 +1,7 @@
 extern crate arc_number;
 
 use arc_number::Number;
+use std::convert::TryInto;
 
 #[test]
 fn byte_parse() {
@@ -10,4 +11,10 @@ fn byte_parse() {
     println!("{}", x);
     println!("{}", o);
     println!("{}", b);
+}
+
+#[test]
+fn add() {
+    let x: i32 = Number::Integer8(100).into();
+    println!("{}", x);
 }
