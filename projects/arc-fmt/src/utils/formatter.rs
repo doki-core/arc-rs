@@ -1,28 +1,19 @@
-use std::fs::{read_to_string, File};
-use std::io::Write;
+use crate::Settings;
 use arc_parser::{ArcParser, Rule};
-use pest::Parser;
-use pest::iterators::Pair;
+use pest::{iterators::Pair, Parser};
+use std::{
+    fs::{read_to_string, File},
+    io::Write,
+};
 use textwrap::indent;
 
 macro_rules! debug_cases {
-    ($i:ident) => {
-        {
+    ($i:ident) => {{
         println!("Rule::{:?}=>continue,", $i.as_rule());
         println!("Span: {:?}", $i.as_span());
         println!("Text: {}", $i.as_str());
         unreachable!();
-        }
-    };
-}
-
-#[derive(Debug)]
-pub struct Settings {
-    pub arc_indent: usize,
-    pub arc_symbol_set: String,
-    pub arc_dict_separator: String,
-    pub arc_list_separator: String,
-    pub arc_list_max_length: usize,
+    }};
 }
 
 impl Settings {
@@ -34,8 +25,7 @@ impl Settings {
         return Ok(());
     }
     pub fn format(&self, text: &str) -> String {
-        let pairs = ArcParser::parse(Rule::program, text)
-            .unwrap_or_else(|e| panic!("{}", e));
+        let pairs = ArcParser::parse(Rule::program, text).unwrap_or_else(|e| panic!("{}", e));
         let mut code = String::new();
         for pair in pairs {
             match pair.as_rule() {
@@ -57,9 +47,7 @@ impl Settings {
             match pair.as_rule() {
                 Rule::WHITESPACE => continue,
                 Rule::SEPARATOR => continue,
-                Rule::dict_pair => {
-                    codes.push(self.format_dict_pair(pair))
-                }
+                Rule::dict_pair => codes.push(self.format_dict_pair(pair)),
                 _ => debug_cases!(pair),
             };
         }
@@ -85,19 +73,20 @@ impl Settings {
         }
         let i = &" ".repeat(self.arc_indent);
 
-
         if codes.len() == 1 {
             if max <= 1 {
                 format!("{{{}}}", codes[0])
-            } else {
+            }
+            else {
                 println!("{:#?}", codes);
                 unreachable!();
             }
-        } else {
+        }
+        else {
             let s = match self.arc_dict_separator.as_str() {
                 "," => ",",
                 ";" => ";",
-                _ => ""
+                _ => "",
             };
             let mut code = String::new();
             for c in &codes {
@@ -130,18 +119,16 @@ impl Settings {
         }
         let i = &" ".repeat(self.arc_indent);
         if codes.len() == 1 {
-            if max <= 1 {
-                format!("[{}]", codes[0])
-            } else {
-                format!("[\n{}]", indent(&codes[0], i))
-            }
-        } else if lens <= self.arc_list_max_length {
+            if max <= 1 { format!("[{}]", codes[0]) } else { format!("[\n{}]", indent(&codes[0], i)) }
+        }
+        else if lens <= self.arc_list_max_length && max <= 1 {
             format!("[{}]", codes.join(", "))
-        } else {
+        }
+        else {
             let s = match self.arc_list_separator.as_str() {
                 "," => ",",
                 ";" => ";",
-                _ => ""
+                _ => "",
             };
             let mut code = String::new();
             for c in &codes {
@@ -190,12 +177,8 @@ impl Settings {
             match pair.as_rule() {
                 Rule::StringNormal => {
                     let s = pair.as_str();
-                    //FIXME
-                    return if s.contains('.') {
-                        pair.as_str().to_string()
-                    } else {
-                        s.trim_matches('"').to_string()
-                    };
+                    // FIXME
+                    return if s.contains('.') { pair.as_str().to_string() } else { s.trim_matches('"').to_string() };
                 }
                 _ => debug_cases!(pair),
             };
@@ -232,8 +215,7 @@ impl Settings {
         for pair in pairs.into_inner() {
             match pair.as_rule() {
                 Rule::StringNormal => {
-                    text = pair.as_str().to_string();
-                    return text;
+                    return pair.as_str().to_string();
                 }
                 _ => debug_cases!(pair),
             };
@@ -241,15 +223,37 @@ impl Settings {
         return code;
     }
     fn format_number(&self, pairs: Pair<Rule>) -> String {
-        let mut code = String::new();
-        let mut text = String::new();
         for pair in pairs.into_inner() {
             match pair.as_rule() {
-                //FIXME
-                Rule::SignedNumber => continue,
+                Rule::Integer => {
+                    return self.format_integer(pair.as_str());
+                }
+                Rule::SignedNumber => {
+                    for inner in pair.into_inner() {
+                        let mut sign = "";
+                        let mut num = String::new();
+                        match inner.as_rule() {
+                            Rule::Integer => num = self.format_integer(inner.as_str()),
+                            Rule::Sign => {
+                                if inner.as_str() == "-" {
+                                    sign = "-"
+                                }
+                            }
+                            _ => debug_cases!(inner),
+                        }
+
+                        return format!("{}{}", sign, num);
+                    }
+                }
                 _ => debug_cases!(pair),
             };
         }
-        return code;
+        return String::new();
+    }
+    fn format_integer(&self, i: &str) -> String {
+        let p = self.arc_number_separate;
+        let mut s = i.to_string();
+        s.retain(|c| !"_".contains(c));
+        return s;
     }
 }

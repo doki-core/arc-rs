@@ -33,13 +33,13 @@ contributes = {
             language = "arc"
             scopeName = "source.arc"
             path = "./syntax/arc.tmLanguage.json"
-        },
+        }
         {
             scopeName = "markdown.arc.codeblock"
             path = "./syntax/arc.markdown.json"
             injectTo = ["text.html.markdown"]
             embeddedLanguages = {"meta.embedded.block.arc" = "arc"}
-        },
+        }
     ]
 }
 devDependencies = {}

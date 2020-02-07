@@ -1,3 +1,2 @@
-mod formatter;
 mod utils;
-pub use formatter::Settings;
+pub use utils::Settings;
