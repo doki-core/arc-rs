@@ -9,7 +9,7 @@ repository = {
     url = "https://github.com/GalAster/vscode-arc.git"
 }
 engines = {vscode = "^1.8.0"}
-categories = 
+categories = ["Programming Languages", "Formatters"]
 scripts = {
     postinstall = "node ./node_modules/vscode/bin/install && tsc"
     build = "yarn lint && ts-node syntax/build.ts"
@@ -17,13 +17,32 @@ scripts = {
     lint = "tslint **/*.ts --fix"
 }
 contributes = {
-    languages = 
-    grammars = 
+    languages = [
+        {
+            id = "arc"
+            aliases = ["ARC"]
+            extensions = [".arc", ".tokens"]
+            filenames = []
+            filenamePatterns = []
+            mimetypes = ["text/x-arc"]
+            configuration = "./syntax/arc.configuration.json"
+        }
+    ]
+    grammars = [
+        {
+            language = "arc"
+            scopeName = "source.arc"
+            path = "./syntax/arc.tmLanguage.json"
+        },
+        {
+            scopeName = "markdown.arc.codeblock"
+            path = "./syntax/arc.markdown.json"
+            injectTo = ["text.html.markdown"]
+            embeddedLanguages = {"meta.embedded.block.arc" = "arc"}
+        },
+    ]
 }
-devDependencies = {
-    @types/node = "^11.13.6"
-    vscode = "^1.1.33"
-}
+devDependencies = {}
 __metadata = {
     id = "6267dad2-7d52-462a-a1ef-7e3da7378a7d"
     publisherDisplayName = "Aster"
