@@ -341,7 +341,7 @@ users = [
         latitude = "-18.645491"
         longitude = "162.885992"
         tags = ["consectetur", "cillum", "commodo", "est", "id"]
-        range = [-, -, -]
+        range = [-0, -1, -2]
         friends = [
             {
                 id = 0

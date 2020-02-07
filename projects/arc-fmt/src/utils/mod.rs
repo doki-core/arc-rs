@@ -3,4 +3,4 @@ pub mod settings;
 pub mod string_tools;
 
 pub use settings::Settings;
-pub use string_tools::{split_once, indent};
+pub use string_tools::{indent, split_once};

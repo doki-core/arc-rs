@@ -16,7 +16,7 @@ impl From<Number> for BigInt {
             Number::Integer64(i) => BigInt::from(i),
             Number::Integer128(i) => BigInt::from(i),
             Number::Integer(i) => i,
-            _ => BigInt::from(0)
+            _ => BigInt::from(0),
         }
     }
 }
@@ -31,11 +31,10 @@ impl From<Number> for BigUint {
     fn from(n: Number) -> Self {
         match n {
             Number::Unsigned(i) => i,
-            _ => BigUint::from(0u8)
+            _ => BigUint::from(0u8),
         }
     }
 }
-
 
 impl From<i8> for Number {
     fn from(i: i8) -> Self {
@@ -47,7 +46,7 @@ impl From<Number> for i8 {
     fn from(n: Number) -> Self {
         match n {
             Number::Integer8(i) => i,
-            _ => 0
+            _ => 0,
         }
     }
 }
@@ -63,7 +62,7 @@ impl From<Number> for i16 {
         match n {
             Number::Integer8(i) => i as i16,
             Number::Integer16(i) => i,
-            _ => 0
+            _ => 0,
         }
     }
 }
@@ -80,7 +79,7 @@ impl From<Number> for i32 {
             Number::Integer8(i) => i as i32,
             Number::Integer16(i) => i as i32,
             Number::Integer32(i) => i,
-            _ => 0
+            _ => 0,
         }
     }
 }
@@ -98,7 +97,7 @@ impl From<Number> for i64 {
             Number::Integer16(i) => i as i64,
             Number::Integer32(i) => i as i64,
             Number::Integer64(i) => i,
-            _ => 0
+            _ => 0,
         }
     }
 }
@@ -117,7 +116,7 @@ impl From<Number> for i128 {
             Number::Integer32(i) => i as i128,
             Number::Integer64(i) => i as i128,
             Number::Integer128(i) => i,
-            _ => 0
+            _ => 0,
         }
     }
 }
@@ -132,7 +131,7 @@ impl From<Number> for u8 {
     fn from(n: Number) -> Self {
         match n {
             Number::Unsigned8(i) => i,
-            _ => 0
+            _ => 0,
         }
     }
 }
@@ -148,7 +147,7 @@ impl From<Number> for u16 {
         match n {
             Number::Unsigned8(i) => i as u16,
             Number::Unsigned16(i) => i,
-            _ => 0
+            _ => 0,
         }
     }
 }
@@ -165,11 +164,10 @@ impl From<Number> for u32 {
             Number::Unsigned8(i) => i as u32,
             Number::Unsigned16(i) => i as u32,
             Number::Unsigned32(i) => i,
-            _ => 0
+            _ => 0,
         }
     }
 }
-
 
 impl From<u64> for Number {
     fn from(u: u64) -> Self {
@@ -184,7 +182,7 @@ impl From<Number> for u64 {
             Number::Unsigned16(i) => i as u64,
             Number::Unsigned32(i) => i as u64,
             Number::Unsigned64(i) => i,
-            _ => 0
+            _ => 0,
         }
     }
 }
@@ -203,7 +201,7 @@ impl From<Number> for u128 {
             Number::Unsigned32(i) => i as u128,
             Number::Unsigned64(i) => i as u128,
             Number::Unsigned128(i) => i,
-            _ => 0
+            _ => 0,
         }
     }
 }
@@ -218,7 +216,7 @@ impl From<Number> for f32 {
     fn from(n: Number) -> Self {
         match n {
             Number::Decimal32(i) => i,
-            _ => 0.0
+            _ => 0.0,
         }
     }
 }
@@ -234,7 +232,7 @@ impl From<Number> for f64 {
         match n {
             Number::Decimal32(i) => i as f64,
             Number::Decimal64(i) => i,
-            _ => 0.0
+            _ => 0.0,
         }
     }
 }

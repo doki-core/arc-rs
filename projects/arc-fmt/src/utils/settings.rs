@@ -8,6 +8,8 @@ pub struct Settings {
     pub arc_end_newline: bool,
     pub arc_scope_blank_lines: usize,
     pub arc_number_separate: usize,
+    pub arc_number_separate_lower: usize,
+    pub arc_number_separate_complex: bool,
 }
 
 impl Default for Settings {
@@ -21,6 +23,8 @@ impl Default for Settings {
             arc_end_newline: true,
             arc_scope_blank_lines: 1,
             arc_number_separate: 0,
+            arc_number_separate_lower: 0,
+            arc_number_separate_complex: false,
         }
     }
 }
