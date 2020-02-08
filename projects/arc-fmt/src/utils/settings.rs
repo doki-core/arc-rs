@@ -7,7 +7,6 @@ pub struct Settings {
     pub arc_list_max_length: usize,
     pub arc_end_newline: bool,
     pub arc_scope_blank_lines: usize,
-    pub arc_number_readable_float: true,
     pub arc_number_separate: usize,
     pub arc_number_separate_lower: usize,
     pub arc_number_separate_complex: bool,

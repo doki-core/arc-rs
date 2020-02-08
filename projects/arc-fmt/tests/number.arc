@@ -15,9 +15,9 @@ dec4 = 3.1415
 dec5 =-0.01
 dec6 = 224_617.445_991_228
 % e
-exp1 = 1**5
+%exp1 = 1**5
 
 % complex
-cmp1 = 0i8
-cmp2 = 255u8
-cmp3 = -1u8
+%cmp1 = 0i8
+%cmp2 = 255u8
+%cmp3 = -1u8

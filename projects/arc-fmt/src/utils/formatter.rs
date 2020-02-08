@@ -37,6 +37,7 @@ impl Settings {
                 Rule::dict_literal => {
                     return self.format_json_dict(pair);
                 }
+                Rule::COMMENT => code.push_str(&format!("{}\n", pair.as_str())),
                 _ => debug_cases!(pair),
             };
         }
@@ -79,13 +80,11 @@ impl Settings {
         if codes.len() == 1 {
             if max <= 1 {
                 format!("{{{}}}", codes[0])
-            }
-            else {
+            } else {
                 println!("{:#?}", codes);
                 unreachable!();
             }
-        }
-        else {
+        } else {
             let s = match self.arc_dict_separator.as_str() {
                 "," => ",",
                 ";" => ";",
@@ -123,11 +122,9 @@ impl Settings {
         let i = &" ".repeat(self.arc_indent);
         if codes.len() == 1 {
             if max <= 1 { format!("[{}]", codes[0]) } else { format!("[\n{}]", indent(&codes[0], i)) }
-        }
-        else if lens <= self.arc_list_max_length && max <= 1 {
+        } else if lens <= self.arc_list_max_length && max <= 1 {
             format!("[{}]", codes.join(", "))
-        }
-        else {
+        } else {
             let s = match self.arc_list_separator.as_str() {
                 "," => ",",
                 ";" => ";",
@@ -310,7 +307,7 @@ impl Settings {
     }
 
     fn format_decimal(&self, s: &str) -> String {
-        return i.replace("_", "");
+        return s.replace("_", "");
     }
     fn format_decimal_bad(&self, pairs: Pair<Rule>) -> String {
         let has_head = pairs.as_str().starts_with('.');

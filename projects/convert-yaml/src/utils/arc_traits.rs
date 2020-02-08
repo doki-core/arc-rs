@@ -1,7 +1,8 @@
-use yaml_rust::{ Yaml};
+use yaml_rust::Yaml;
 use crate::utils::parse_pairs;
 use yaml_rust::yaml::{Hash, Array};
-use textwrap::{indent, };
+use textwrap::indent;
+use std::f64;
 
 pub trait ToArc {
     fn to_arc(&self) -> String;
@@ -11,7 +12,25 @@ impl ToArc for Yaml {
     fn to_arc(&self) -> String {
         match self {
             Yaml::Real(r) => {
-                if r.starts_with('.') {
+                if r.to_lowercase().contains('e') {
+                    match r.parse::<f64>() {
+                        Ok(o) => {
+                            format!("{}", o)
+                        }
+                        Err(_) => {
+                            String::from("null")
+                        }
+                    }
+                } else if r.to_lowercase().contains("n") {
+                    match r.to_lowercase().as_str() {
+                        ".inf" | "+.inf" | "inf" => format!("{:#X}f64", f64::INFINITY.to_bits()),
+                        "-inf" | "-.inf" => format!("{:#X}f64", f64::NEG_INFINITY.to_bits()),
+                        ".nan" | "nan" => format!("{:#X}f64", f64::NAN.to_bits()),
+                        _ => {
+                            String::from("null")
+                        }
+                    }
+                } else if r.starts_with('.') {
                     format!("0{}", r)
                 } else if r.ends_with('.') {
                     format!("{}0", r)
@@ -26,8 +45,7 @@ impl ToArc for Yaml {
                 format!("{:?}", s)
             }
             Yaml::Boolean(b) => {
-                println!("{:#?}", b);
-                unreachable!()
+                format!("{}", b)
             }
             Yaml::Array(a) => {
                 a.to_arc()
