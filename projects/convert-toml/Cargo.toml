@@ -1,0 +1,17 @@
+[package]
+name = "arc_from_toml"
+version = "0.1.0"
+authors = ["192607617@qq.com"]
+edition = "2018"
+description = "..."
+repository = "https://github.com/Moe-Net/arc-rs"
+license = "MPL-2.0"
+
+
+[dependencies]
+toml_edit = "0.1.5"
+textwrap = "0.11"
+
+[dev-dependencies]
+
+[features]

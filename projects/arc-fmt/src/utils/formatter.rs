@@ -310,8 +310,7 @@ impl Settings {
     }
 
     fn format_decimal(&self, s: &str) -> String {
-        let (a, b) = split_once(s, '.');
-        return format!("{}.{}", self.format_integer(a), self.format_integer(b));
+        return i.replace("_", "");
     }
     fn format_decimal_bad(&self, pairs: Pair<Rule>) -> String {
         let has_head = pairs.as_str().starts_with('.');
