@@ -1,8 +1,8 @@
 use yaml_rust::Yaml;
 use crate::utils::parse_pairs;
 use yaml_rust::yaml::{Hash, Array};
-use textwrap::indent;
 use std::f64;
+use arc_convert_lib::{ indent};
 
 pub trait ToArc {
     fn to_arc(&self) -> String;

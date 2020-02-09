@@ -1,52 +1,32 @@
-## Covert from TOML to ARC Readable Config
+use toml_edit::{Document, Item};
+use crate::utils::arc_traits::ToArc;
 
-### Output
 
-```toml
-title = "TOML Example"
-owner = {
-    name = "Tom Preston-Werner"
-    organization = "GitHub"
-    bio = "GitHub Cofounder & CEO\nLikes tater tots and beer."
-    dob = "1979-05-27 07:32:00 +00:00"
+pub fn to_arc(text: &str) -> Result<String, &'static str> {
+    let toml = text.parse::<Document>().expect("invalid doc");
+    let out = match &toml.root {
+        Item::None => { String::from("toml = null") }
+        Item::Value(v) => {
+            format!("toml = {}",v)
+        }
+        Item::Table(table) => {
+            let mut pairs = vec![];
+            for (k, v) in table.iter() {
+                pairs.push(format!("{} = {}", k, v.to_arc()))
+            }
+            pairs.join("\n")
+        }
+        Item::ArrayOfTables(array) => {
+            array.to_arc()
+        }
+    };
+    Ok(out)
 }
-database = {
-    server = "192.168.1.1"
-    ports = [8001, 8001, 8002]
-    connection_max = 5000
-    enabled = true
-}
-servers = {
-    alpha = {
-        ip = "10.0.0.1"
-        dc = "eqdc10"
-    }
-    beta = {
-        ip = "10.0.0.2"
-        dc = "eqdc10"
-        country = "中国"
-    }
-}
-clients = {
-    data = [["gamma", "delta"], [1, 2]]
-    hosts = ["alpha", "omega"]
-}
-products = [
-    {
-        name = "Hammer"
-        sku = 738594937
-    }
-    {
-        name = "Nail"
-        sku = 284758393
-        color = "gray"
-    }
-]
-```
 
-### Input
 
-```toml
+#[test]
+fn main() {
+    let text = r#"
 title = "TOML Example"
 
 [owner]
@@ -92,4 +72,9 @@ hosts = [
   name = "Nail"
   sku = 284758393
   color = "gray"
-```
+    "#;
+    let toml = to_arc(text);
+    println!("{}", toml.unwrap_or_default());
+    unreachable!()
+}
+
