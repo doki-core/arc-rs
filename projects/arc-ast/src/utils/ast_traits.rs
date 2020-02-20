@@ -1,9 +1,9 @@
-use crate::ast::null;
 use crate::Arc;
-use serde::export::fmt::Error;
-use serde::export::Formatter;
-use std::fmt::Display;
-use std::ops::{Deref, Index};
+
+use std::{
+    fmt::{Display, Error, Formatter},
+    ops::{Deref, Index},
+};
 
 impl Display for Arc {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), Error> {
@@ -50,14 +50,35 @@ impl Display for Arc {
         }
     }
 }
-
-impl Index<usize> for Arc {
+// impl Index<usize> for Arc {
+// type Output = Self;
+//
+// fn index(&self, index: usize) -> &Self {
+// match *self {
+// Arc::List(ref list) => list.get(index).unwrap_or(&Arc::Null),
+// _ => &Arc::Null,
+// }
+// }
+// }
+impl Index<isize> for Arc {
     type Output = Self;
 
-    fn index(&self, index: usize) -> &Self {
+    fn index(&self, index: isize) -> &Self {
         match *self {
-            Arc::List(ref list) => list.get(index).unwrap_or(&null),
-            _ => &null,
+            Arc::List(ref list) => {
+                if index > 0 {
+                    list.get((index - 1) as usize).unwrap_or(&Arc::Null)
+                }
+                else if index == 0 {
+                    self
+                }
+                else {
+                    let i = list.len() as isize + index;
+
+                    list.get(i as usize).unwrap_or(&Arc::Null)
+                }
+            }
+            _ => &Arc::Null,
         }
     }
 }
@@ -68,7 +89,7 @@ impl<'a> Index<&'a str> for Arc {
     fn index(&self, index: &str) -> &Self {
         match *self {
             Arc::Dict(ref object) => &object[index],
-            _ => &null,
+            _ => &Arc::Null,
         }
     }
 }

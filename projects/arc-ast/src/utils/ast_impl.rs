@@ -1,14 +1,13 @@
-use crate::ast::null;
 use crate::Arc;
 use arc_number::Number;
-use std::collections::HashMap;
+use linked_hash_map::LinkedHashMap;
 
 impl Arc {
     pub fn new() -> Arc {
         Arc::Null
     }
     pub fn new_dict() -> Arc {
-        Arc::Dict(HashMap::new())
+        Arc::Dict(LinkedHashMap::new())
     }
     pub fn new_list() -> Arc {
         Arc::List(Vec::new())
@@ -22,7 +21,7 @@ impl Arc {
     pub fn new_number(handler: &str, data: &str) -> Arc {
         return match Number::parse(handler, data) {
             Some(n) => Arc::Number(n),
-            None => null,
+            None => Arc::Null,
         };
     }
     pub fn new_cite(cite: Vec<String>) -> Arc {
@@ -58,4 +57,29 @@ impl Arc {
             _ => false,
         }
     }
+}
+
+impl Arc {
+    pub fn get<N>(&self, index: N) -> Option<&Arc>
+    where
+        i64: From<N>,
+    {
+        let i = i64::from(index);
+        match self {
+            Arc::List(l) => {
+                if i == 0 {
+                    None
+                }
+                else if i > 0 {
+                    l.get(i as usize)
+                }
+                else {
+                    l.get(l.len() - i as usize)
+                }
+            }
+            _ => None,
+        }
+    }
+    pub fn get_value(&self) {}
+    pub fn get_key_value(&self) {}
 }

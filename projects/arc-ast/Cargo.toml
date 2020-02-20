@@ -8,10 +8,11 @@ repository = "https://github.com/Moe-Net/arc-rs"
 license = "MPL-2.0"
 
 [dependencies]
-serde = "^1.0.104"
-serde_derive = "^1.0.104"
-serde_json = "^1.0.45"
+# serde = "^1.0.104"
+# serde_derive = "^1.0.104"
+# serde_json = "^1.0.45"
 arc_number = {path = "../arc-number", version = "0.0.1"}
+linked-hash-map = "0.5.2"
 
 [dev-dependencies]
 
