@@ -2,7 +2,7 @@ use arc_ast::Arc;
 use arc_parser::{ArcParser, Rule};
 use pest::iterators::Pair;
 use pest::Parser;
-use std::collections::HashMap;
+use std::collections::{HashMap, VecDeque};
 use std::fs::{read_to_string, File};
 use std::io::Write;
 
@@ -67,12 +67,17 @@ impl Context {
         }
     }
     fn parse_dict(&self, pairs: Pair<Rule>) -> Arc {
+        let hash = Arc::new_dict();
         for pair in pairs.into_inner() {
             match pair.as_rule() {
+                Rule::dict_pair => {
+                    let (k, v) = self.parse_dict_pair(pair);
+                    println!("{:?}: {}", k, v)
+                }
                 _ => debug_cases!(pair),
             };
         }
-        Arc::Null
+        return hash;
     }
     fn parse_dict_pair(&self, pairs: Pair<Rule>) -> (Vec<Arc>, Arc) {
         let mut k = vec![];
@@ -88,19 +93,31 @@ impl Context {
         return (k, v);
     }
     fn parse_name_space(&self, pairs: Pair<Rule>) -> Vec<Arc> {
-        let mut v = vec![];
+        let mut vec = vec![];
         for pair in pairs.into_inner() {
             match pair.as_rule() {
-                Rule::Key => v.push(self.parse_value(pair)),
+                Rule::Key => vec.push(self.parse_value(pair)),
                 _ => debug_cases!(pair),
             };
         }
-        return v
+        return vec;
     }
+    fn parse_list(&self, pairs: Pair<Rule>) -> Arc {
+        let mut vec = VecDeque::new();
+        for pair in pairs.into_inner() {
+            match pair.as_rule() {
+                Rule::list_empty => continue,
+                Rule::Value => vec.push_back(self.parse_value(pair)),
+                _ => debug_cases!(pair),
+            };
+        }
+        return Arc::List(vec);
+    }
+    /*
     fn parse_key(&self, pairs: Pair<Rule>) -> Arc {
         for pair in pairs.into_inner() {
             return match pair.as_rule() {
-                Rule::String => self.parse_string(pair),
+                Rule::String => self.parse_value(pair),
                 Rule::dict_literal => continue,
                 Rule::list_literal => continue,
                 _ => debug_cases!(pair),
@@ -108,20 +125,11 @@ impl Context {
         }
         Arc::Null
     }
+    */
     fn parse_value(&self, pairs: Pair<Rule>) -> Arc {
         for pair in pairs.into_inner() {
             return match pair.as_rule() {
-                Rule::String => self.parse_string(pair),
-                Rule::dict_literal => continue,
-                Rule::list_literal => continue,
-                _ => debug_cases!(pair),
-            };
-        }
-        Arc::Null
-    }
-    fn parse_string(&self, pairs: Pair<Rule>) -> Arc {
-        for pair in pairs.into_inner() {
-            return match pair.as_rule() {
+                Rule::String => self.parse_value(pair),
                 Rule::StringNormal => {
                     let s = pair.as_str();
                     /*
@@ -129,8 +137,11 @@ impl Context {
                         '"' =>
                     }
                     */
+                    
                     Arc::from(&s[1..s.len() - 1])
                 }
+                Rule::dict_literal => self.parse_dict(pair),
+                Rule::list_literal => self.parse_list(pair),
                 _ => debug_cases!(pair),
             };
         }

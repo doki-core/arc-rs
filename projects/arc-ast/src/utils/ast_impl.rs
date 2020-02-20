@@ -1,6 +1,7 @@
 use crate::Arc;
 use arc_number::Number;
 use linked_hash_map::LinkedHashMap;
+use std::collections::VecDeque;
 
 impl Arc {
     pub fn new() -> Arc {
@@ -10,7 +11,7 @@ impl Arc {
         Arc::Dict(LinkedHashMap::new())
     }
     pub fn new_list() -> Arc {
-        Arc::List(Vec::new())
+        Arc::List(VecDeque::new())
     }
     pub fn new_boolean(bool: bool) -> Arc {
         Arc::Boolean(bool)
@@ -59,27 +60,86 @@ impl Arc {
     }
 }
 
-impl Arc {
-    pub fn get<N>(&self, index: N) -> Option<&Arc>
-    where
-        i64: From<N>,
-    {
-        let i = i64::from(index);
+pub trait Getter<T> {
+    fn get(&mut self, index: T) -> Option<&Arc>;
+}
+
+impl Getter<isize> for Arc {
+    fn get(&self, index: isize) -> Option<&Arc> {
         match self {
-            Arc::List(l) => {
-                if i == 0 {
-                    None
-                }
-                else if i > 0 {
-                    l.get(i as usize)
+            Arc::List(list) => {
+                if index >= 0 {
+                    list.get(index as usize)
                 }
                 else {
-                    l.get(l.len() - i as usize)
+                    list.get(list.len() - index as usize)
                 }
             }
             _ => None,
         }
     }
-    pub fn get_value(&self) {}
-    pub fn get_key_value(&self) {}
+}
+
+impl Getter<String> for Arc {
+    fn get(&self, index: String) -> Option<&Arc> {
+        match self {
+            Arc::Dict(dict) => {
+                dict.get(&index)
+            }
+            _ => None,
+        }
+    }
+}
+
+impl Getter<Arc> for Arc {
+    fn get(&self, index: Arc) -> Option<&Arc> {
+        match index {
+            Arc::Index(i) => {
+                self.get(i)
+            },
+            Arc::String(s) => {
+                self.get(s)
+            },
+            _ => None
+        }
+    }
+}
+
+pub trait Setter<T> {
+    fn set(&mut self, key: T, value: Arc) -> Option<&Arc>;
+}
+
+
+impl Setter<String> for Arc {
+    fn set(&mut self, key: String, value: Arc) -> Option<&Arc> {
+        return None;
+    }
+}
+
+impl Setter<isize> for Arc {
+    fn set(&mut self, key: isize, value: Arc) -> Option<&Arc> {
+        return None;
+    }
+}
+
+impl Setter<Vec<Arc>> for Arc {
+    fn set(&mut self, key: Vec<Arc>, value: Arc) -> Option<&Arc> {
+        let mut pointer = self;
+        match self {
+            Arc::Dict(a) => {
+                for path in key {
+                    match path {
+                        Arc::Index(i) => match pointer {
+                            Arc::Dict(dict) => Some(Arc::Null),
+                            _ => None,
+                        },
+                        Arc::String(s) => None,
+                        _ => None,
+                    }
+                }
+            }
+            _ => None,
+        }
+        return None;
+    }
 }

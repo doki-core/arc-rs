@@ -6,14 +6,15 @@ pub mod ast;
 mod utils;
 
 pub use ast::Arc;
+use std::collections::VecDeque;
 
 #[macro_export]
 macro_rules! list {
     [] => ($crate::Arc::new_list());
     [$($item:expr), *] => ({
         let size = 0 $( + {let _ = $item; 1} )*;
-        let mut array = Vec::with_capacity(size);
-        $(array.push($item.into());)*
+        let mut array = std::collections::VecDeque::with_capacity(size);
+        $(array.push_back($item.into());)*
         $crate::Arc::List(array)
     })
 }

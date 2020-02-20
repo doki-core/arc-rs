@@ -66,15 +66,11 @@ impl Index<isize> for Arc {
     fn index(&self, index: isize) -> &Self {
         match *self {
             Arc::List(ref list) => {
-                if index > 0 {
-                    list.get((index - 1) as usize).unwrap_or(&Arc::Null)
-                }
-                else if index == 0 {
-                    self
+                if index >= 0 {
+                    list.get(index as usize).unwrap_or(&Arc::Null)
                 }
                 else {
                     let i = list.len() as isize + index;
-
                     list.get(i as usize).unwrap_or(&Arc::Null)
                 }
             }
