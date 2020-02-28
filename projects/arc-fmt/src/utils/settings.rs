@@ -10,7 +10,6 @@ pub struct Settings {
     pub arc_number_separate: usize,
     pub arc_number_separate_lower: usize,
     pub arc_number_separate_complex: bool,
-
 }
 
 impl Default for Settings {

@@ -80,11 +80,13 @@ impl Settings {
         if codes.len() == 1 {
             if max <= 1 {
                 format!("{{{}}}", codes[0])
-            } else {
+            }
+            else {
                 println!("{:#?}", codes);
                 unreachable!();
             }
-        } else {
+        }
+        else {
             let s = match self.arc_dict_separator.as_str() {
                 "," => ",",
                 ";" => ";",
@@ -122,9 +124,11 @@ impl Settings {
         let i = &" ".repeat(self.arc_indent);
         if codes.len() == 1 {
             if max <= 1 { format!("[{}]", codes[0]) } else { format!("[\n{}]", indent(&codes[0], i)) }
-        } else if lens <= self.arc_list_max_length && max <= 1 {
+        }
+        else if lens <= self.arc_list_max_length && max <= 1 {
             format!("[{}]", codes.join(", "))
-        } else {
+        }
+        else {
             let s = match self.arc_list_separator.as_str() {
                 "," => ",",
                 ";" => ";",

@@ -8,7 +8,7 @@ statement = _{
   | list_scope
 }
 empty_line = _{WHITESPACE* ~ NEWLINE}
-RestOfLine =  {(!NEWLINE ~ ANY)*}
+RestOfLine = @{(!NEWLINE ~ ANY)+}
 /*====================================================================================================================*/
 dict_scope = {dict_head ~ (SEPARATOR? ~ dict_pair)*}
 dict_empty = {"{" ~ "}"}
@@ -62,15 +62,21 @@ Exponent     =  {SignedNumber ~ ("**"|"*^") ~ SignedNumber}
 Zero = _{"0"}
 /*====================================================================================================================*/
 //!#3C963C: String
-//!#98C379: StringText|StringLiteralText
-String            =  {SYMBOL? ~ (StringNormal|StringLines|StringCharacter)}
-StringLines       =  {(Accent ~ RestOfLine?)+}
-StringCharacter   =  {Apostrophe ~ StringLiteralText ~ Apostrophe}
-StringNormal      =  {Quotation ~ StringText ~ Quotation}
-StringLiteralText =  {(Escape ~ (Escape|Apostrophe)|!Apostrophe ~ ANY)*}
-StringText        =  {(Escape ~ (Escape|Quotation)|!Quotation ~ ANY)*}
+//!#98C379: StringQuotation|StringAccent|RestOfLine
+//!#D19A66: StringApostrophe
+String        =  {SYMBOL? ~ (StringNormal|StringLine+)}
+StringLine   =  ${Vertical ~(!NEWLINE ~ ANY)*}
+StringNormal  =  {
+    Quotation ~ StringQuotation ~ Quotation
+  | Apostrophe ~ StringApostrophe ~ Apostrophe
+  | Accent ~ StringAccent ~ Accent
+}
+StringAccent  =  {(Escape ~ (Escape|Quotation)|!Quotation ~ ANY)*}
+StringApostrophe =  {(Escape ~ (Escape|Apostrophe)|!Apostrophe ~ ANY)*}
+StringQuotation  =  {(Escape ~ (Escape|Quotation)|!Quotation ~ ANY)*}
 
 Accent     = @{"`"}
+Vertical   = @{"|"}
 Apostrophe = @{"'"}
 Quotation  = @{"\""}
 Escape     = @{"\\"}
@@ -84,7 +90,7 @@ SYMBOL    = @{XID_CONTINUE+}
 
 ///Gray
 COMMENT          =  {MultiLineComment|LineComment}
-WHITESPACE       =  {NEWLINE|SPACE_SEPARATOR|"\t"}
+WHITESPACE       = _{NEWLINE|SPACE_SEPARATOR|"\t"}
 LineComment      = ${"%" ~ (!NEWLINE ~ ANY)*}
 MultiLineComment = ${"%%%" ~ (MultiLineComment | !"%%%" ~ ANY)* ~ "%%%"}
 
@@ -97,7 +103,7 @@ Insert = @{"*"}
 Append = @{">"}
 
 Underline  = @{"_"}
-SEPARATOR  = @{","|";"}
+SEPARATOR  = _{","|";"}
 
 Set      = @{"="|":"}
 Sign     = @{"+"|"-"}
