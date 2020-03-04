@@ -7,6 +7,7 @@ mod utils;
 
 pub use ast::Arc;
 use std::collections::VecDeque;
+pub use utils::ast_impl::{Getter, Setter};
 
 #[macro_export]
 macro_rules! list {

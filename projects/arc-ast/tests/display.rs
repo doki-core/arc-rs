@@ -1,7 +1,7 @@
 #[macro_use]
 extern crate arc_ast as arc;
 
-use arc::Arc;
+use arc::{Arc, Getter};
 
 #[test]
 fn test() {
@@ -13,9 +13,9 @@ fn test() {
 
 #[test]
 fn test_list() {
-    let l = list![1, 2, 3, 1.0, 2.0, 3f64, list![false, true]];
-    println!("{}", l[1]);
-    println!("{:?}", l.get(1));
+    let l = list!["0", 2, 3, 1.0, 2.0, 3f64, list![false, true]];
+    assert_eq!(l[-1][-1], true);
+    assert_eq!(l.get(0).unwrap(), "0")
 }
 
 #[test]

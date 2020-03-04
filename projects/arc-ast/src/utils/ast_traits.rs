@@ -1,12 +1,65 @@
 use crate::Arc;
 
 use std::{
-    fmt::{Display, Error, Formatter},
+    fmt::{self, Debug, Display, Error, Formatter},
     ops::{Deref, Index},
 };
 
+#[allow(unused_qualifications)]
+impl Debug for Arc {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        match self {
+            Arc::Null => {
+                let mut debug_trait_builder = f.debug_tuple("Null");
+                debug_trait_builder.finish()
+            }
+            Arc::Boolean(v) => {
+                let mut debug_trait_builder = f.debug_tuple("Boolean");
+                let _ = debug_trait_builder.field(v);
+                debug_trait_builder.finish()
+            }
+            Arc::Number(v)=> {
+                let mut debug_trait_builder = f.debug_tuple("Number");
+                let _ = debug_trait_builder.field(v);
+                debug_trait_builder.finish()
+            }
+            Arc::Char(v) => {
+                let mut debug_trait_builder = f.debug_tuple("Char");
+                let _ = debug_trait_builder.field(v);
+                debug_trait_builder.finish()
+            }
+            Arc::String(v) => {
+                let mut debug_trait_builder = f.debug_tuple("String");
+                let _ = debug_trait_builder.field(v);
+                debug_trait_builder.finish()
+            }
+            Arc::Cite(v) => {
+                let mut debug_trait_builder = f.debug_tuple("Cite");
+                let _ = debug_trait_builder.field(v);
+                debug_trait_builder.finish()
+            }
+            Arc::List(v) => {
+                let mut debug_trait_builder = f.debug_tuple("List");
+                let _ = debug_trait_builder.field(v);
+                debug_trait_builder.finish()
+            }
+            Arc::Dict(v)=> {
+                let mut debug_trait_builder = f.debug_tuple("Dict");
+                let _ = debug_trait_builder.field(v);
+                debug_trait_builder.finish()
+            }
+            Arc::Macro(s, v) => {
+                let mut debug_trait_builder = f.debug_tuple("Macro");
+                let _ = debug_trait_builder.field(s);
+                let _ = debug_trait_builder.field(v);
+                debug_trait_builder.finish()
+            }
+        }
+    }
+}
+
 impl Display for Arc {
-    fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), Error> {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         match *self {
             Arc::Null => write!(f, "null"),
             Arc::Boolean(ref b) => write!(f, "{}", b),
@@ -50,6 +103,7 @@ impl Display for Arc {
         }
     }
 }
+
 // impl Index<usize> for Arc {
 // type Output = Self;
 //
@@ -94,5 +148,32 @@ impl Index<String> for Arc {
     type Output = Self;
     fn index(&self, index: String) -> &Self {
         self.index(index.deref())
+    }
+}
+
+impl PartialEq<bool> for Arc {
+    fn eq(&self, other: &bool) -> bool {
+        match self {
+            Arc::Boolean(arc) => arc == other,
+            _ => false,
+        }
+    }
+}
+
+impl PartialEq<str> for Arc {
+    fn eq(&self, other: &str) -> bool {
+        match self {
+            Arc::String(arc) => arc.as_str() == other,
+            _ => false,
+        }
+    }
+}
+
+impl PartialEq<String> for Arc {
+    fn eq(&self, other: &String) -> bool {
+        match self {
+            Arc::String(arc) => arc == other,
+            _ => false,
+        }
     }
 }

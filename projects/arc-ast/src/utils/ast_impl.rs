@@ -1,7 +1,7 @@
 use crate::Arc;
 use arc_number::Number;
 use linked_hash_map::LinkedHashMap;
-use std::collections::VecDeque;
+use std::{collections::VecDeque, ops::IndexMut};
 
 impl Arc {
     pub fn new() -> Arc {
@@ -37,6 +37,12 @@ impl Arc {
             _ => false,
         }
     }
+    pub fn as_string(&self) -> Option<String> {
+        match self {
+            Arc::String(s) => Some(s.clone()),
+            _ => None,
+        }
+    }
 
     pub fn is_number(&self) -> bool {
         match *self {
@@ -44,11 +50,24 @@ impl Arc {
             _ => false,
         }
     }
-
+    /*
+    pub fn as_number<T>(&self) -> Option<T> {
+        match self {
+            Arc::Number(n) => Some(n.into()),
+            _ => None,
+        }
+    }
+    */
     pub fn is_boolean(&self) -> bool {
         match *self {
             Arc::Boolean(_) => true,
             _ => false,
+        }
+    }
+    pub fn as_boolean(&self) -> Option<bool> {
+        match self {
+            Arc::Boolean(b) => Some(b.clone()),
+            _ => None,
         }
     }
 
@@ -61,7 +80,7 @@ impl Arc {
 }
 
 pub trait Getter<T> {
-    fn get(&mut self, index: T) -> Option<&Arc>;
+    fn get(&self, index: T) -> Option<&Arc>;
 }
 
 impl Getter<isize> for Arc {
@@ -70,8 +89,7 @@ impl Getter<isize> for Arc {
             Arc::List(list) => {
                 if index >= 0 {
                     list.get(index as usize)
-                }
-                else {
+                } else {
                     list.get(list.len() - index as usize)
                 }
             }
@@ -83,45 +101,66 @@ impl Getter<isize> for Arc {
 impl Getter<String> for Arc {
     fn get(&self, index: String) -> Option<&Arc> {
         match self {
-            Arc::Dict(dict) => {
-                dict.get(&index)
-            }
+            Arc::Dict(dict) => dict.get(&index),
             _ => None,
         }
+    }
+}
+
+impl Getter<Number> for Arc {
+    fn get(&self, index: Number) -> Option<&Arc> {
+        let i: i32 = index.into();
+        self.get(i as isize)
     }
 }
 
 impl Getter<Arc> for Arc {
     fn get(&self, index: Arc) -> Option<&Arc> {
         match index {
-            Arc::Index(i) => {
-                self.get(i)
-            },
-            Arc::String(s) => {
-                self.get(s)
-            },
-            _ => None
+            Arc::Number(i) => self.get(i),
+            Arc::String(s) => self.get(s),
+            _ => None,
         }
     }
 }
 
+
 pub trait Setter<T> {
-    fn set(&mut self, key: T, value: Arc) -> Option<&Arc>;
+    fn set(&mut self, key: T, value: Arc) -> Option<Arc>;
 }
 
-
 impl Setter<String> for Arc {
-    fn set(&mut self, key: String, value: Arc) -> Option<&Arc> {
-        return None;
+    fn set(&mut self, key: String, value: Arc) -> Option<Arc> {
+        match self {
+            Arc::Dict(dict) => dict.insert(key, value),
+            _ => Some(value),
+        }
     }
 }
 
 impl Setter<isize> for Arc {
-    fn set(&mut self, key: isize, value: Arc) -> Option<&Arc> {
-        return None;
+    fn set(&mut self, key: isize, value: Arc) -> Option<Arc> {
+        let mut old = None;
+        match self {
+            Arc::List(list) => {
+                let mut i = 0;
+                if key >= 0 {
+                    i = key
+                } else {
+                    i = list.len() as isize + i
+                }
+                match list.get(i as usize) {
+                    Some(s) => old = Some(s.clone()),
+                    None => (),
+                }
+                list[i as usize] = value;
+            }
+            _ => (),
+        }
+        return old;
     }
 }
-
+/*
 impl Setter<Vec<Arc>> for Arc {
     fn set(&mut self, key: Vec<Arc>, value: Arc) -> Option<&Arc> {
         let mut pointer = self;
@@ -136,10 +175,11 @@ impl Setter<Vec<Arc>> for Arc {
                         Arc::String(s) => None,
                         _ => None,
                     }
-                }
+                };
             }
             _ => None,
         }
         return None;
     }
 }
+*/
