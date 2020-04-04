@@ -18,7 +18,7 @@ impl Debug for Arc {
                 let _ = debug_trait_builder.field(v);
                 debug_trait_builder.finish()
             }
-            Arc::Number(v)=> {
+            Arc::Number(v) => {
                 let mut debug_trait_builder = f.debug_tuple("Number");
                 let _ = debug_trait_builder.field(v);
                 debug_trait_builder.finish()
@@ -43,7 +43,7 @@ impl Debug for Arc {
                 let _ = debug_trait_builder.field(v);
                 debug_trait_builder.finish()
             }
-            Arc::Dict(v)=> {
+            Arc::Dict(v) => {
                 let mut debug_trait_builder = f.debug_tuple("Dict");
                 let _ = debug_trait_builder.field(v);
                 debug_trait_builder.finish()

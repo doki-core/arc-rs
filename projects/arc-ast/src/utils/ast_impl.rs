@@ -31,6 +31,12 @@ impl Arc {
 }
 
 impl Arc {
+    pub fn is_null(&self) -> bool {
+        match *self {
+            Arc::Null => true,
+            _ => false,
+        }
+    }
     pub fn is_string(&self) -> bool {
         match *self {
             Arc::String(_) => true,
@@ -43,7 +49,21 @@ impl Arc {
             _ => None,
         }
     }
-
+    pub fn as_string_list(&self) -> Vec<String> {
+        let mut vec = vec![];
+        match self {
+            Arc::String(s) => vec.push(s.clone()),
+            Arc::List(l) => {
+                for v in l {
+                    if let Some(s) = v.as_string() {
+                        vec.push(s)
+                    }
+                }
+            }
+            _ => (),
+        }
+        return vec;
+    }
     pub fn is_number(&self) -> bool {
         match *self {
             Arc::Number(_) => true,
@@ -70,13 +90,6 @@ impl Arc {
             _ => None,
         }
     }
-
-    pub fn is_null(&self) -> bool {
-        match *self {
-            Arc::Null => true,
-            _ => false,
-        }
-    }
 }
 
 pub trait Getter<T> {
@@ -89,7 +102,8 @@ impl Getter<isize> for Arc {
             Arc::List(list) => {
                 if index >= 0 {
                     list.get(index as usize)
-                } else {
+                }
+                else {
                     list.get(list.len() - index as usize)
                 }
             }
@@ -124,7 +138,6 @@ impl Getter<Arc> for Arc {
     }
 }
 
-
 pub trait Setter<T> {
     fn set(&mut self, key: T, value: Arc) -> Option<Arc>;
 }
@@ -146,7 +159,8 @@ impl Setter<isize> for Arc {
                 let mut i = 0;
                 if key >= 0 {
                     i = key
-                } else {
+                }
+                else {
                     i = list.len() as isize + i
                 }
                 match list.get(i as usize) {
