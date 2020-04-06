@@ -1,14 +1,15 @@
 #[macro_use]
-extern crate arc_ast as arc;
-
-use arc::{Arc, Getter};
+use serde_arc::{Arc, Getter};
 
 #[test]
 fn test() {
     println!("Null:    {}", Arc::new());
     println!("Boolean: {}", Arc::new_boolean(true));
     println!("Boolean: {}", Arc::new_boolean(false));
-    println!("Cite:    {}", Arc::new_cite(vec!["father".to_string(), "a.b".to_string()]));
+    println!(
+        "Cite:    {}",
+        Arc::new_cite(vec!["father".to_string(), "a.b".to_string()])
+    );
 }
 
 #[test]

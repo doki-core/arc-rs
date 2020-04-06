@@ -1,7 +1,7 @@
 use crate::Arc;
 use arc_number::Number;
 use linked_hash_map::LinkedHashMap;
-use std::{collections::VecDeque, ops::IndexMut};
+use std::collections::VecDeque;
 
 impl Arc {
     pub fn new() -> Arc {
@@ -102,8 +102,7 @@ impl Getter<isize> for Arc {
             Arc::List(list) => {
                 if index >= 0 {
                     list.get(index as usize)
-                }
-                else {
+                } else {
                     list.get(list.len() - index as usize)
                 }
             }
@@ -159,8 +158,7 @@ impl Setter<isize> for Arc {
                 let mut i = 0;
                 if key >= 0 {
                     i = key
-                }
-                else {
+                } else {
                     i = list.len() as isize + i
                 }
                 match list.get(i as usize) {

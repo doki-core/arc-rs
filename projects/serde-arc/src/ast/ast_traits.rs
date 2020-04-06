@@ -1,7 +1,7 @@
 use crate::Arc;
 
 use std::{
-    fmt::{self, Debug, Display, Error, Formatter},
+    fmt::{self, Debug, Display, Formatter},
     ops::{Deref, Index},
 };
 
@@ -122,8 +122,7 @@ impl Index<isize> for Arc {
             Arc::List(ref list) => {
                 if index >= 0 {
                     list.get(index as usize).unwrap_or(&Arc::Null)
-                }
-                else {
+                } else {
                     let i = list.len() as isize + index;
                     list.get(i as usize).unwrap_or(&Arc::Null)
                 }

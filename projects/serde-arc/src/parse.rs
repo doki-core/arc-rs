@@ -1,10 +1,9 @@
-use arc_ast::Arc;
+use crate::Arc;
 use arc_parser::{ArcParser, Rule};
 use pest::iterators::Pair;
 use pest::Parser;
-use std::collections::{HashMap, VecDeque};
-use std::fs::{read_to_string, File};
-use std::io::Write;
+use std::collections::VecDeque;
+use std::fs::read_to_string;
 
 macro_rules! debug_cases {
     ($i:ident) => {{
