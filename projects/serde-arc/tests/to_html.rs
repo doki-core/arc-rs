@@ -1,7 +1,7 @@
 #[macro_use]
-extern crate arc_rs as arc;
+extern crate serde_arc as arc;
 
-use arc::{parse, Arc};
+use arc::{parse, Arc, Getter};
 
 #[test]
 fn test_list() {

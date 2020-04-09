@@ -1,6 +1,5 @@
 mod ast;
 mod error;
-mod parse;
 mod utils;
 
 pub use ast::{
@@ -8,7 +7,7 @@ pub use ast::{
     Arc,
 };
 pub use error::{Error, Result};
-pub use parse::{parse, parse_file};
+pub use utils::parse::{parse, parse_file};
 
 #[macro_export]
 macro_rules! list {

@@ -1,5 +1,6 @@
 use crate::Arc;
 use arc_number::Number;
+use std::collections::VecDeque;
 
 impl From<bool> for Arc {
     fn from(b: bool) -> Self {
@@ -44,5 +45,16 @@ where
             None => Arc::Null,
             Some(i) => Arc::from(i),
         }
+    }
+}
+
+impl<T> From<Vec<T>> for Arc
+where Arc: From<T> {
+    fn from(v: Vec<T>) -> Self {
+        let mut dv = VecDeque::with_capacity(v.len());
+        for i in v {
+            dv.push_back(i.into())
+        }
+        Arc::List(dv)
     }
 }

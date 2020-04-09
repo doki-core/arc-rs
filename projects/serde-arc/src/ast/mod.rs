@@ -13,8 +13,47 @@ pub enum Arc {
     Number(Number),
     Char(char),
     String(String),
-    Cite(Vec<String>),
+    Cite(Path),
     List(VecDeque<Arc>),
     Dict(LinkedHashMap<String, Arc>),
-    Macro(String, String),
+    /// line with nothing or only whitespace
+    EmptyLine,
+    Key(KeyType, Path),
+    HandlerString(Box<str>, String),
+    HandlerNumber(Box<str>, Number),
+    Comment(CommentType, String),
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub enum CommentType {
+    /// one line comments
+    /// % this is inline comment
+    Inline,
+    /// multiline comments
+    /// %%%
+    /// this is multiline comment
+    /// %%%
+    Block,
+    /// type hint comment
+    /// %
+    /// %! this
+    /// % this
+    /// %!
+    TypeHint,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub enum KeyType {
+    List,
+    ListInherit,
+    Dict,
+    DictInherit,
+}
+
+pub type Path = Vec<KeyNode>;
+
+#[derive(Debug, Clone, PartialEq)]
+pub enum KeyNode {
+    Key(Box<str>),
+    Index(i32),
 }

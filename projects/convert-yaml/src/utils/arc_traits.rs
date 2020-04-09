@@ -1,8 +1,10 @@
-use yaml_rust::Yaml;
 use crate::utils::parse_pairs;
-use yaml_rust::yaml::{Hash, Array};
+use arc_convert_lib::indent;
 use std::f64;
-use arc_convert_lib::{ indent};
+use yaml_rust::{
+    yaml::{Array, Hash},
+    Yaml,
+};
 
 pub trait ToArc {
     fn to_arc(&self) -> String;
@@ -14,55 +16,39 @@ impl ToArc for Yaml {
             Yaml::Real(r) => {
                 if r.to_lowercase().contains('e') {
                     match r.parse::<f64>() {
-                        Ok(o) => {
-                            format!("{}", o)
-                        }
-                        Err(_) => {
-                            String::from("null")
-                        }
+                        Ok(o) => format!("{}", o),
+                        Err(_) => String::from("null"),
                     }
-                } else if r.to_lowercase().contains("n") {
+                }
+                else if r.to_lowercase().contains("n") {
                     match r.to_lowercase().as_str() {
                         ".inf" | "+.inf" | "inf" => format!("{:#X}f64", f64::INFINITY.to_bits()),
                         "-inf" | "-.inf" => format!("{:#X}f64", f64::NEG_INFINITY.to_bits()),
                         ".nan" | "nan" => format!("{:#X}f64", f64::NAN.to_bits()),
-                        _ => {
-                            String::from("null")
-                        }
+                        _ => String::from("null"),
                     }
-                } else if r.starts_with('.') {
+                }
+                else if r.starts_with('.') {
                     format!("0{}", r)
-                } else if r.ends_with('.') {
+                }
+                else if r.ends_with('.') {
                     format!("{}0", r)
-                } else {
+                }
+                else {
                     format!("{}", r)
                 }
             }
-            Yaml::Integer(i) => {
-                format!("{}", i)
-            }
-            Yaml::String(s) => {
-                format!("{:?}", s)
-            }
-            Yaml::Boolean(b) => {
-                format!("{}", b)
-            }
-            Yaml::Array(a) => {
-                a.to_arc()
-            }
-            Yaml::Hash(h) => {
-                h.to_arc()
-            }
+            Yaml::Integer(i) => format!("{}", i),
+            Yaml::String(s) => format!("{:?}", s),
+            Yaml::Boolean(b) => format!("{}", b),
+            Yaml::Array(a) => a.to_arc(),
+            Yaml::Hash(h) => h.to_arc(),
             Yaml::Alias(a) => {
                 println!("{:#?}", a);
                 unreachable!()
             }
-            Yaml::Null => {
-                String::from("null")
-            }
-            Yaml::BadValue => {
-                String::from("null")
-            }
+            Yaml::Null => String::from("null"),
+            Yaml::BadValue => String::from("null"),
         }
     }
 }
@@ -70,11 +56,7 @@ impl ToArc for Yaml {
 impl ToArc for Hash {
     fn to_arc(&self) -> String {
         let kv = parse_pairs(self);
-        if kv.len() == 1 {
-            format!("{{{}}}", kv[0])
-        } else {
-            format!("{{\n{}}}", indent(&kv.join("\n"), "    "))
-        }
+        if kv.len() == 1 { format!("{{{}}}", kv[0]) } else { format!("{{\n{}}}", indent(&kv.join("\n"), "    ")) }
     }
 }
 
@@ -89,13 +71,9 @@ impl ToArc for Array {
             if l > max {
                 max = l
             }
-            len += s.len();//for fast
+            len += s.len(); //for fast
             v.push(s)
         }
-        if len < 128 && max <= 1 {
-            format!("[{}]", v.join(", "))
-        } else {
-            format!("[\n{}]", indent(&v.join("\n"), "    "))
-        }
+        if len < 128 && max <= 1 { format!("[{}]", v.join(", ")) } else { format!("[\n{}]", indent(&v.join("\n"), "    ")) }
     }
 }

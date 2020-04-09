@@ -1,5 +1,6 @@
 use crate::Arc;
 
+use crate::ast::{KeyNode, Path};
 use std::{
     fmt::{self, Debug, Display, Formatter},
     ops::{Deref, Index},
@@ -48,12 +49,7 @@ impl Debug for Arc {
                 let _ = debug_trait_builder.field(v);
                 debug_trait_builder.finish()
             }
-            Arc::Macro(s, v) => {
-                let mut debug_trait_builder = f.debug_tuple("Macro");
-                let _ = debug_trait_builder.field(s);
-                let _ = debug_trait_builder.field(v);
-                debug_trait_builder.finish()
-            }
+            _ => unimplemented!(),
         }
     }
 }
@@ -63,7 +59,10 @@ impl Display for Arc {
         match *self {
             Arc::Null => write!(f, "null"),
             Arc::Boolean(ref b) => write!(f, "{}", b),
-            Arc::Cite(ref c) => write!(f, "${}", c.join(".")),
+            Arc::Cite(ref p) => {
+                let v: Vec<_> = p.iter().map(|k| format!("{}", k)).collect();
+                write!(f, "${}", v.join("."))
+            }
             Arc::Number(ref n) => write!(f, "{}", n),
             Arc::String(ref s) => write!(f, "{:?}", s),
             Arc::List(ref l) => {
@@ -104,6 +103,15 @@ impl Display for Arc {
     }
 }
 
+impl Display for KeyNode {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        match *self {
+            KeyNode::Key(ref s) => write!(f, "{}", s),
+            KeyNode::Index(ref i) => write!(f, "{}", i),
+        }
+    }
+}
+
 // impl Index<usize> for Arc {
 // type Output = Self;
 //
@@ -122,7 +130,8 @@ impl Index<isize> for Arc {
             Arc::List(ref list) => {
                 if index >= 0 {
                     list.get(index as usize).unwrap_or(&Arc::Null)
-                } else {
+                }
+                else {
                     let i = list.len() as isize + index;
                     list.get(i as usize).unwrap_or(&Arc::Null)
                 }

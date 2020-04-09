@@ -1,9 +1,13 @@
-use yaml_rust::{YamlLoader, Yaml};
-use yaml_rust::yaml::{Hash, Array};
-use std::fs::{read_to_string, File};
-use std::io::Write;
-use arc_convert_lib::indent;
 use crate::utils::ToArc;
+use arc_convert_lib::indent;
+use std::{
+    fs::{read_to_string, File},
+    io::Write,
+};
+use yaml_rust::{
+    yaml::{Array, Hash},
+    Yaml, YamlLoader,
+};
 
 pub fn file_to_arc(path_from: &str, path_to: &str) -> Result<(), std::io::Error> {
     let r = read_to_string(path_from)?;
@@ -17,19 +21,15 @@ pub fn to_arc(text: &str) -> Result<String, &'static str> {
     let docs = YamlLoader::load_from_str(text).expect("ParseError");
     if docs.len() == 1 {
         match docs[0].clone() {
-            Yaml::Hash(ref h) => {
-                Ok(parse_pairs(h).join("\n"))
-            }
-            Yaml::Array(ref a) => {
-                Ok(parse_list(a))
-            }
-            _ => Ok(format!("yaml = {}", docs.to_arc()))
+            Yaml::Hash(ref h) => Ok(parse_pairs(h).join("\n")),
+            Yaml::Array(ref a) => Ok(parse_list(a)),
+            _ => Ok(format!("yaml = {}", docs.to_arc())),
         }
-    } else {
+    }
+    else {
         Ok(parse_list(&docs))
     }
 }
-
 
 pub fn parse_list(a: &Array) -> String {
     let mut code = String::from("[yaml]\n");
@@ -39,7 +39,7 @@ pub fn parse_list(a: &Array) -> String {
                 let s = indent(&parse_pairs(h).join("\n"), "  ");
                 code.push_str(&format!("* {}", s.trim_start()))
             }
-            _ => code.push_str(&format!("> {}\n", i.to_arc()))
+            _ => code.push_str(&format!("> {}\n", i.to_arc())),
         }
     }
     return code;
@@ -58,11 +58,7 @@ pub fn parse_key(k: &Yaml) -> String {
     match k {
         Yaml::String(r) => {
             let s = format!("{:?}", r);
-            if s.contains(".") || s.contains(" ") {
-                s
-            } else {
-                s.trim_matches('"').to_string()
-            }
+            if s.contains(".") || s.contains(" ") { s } else { s.trim_matches('"').to_string() }
         }
         Yaml::Array(a) => {
             let mut code = vec![];
@@ -71,7 +67,6 @@ pub fn parse_key(k: &Yaml) -> String {
             }
             code.join(".")
         }
-        _ => k.to_arc()
+        _ => k.to_arc(),
     }
 }
-

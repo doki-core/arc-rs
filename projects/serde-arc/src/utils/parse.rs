@@ -1,9 +1,8 @@
 use crate::Arc;
 use arc_parser::{ArcParser, Rule};
-use pest::iterators::Pair;
-use pest::Parser;
-use std::collections::VecDeque;
-use std::fs::read_to_string;
+use pest::{iterators::Pair, Parser};
+use std::{collections::VecDeque, fs::read_to_string};
+use crate::ast::Path;
 
 macro_rules! debug_cases {
     ($i:ident) => {{
@@ -17,6 +16,7 @@ macro_rules! debug_cases {
 pub fn parse(text: &str) -> Arc {
     let mut ctx = Context::default();
     ctx.parse(text);
+    ctx.analyze();
     ctx.root
 }
 
@@ -29,18 +29,18 @@ pub fn parse_file(path_from: &str) -> Result<Arc, std::io::Error> {
 #[derive(Debug)]
 pub struct Context {
     pub root: Arc,
+    orders: Vec<Arc>,
+    last_node: Path,
 }
 
 impl Default for Context {
     fn default() -> Self {
-        Context {
-            root: Arc::new_dict(),
-        }
+        Context { root: Arc::new_dict(), orders: vec![], last_node: vec![] }
     }
 }
 
 impl Context {
-    pub fn parse(&self, text: &str) {
+    pub fn parse(&mut self, text: &str) {
         let pairs = ArcParser::parse(Rule::program, text).unwrap_or_else(|e| panic!("{}", e));
         let mut code = String::new();
         for pair in pairs {
@@ -52,6 +52,9 @@ impl Context {
         }
         //        println!("{:#?}", codes);
         //        unreachable!();
+    }
+    pub fn analyze(&mut self) {
+        self.root = Arc::from(self.orders.clone())
     }
 
     fn parse_root_dict(&self, pairs: Pair<Rule>) {
@@ -112,19 +115,17 @@ impl Context {
         }
         return Arc::List(vec);
     }
-    /*
-    fn parse_key(&self, pairs: Pair<Rule>) -> Arc {
-        for pair in pairs.into_inner() {
-            return match pair.as_rule() {
-                Rule::String => self.parse_value(pair),
-                Rule::dict_literal => continue,
-                Rule::list_literal => continue,
-                _ => debug_cases!(pair),
-            };
-        }
-        Arc::Null
-    }
-    */
+    // fn parse_key(&self, pairs: Pair<Rule>) -> Arc {
+    // for pair in pairs.into_inner() {
+    // return match pair.as_rule() {
+    // Rule::String => self.parse_value(pair),
+    // Rule::dict_literal => continue,
+    // Rule::list_literal => continue,
+    // _ => debug_cases!(pair),
+    // };
+    // }
+    // Arc::Null
+    // }
     fn parse_value(&self, pairs: Pair<Rule>) -> Arc {
         for pair in pairs.into_inner() {
             return match pair.as_rule() {
@@ -136,7 +137,7 @@ impl Context {
                         '"' =>
                     }
                     */
-                    
+
                     Arc::from(&s[1..s.len() - 1])
                 }
                 Rule::dict_literal => self.parse_dict(pair),

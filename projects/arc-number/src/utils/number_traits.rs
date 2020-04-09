@@ -1,8 +1,42 @@
 use crate::Number;
-use std::fmt::{self, Display};
+use std::fmt::{self, Debug, Display};
+
+impl Debug for Number {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        match self {
+            Number::Integer(n) => write!(f, "Integer({})", n),
+            Number::Integer8(n) => write!(f, "Integer8({})", n),
+            Number::Integer16(n) => write!(f, "Integer16({})", n),
+            Number::Integer32(n) => write!(f, "Integer32({})", n),
+            Number::Integer64(n) => write!(f, "Integer64({})", n),
+            Number::Integer128(n) => write!(f, "Integer128({})", n),
+            Number::Unsigned(n) => write!(f, "Unsigned({})", n),
+            Number::Unsigned8(n) => write!(f, "Unsigned8({})", n),
+            Number::Unsigned16(n) => write!(f, "Unsigned16({})", n),
+            Number::Unsigned32(n) => write!(f, "Unsigned32({})", n),
+            Number::Unsigned64(n) => write!(f, "Unsigned64({})", n),
+            Number::Unsigned128(n) => write!(f, "Unsigned128({})", n),
+            Number::Decimal(i) => write!(f, "Decimal({})", i),
+            Number::Decimal32(i) => {
+                let mut s = format!("{}", i);
+                if !s.ends_with('.') {
+                    s.push_str(".0")
+                }
+                write!(f, "Decimal32({})", s)
+            }
+            Number::Decimal64(i) => {
+                let mut s = format!("{}", i);
+                if !s.ends_with('.') {
+                    s.push_str(".0")
+                }
+                write!(f, "Decimal64({})", s)
+            }
+        }
+    }
+}
 
 impl Display for Number {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match self {
             Number::Integer(i) => write!(f, "{}", i),
             Number::Integer8(i) => write!(f, "{}i8", i),

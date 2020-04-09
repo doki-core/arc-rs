@@ -1,5 +1,7 @@
-use std;
-use std::fmt::{self, Display};
+use std::{
+    self,
+    fmt::{self, Display},
+};
 
 use serde::{de, ser};
 
@@ -55,7 +57,8 @@ impl Display for Error {
         match self {
             Error::Message(msg) => formatter.write_str(msg),
             Error::Eof => formatter.write_str("unexpected end of input"),
-            /* and so forth */
+            // and so forth
+            _ => unreachable!(),
         }
     }
 }
