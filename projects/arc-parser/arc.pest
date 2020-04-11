@@ -1,7 +1,8 @@
-program = _{SOI ~ (dict_literal|statement*) ~ EOI}
+program = _{SOI ~ statement* ~ EOI}
 statement = _{
     SEPARATOR
   | empty_line{1,}
+  | import_statement
   | dict_literal
   | dict_scope
   | dict_pair
@@ -9,6 +10,11 @@ statement = _{
 }
 empty_line = _{WHITESPACE* ~ NEWLINE}
 RestOfLine = @{(!NEWLINE ~ ANY)+}
+/*====================================================================================================================*/
+//!#C678DD: Import|As
+import_statement = {Import ~ SYMBOL? ~ StringNormal ~ As ~ SYMBOL}
+Import = @{"import"}
+As = @{"as"}
 /*====================================================================================================================*/
 dict_scope = {dict_head ~ (SEPARATOR? ~ dict_pair)*}
 dict_empty = {"{" ~ "}"}
@@ -84,7 +90,7 @@ Escape     = @{"\\"}
 ///#61AFEF
 NameSpace = ${Key ~ (Dot ~ Key)*}
 Key       =  {StringNormal|SYMBOL|Integer}
-SYMBOL    = @{XID_CONTINUE+}
+SYMBOL    = @{("_"|XID_START) ~ XID_CONTINUE*}
 /*====================================================================================================================*/
 // NEWLINE = @{"\r" ~ "\n"|"\r"|"\n"}
 
