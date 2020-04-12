@@ -51,19 +51,18 @@ False   = @{"false"}
 cite_value = {Cite ~ NameSpace}
 /*====================================================================================================================*/
 ///#D19A66
-Byte     = ${Byte_BIN|Byte_OCT|Byte_HEX}
-Byte_BIN = ${Zero ~ ("b"|"B") ~ (Underline? ~ ASCII_BIN_DIGIT)+}
-Byte_OCT = ${Zero ~ ("o"|"O") ~ (Underline? ~ ASCII_OCT_DIGIT)+}
-Byte_HEX = ${Zero ~ ("x"|"X") ~ (Underline? ~ ASCII_HEX_DIGIT)+}
+Byte     = ${(Byte_BIN|Byte_OCT|Byte_HEX)~ (Underline ~ SYMBOL)?}
+Byte_BIN = ${Zero ~ ("b"|"B") ~ ASCII_BIN_DIGIT+}
+Byte_OCT = ${Zero ~ ("o"|"O") ~ ASCII_OCT_DIGIT+}
+Byte_HEX = ${Zero ~ ("x"|"X") ~ ASCII_HEX_DIGIT+}
 /*====================================================================================================================*/
 //!#D19A66: SignedNumber
-Number       = ${Exponent|Complex|SignedNumber}
+Number       = ${(Exponent|SignedNumber) ~ SYMBOL?}
 SignedNumber = ${Sign? ~ (Decimal|DecimalBad|Integer)}
-Decimal      = ${Integer ~ Dot ~ (ASCII_DIGIT|Underline)*}
-DecimalBad   = ${Integer ~ Dot|Dot ~ (ASCII_DIGIT|Underline)*}
-Integer      = @{Zero|ASCII_NONZERO_DIGIT ~ (Underline|ASCII_DIGIT)*}
-Complex      =  {SignedNumber ~ SYMBOL}
-Exponent     =  {SignedNumber ~ ("**"|"*^") ~ SignedNumber}
+Decimal      = ${Integer ~ Dot ~ (Underline? ~ ASCII_DIGIT)*}
+DecimalBad   = ${Integer ~ Dot|Dot ~ (Underline? ~ ASCII_DIGIT)*}
+Integer      = @{Zero|ASCII_NONZERO_DIGIT ~ (Underline? ~ ASCII_DIGIT)*}
+Exponent     =  {SignedNumber ~ ("e"|"E") ~ Sign? ~ ASCII_DIGIT+}
 
 Zero = _{"0"}
 /*====================================================================================================================*/
