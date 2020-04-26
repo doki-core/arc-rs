@@ -1,5 +1,5 @@
 [package]
-name = "arc_parser"
+name = "arc-pest"
 version = "0.3.0"
 authors = ["Aster <galaster@foxmail.com>"]
 description = "Arc Readable Configuration Parser via Pest"

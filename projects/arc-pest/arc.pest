@@ -18,16 +18,18 @@ As = @{"as"}
 /*====================================================================================================================*/
 dict_scope = {dict_head ~ (SEPARATOR? ~ dict_pair)*}
 dict_empty = {"{" ~ "}"}
-dict_head  = {"{" ~ (Append|Insert)? ~ NameSpace ~ "}"}
+dict_head  = {"{" ~ Dot* ~ NameSpace ~ "}"}
 dict_pair  = {NameSpace ~ Set ~ Value}
 /*====================================================================================================================*/
 list_scope = {list_head ~ (SEPARATOR? ~ list_pair)*}
 list_empty = {"[" ~ "]"}
-list_head  = {"[" ~ (Append|Insert)? ~ NameSpace ~ "]"}
+list_head  = {"[" ~ Dot* ~ NameSpace ~ "]"}
 list_pair  = {
     Insert ~ dict_pair+
-  | Append ~ Value
+  | Append ~ Value+
 }
+Insert = @{"*"}
+Append = @{"&"}
 /*====================================================================================================================*/
 dict_literal = {
     dict_empty
@@ -74,9 +76,7 @@ StringLine   =  ${Vertical ~(!NEWLINE ~ ANY)*}
 StringNormal  =  {
     Quotation ~ StringQuotation ~ Quotation
   | Apostrophe ~ StringApostrophe ~ Apostrophe
-  | Accent ~ StringAccent ~ Accent
 }
-StringAccent  =  {(Escape ~ (Escape|Quotation)|!Quotation ~ ANY)*}
 StringApostrophe =  {(Escape ~ (Escape|Apostrophe)|!Apostrophe ~ ANY)*}
 StringQuotation  =  {(Escape ~ (Escape|Quotation)|!Quotation ~ ANY)*}
 
@@ -104,8 +104,7 @@ MultiLineComment = ${"%%%" ~ (MultiLineComment | !"%%%" ~ ANY)* ~ "%%%"}
 Cite = @{"$"}
 
 Dot    = @{"."}
-Insert = @{"*"}
-Append = @{">"}
+
 
 Underline  = @{"_"}
 SEPARATOR  = _{","|";"}
