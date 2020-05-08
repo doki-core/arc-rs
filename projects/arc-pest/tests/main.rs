@@ -12,20 +12,19 @@ fn ready() {
 
 #[test]
 #[ignore]
-pub fn gen_sdl_lexer() {
-    let pest = Path::new(concat!(env!("CARGO_MANIFEST_DIR"), "./src/sdl.pest"));
-    let rs = Path::new(concat!(env!("CARGO_MANIFEST_DIR"), "./src/sdl.rs"));
+pub fn gen_parser() {
+    let pest = Path::new(concat!(env!("CARGO_MANIFEST_DIR"), "./arc.pest"));
+    let rs = Path::new(concat!(env!("CARGO_MANIFEST_DIR"), "./src/arc.rs"));
 
     let derived = {
         let path = pest.to_string_lossy();
         let pest = quote! {
             #[grammar = #path]
-            pub struct SDLParser;
+            pub struct ArcParser;
         };
         derive_parser(pest, false)
     };
     let mut file = File::create(rs).unwrap();
-    let out = format!("pub struct SDLParser;{}", derived);
+    let out = format!("pub struct ArcParser;{}", derived);
     writeln!(file, "{}", out).unwrap();
 }
-
