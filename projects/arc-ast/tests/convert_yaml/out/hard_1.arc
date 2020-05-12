@@ -1,0 +1,5 @@
+sequence = ["one", "two"]
+mapping = {
+    sky = "blue"
+    sea = "green"
+}

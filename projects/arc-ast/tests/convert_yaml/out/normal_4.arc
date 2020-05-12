@@ -1,0 +1,16 @@
+canonical = 12345
+decimal = 12345
+octal = 12
+hexadecimal = 12
+canonical2 = 1230.15
+exponential = 1230.15
+fixed = 1230.15
+"negative infinity" = 0xFFF0000000000000f64
+"not a number" = 0x7FF8000000000000f64
+null = null
+booleans = [true, false]
+string = "012345"
+canonical3 = "2001-12-15T02:59:43.1Z"
+iso8601 = "2001-12-14t21:59:43.10-05:00"
+spaced = "2001-12-14 21:59:43.10 -5"
+date = "2002-12-14"

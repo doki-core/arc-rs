@@ -1,5 +1,5 @@
 [package]
-name = "arc-ast"
+name = "arc_ast"
 version = "0.3.0"
 authors = ["Aster <galaster@foxmail.com>"]
 description = "Arc Readable Configuration Parser via Pest"
@@ -11,7 +11,10 @@ edition = "2018"
 
 
 [dependencies]
-serde = "1.0"
+# serde = "1.0"
+serde_json = {version = "1.0", optional = true}
 
 [features]
-convert = [ ]
+default = ["convert"]
+convert = ["json"]
+json = ["serde_json"]
