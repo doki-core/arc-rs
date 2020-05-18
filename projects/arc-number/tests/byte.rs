@@ -2,6 +2,7 @@ extern crate arc_number;
 
 use arc_number::Number;
 use std::convert::TryInto;
+use std::str::FromStr;
 
 #[test]
 fn byte_parse() {
@@ -17,4 +18,9 @@ fn byte_parse() {
 fn add() {
     let x: i32 = Number::Integer8(100).into();
     println!("{}", x);
+}
+
+#[test]
+fn te() {
+    println!("{:?}", f64::from_str("1_5.0"))
 }

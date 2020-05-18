@@ -1,8 +1,9 @@
 [workspace]
 
 default-members = [
-    "projects/serde-arc",
-    "projects/arc-parser",
+    "projects/arc-rs",
+    "projects/arc-ast",
+    "projects/arc-pest",
     "projects/arc-fmt",
     "projects/arc-number",
 ]
