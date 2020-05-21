@@ -1,8 +1,15 @@
-use crate::Arc;
+use crate::{
+    ast::{KeyNode, KeyPath, KeyType},
+    Arc,
+};
 use arc_parser::{ArcParser, Rule};
+use linked_hash_map::LinkedHashMap;
 use pest::{iterators::Pair, Parser};
-use std::{collections::VecDeque, fs::read_to_string};
-use crate::ast::Path;
+use std::{
+    borrow::BorrowMut,
+    collections::{hash_map::RandomState, VecDeque},
+    fs::read_to_string,
+};
 
 macro_rules! debug_cases {
     ($i:ident) => {{
@@ -30,12 +37,13 @@ pub fn parse_file(path_from: &str) -> Result<Arc, std::io::Error> {
 pub struct Context {
     pub root: Arc,
     orders: Vec<Arc>,
-    last_node: Path,
+    last_node: Option<Arc>,
+    allow_override: bool,
 }
 
 impl Default for Context {
     fn default() -> Self {
-        Context { root: Arc::new_dict(), orders: vec![], last_node: vec![] }
+        Context { root: Arc::new_dict(), orders: vec![], last_node: None, allow_override: true }
     }
 }
 
@@ -54,35 +62,63 @@ impl Context {
         //        unreachable!();
     }
     pub fn analyze(&mut self) {
-        self.root = Arc::from(self.orders.clone())
+        for i in self.orders.clone() {
+            match i {
+                Arc::Record(k, v) => {
+                    let mut node = self.get_key_path_node(&k);
+                    println!("{:?}", node);
+                }
+                Arc::Key(_, _) => {}
+                _ => unreachable!(),
+            }
+        }
     }
 
-    fn parse_root_dict(&self, pairs: Pair<Rule>) {
+    fn get_key_path_node(&mut self, p: &KeyPath) -> &Arc {
+        let mut node = match &mut self.last_node {
+            None => &mut self.root,
+            Some(s) => s,
+        };
+
+        for n in &p.0 {
+            match n {
+                KeyNode::Key(k) => match node {
+                    Arc::Dict(dict) => node = dict.entry(k.clone()).or_insert(Arc::new_dict()),
+                    _ => panic!("not a dict!"),
+                },
+                // Can't create list with key path!!!
+                KeyNode::Index(i) => unreachable!(),
+            };
+        }
+        return node;
+    }
+
+    fn parse_root_dict(&mut self, pairs: Pair<Rule>) {
         for pair in pairs.into_inner() {
             match pair.as_rule() {
                 Rule::dict_pair => {
                     let (k, v) = self.parse_dict_pair(pair);
-                    println!("{:?}: {}", k, v)
+                    self.orders.push(Arc::Record(k, Box::new(v)))
                 }
                 _ => debug_cases!(pair),
             };
         }
     }
     fn parse_dict(&self, pairs: Pair<Rule>) -> Arc {
-        let hash = Arc::new_dict();
+        let mut hash = LinkedHashMap::new();
         for pair in pairs.into_inner() {
             match pair.as_rule() {
                 Rule::dict_pair => {
                     let (k, v) = self.parse_dict_pair(pair);
-                    println!("{:?}: {}", k, v)
+                    hash.insert(k, v)
                 }
                 _ => debug_cases!(pair),
             };
         }
-        return hash;
+        return Arc::FreeDict(hash);
     }
-    fn parse_dict_pair(&self, pairs: Pair<Rule>) -> (Vec<Arc>, Arc) {
-        let mut k = vec![];
+    fn parse_dict_pair(&self, pairs: Pair<Rule>) -> (KeyPath, Arc) {
+        let mut k = KeyPath::default();
         let mut v = Arc::Null;
         for pair in pairs.into_inner() {
             match pair.as_rule() {
@@ -94,15 +130,22 @@ impl Context {
         }
         return (k, v);
     }
-    fn parse_name_space(&self, pairs: Pair<Rule>) -> Vec<Arc> {
+    fn parse_name_space(&self, pairs: Pair<Rule>) -> KeyPath {
         let mut vec = vec![];
         for pair in pairs.into_inner() {
             match pair.as_rule() {
-                Rule::Key => vec.push(self.parse_value(pair)),
+                Rule::Key => {
+                    let s = match self.parse_value(pair) {
+                        Arc::Number(i) => KeyNode::Index(0),
+                        Arc::String(s) => KeyNode::Key(Box::from(s)),
+                        _ => unreachable!(),
+                    };
+                    vec.push(s)
+                }
                 _ => debug_cases!(pair),
             };
         }
-        return vec;
+        return KeyPath(vec);
     }
     fn parse_list(&self, pairs: Pair<Rule>) -> Arc {
         let mut vec = VecDeque::new();
@@ -137,7 +180,7 @@ impl Context {
                         '"' =>
                     }
                     */
-
+                    
                     Arc::from(&s[1..s.len() - 1])
                 }
                 Rule::dict_literal => self.parse_dict(pair),

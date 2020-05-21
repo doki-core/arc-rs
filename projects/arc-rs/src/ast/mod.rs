@@ -13,12 +13,14 @@ pub enum Arc {
     Number(Number),
     Char(char),
     String(String),
-    Cite(Path),
+    Cite(KeyPath),
     List(VecDeque<Arc>),
-    Dict(LinkedHashMap<String, Arc>),
+    Dict(LinkedHashMap<Box<str>, Arc>),
     /// line with nothing or only whitespace
     EmptyLine,
-    Key(KeyType, Path),
+    FreeDict(LinkedHashMap<KeyPath, Arc>),
+    Record(KeyPath, Box<Arc>),
+    Key(KeyType, KeyPath),
     HandlerString(Box<str>, String),
     HandlerNumber(Box<str>, Number),
     Comment(CommentType, String),
@@ -50,9 +52,10 @@ pub enum KeyType {
     DictInherit,
 }
 
-pub type Path = Vec<KeyNode>;
+#[derive(Debug, Clone, Eq, PartialEq, Hash)]
+pub struct KeyPath(pub Vec<KeyNode>);
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, Eq, PartialEq, Hash)]
 pub enum KeyNode {
     Key(Box<str>),
     Index(i32),

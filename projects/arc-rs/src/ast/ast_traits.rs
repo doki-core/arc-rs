@@ -1,6 +1,6 @@
 use crate::Arc;
 
-use crate::ast::{KeyNode, Path};
+use crate::ast::{KeyNode, KeyPath};
 use std::{
     fmt::{self, Debug, Display, Formatter},
     ops::{Deref, Index},
@@ -49,7 +49,37 @@ impl Debug for Arc {
                 let _ = debug_trait_builder.field(v);
                 debug_trait_builder.finish()
             }
-            _ => unimplemented!(),
+            Arc::EmptyLine => unimplemented!(),
+            Arc::FreeDict(v) => {
+                let mut debug_trait_builder = f.debug_tuple("FreeDict");
+                // let _ = debug_trait_builder.field(v);
+                debug_trait_builder.finish()
+            }
+            Arc::Record(_, _) => {
+                let mut debug_trait_builder = f.debug_tuple("Record");
+                // let _ = debug_trait_builder.field(v);
+                debug_trait_builder.finish()
+            }
+            Arc::Key(_, _) => {
+                let mut debug_trait_builder = f.debug_tuple("Key");
+                // let _ = debug_trait_builder.field(v);
+                debug_trait_builder.finish()
+            }
+            Arc::HandlerString(_, _) => {
+                let mut debug_trait_builder = f.debug_tuple("HandlerString");
+                // let _ = debug_trait_builder.field(v);
+                debug_trait_builder.finish()
+            }
+            Arc::HandlerNumber(_, _) => {
+                let mut debug_trait_builder = f.debug_tuple("HandlerNumber");
+                // let _ = debug_trait_builder.field(v);
+                debug_trait_builder.finish()
+            }
+            Arc::Comment(_, _) => {
+                let mut debug_trait_builder = f.debug_tuple("Comment");
+                // let _ = debug_trait_builder.field(v);
+                debug_trait_builder.finish()
+            }
         }
     }
 }
@@ -59,10 +89,7 @@ impl Display for Arc {
         match *self {
             Arc::Null => write!(f, "null"),
             Arc::Boolean(ref b) => write!(f, "{}", b),
-            Arc::Cite(ref p) => {
-                let v: Vec<_> = p.iter().map(|k| format!("{}", k)).collect();
-                write!(f, "${}", v.join("."))
-            }
+            Arc::Cite(ref p) => write!(f, "${}", p),
             Arc::Number(ref n) => write!(f, "{}", n),
             Arc::String(ref s) => write!(f, "{:?}", s),
             Arc::List(ref l) => {
@@ -98,7 +125,14 @@ impl Display for Arc {
                     }
                 }
             }
-            _ => unreachable!(),
+            Arc::Char(_) => write!(f, "Char"),
+            Arc::EmptyLine => write!(f, "EmptyLine"),
+            Arc::FreeDict(_) => write!(f, "FreeDict"),
+            Arc::Record(_, _) => write!(f, "Record"),
+            Arc::Key(_, _) => write!(f, "Key"),
+            Arc::HandlerString(_, _) => write!(f, "HandlerString"),
+            Arc::HandlerNumber(_, _) => write!(f, "HandlerNumber"),
+            Arc::Comment(_, _) => write!(f, "Comment"),
         }
     }
 }
@@ -109,6 +143,19 @@ impl Display for KeyNode {
             KeyNode::Key(ref s) => write!(f, "{}", s),
             KeyNode::Index(ref i) => write!(f, "{}", i),
         }
+    }
+}
+
+impl Display for KeyPath {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        let v: Vec<_> = self.0.iter().map(|k| format!("{}", k)).collect();
+        write!(f, "{}", v.join("."))
+    }
+}
+
+impl Default for KeyPath {
+    fn default() -> Self {
+        Self(vec![])
     }
 }
 

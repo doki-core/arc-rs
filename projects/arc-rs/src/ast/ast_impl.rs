@@ -1,4 +1,4 @@
-use crate::{ast::Path, Arc};
+use crate::{ast::KeyPath, Arc};
 use arc_number::Number;
 use linked_hash_map::LinkedHashMap;
 use std::collections::VecDeque;
@@ -25,7 +25,7 @@ impl Arc {
             None => Arc::Null,
         };
     }
-    pub fn new_cite(cite: Path) -> Arc {
+    pub fn new_cite(cite: KeyPath) -> Arc {
         Arc::Cite(cite)
     }
 }
@@ -113,7 +113,7 @@ impl Getter<isize> for Arc {
 impl Getter<String> for Arc {
     fn get(&self, index: String) -> Option<&Arc> {
         match self {
-            Arc::Dict(dict) => dict.get(&index),
+            Arc::Dict(dict) => dict.get(&Box::from(index)),
             _ => None,
         }
     }
@@ -143,7 +143,7 @@ pub trait Setter<T> {
 impl Setter<String> for Arc {
     fn set(&mut self, key: String, value: Arc) -> Option<Arc> {
         match self {
-            Arc::Dict(dict) => dict.insert(key, value),
+            Arc::Dict(dict) => dict.insert(Box::from(key), value),
             _ => Some(value),
         }
     }

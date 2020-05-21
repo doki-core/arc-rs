@@ -1,4 +1,7 @@
-use crate::Arc;
+use crate::{
+    ast::{KeyNode, KeyPath},
+    Arc,
+};
 use arc_number::Number;
 use std::collections::VecDeque;
 
@@ -49,12 +52,20 @@ where
 }
 
 impl<T> From<Vec<T>> for Arc
-where Arc: From<T> {
+where
+    Arc: From<T>,
+{
     fn from(v: Vec<T>) -> Self {
         let mut dv = VecDeque::with_capacity(v.len());
         for i in v {
             dv.push_back(i.into())
         }
         Arc::List(dv)
+    }
+}
+
+impl From<String> for KeyPath {
+    fn from(s: String) -> Self {
+        Self(vec![KeyNode::Key(Box::from(s))])
     }
 }
