@@ -1,4 +1,5 @@
 mod convert;
 mod ast;
-mod value;
+
+pub mod value;
 pub use value::Value;
