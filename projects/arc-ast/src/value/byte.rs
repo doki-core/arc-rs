@@ -1,5 +1,2 @@
-
-#[derive(Debug,Clone, Eq, PartialEq)]
-pub struct Byte {
-
-}
+#[derive(Debug, Clone, Eq, PartialEq)]
+pub struct Byte {}

@@ -1,5 +1,2 @@
-
-#[derive(Debug,Clone, Eq, PartialEq)]
-pub struct Decimal {
-
-}
+#[derive(Debug, Clone, Eq, PartialEq)]
+pub struct Decimal {}
