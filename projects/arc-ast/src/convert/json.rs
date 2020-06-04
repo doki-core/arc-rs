@@ -1,7 +1,7 @@
 use crate::Value;
 use serde_json::{Number};
 use std::mem::transmute;
-use indexmap::map::IndexMap;
+use indexmap::IndexMap;
 
 type Json = serde_json::Value;
 
@@ -24,6 +24,7 @@ impl From<Json> for Value {
     }
 }
 
+#[allow(dead_code)]
 enum JsonNumber {
     PosInt(u64),
     /// Always less than zero.
@@ -38,7 +39,7 @@ impl From<Number> for Value {
         match inner {
             JsonNumber::PosInt(n) => n.into(),
             JsonNumber::NegInt(n) => n.into(),
-            JsonNumber::Float(n) => unimplemented!(),
+            JsonNumber::Float(n) => n.into(),
         }
     }
 }

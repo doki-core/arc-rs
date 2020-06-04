@@ -4,7 +4,9 @@ const JSON_TEST: &str = r#"
 {
    "null": null,
    "true": true,
-   "false": false
+   "false": false,
+   "zero": 0,
+   "one": 1.0
 }
 "#;
 

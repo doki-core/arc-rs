@@ -38,3 +38,8 @@ macro_rules! native2value {
 
 native2value![char, &str, String, &String];
 
+impl From<Text> for Value {
+    fn from(v: Text) -> Self {
+        Value::String(Box::new(v))
+    }
+}

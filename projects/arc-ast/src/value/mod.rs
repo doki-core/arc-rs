@@ -18,6 +18,12 @@ pub enum Value {
     Dict(Box<Dict>),
 }
 
+impl Default for Value {
+    fn default() -> Self {
+        Self::Null
+    }
+}
+
 // impl From<()> for Value {
 //     fn from(v: ()) -> Self {
 //         Self::List(Box::new())

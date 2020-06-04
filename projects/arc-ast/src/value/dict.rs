@@ -47,28 +47,10 @@ macro_rules! native2value {
     };
 }
 
-native2value![IndexMap<K, V>, HashMap<K, V>];
+native2value![IndexMap<K, V>, HashMap<K, V>, BTreeMap<K, V>];
 
-impl<K, V> From<BTreeMap<K, V>> for Dict
-where
-    K: Into<String>,
-    V: Into<Value>,
-{
-    fn from(input: BTreeMap<K, V>) -> Self {
-        let mut dict = IndexMap::new();
-        for (k, v) in input.into_iter() {
-            dict.insert(k.into(), v.into());
-        }
-        Self { handler: None, value: dict }
-    }
-}
-
-impl<K, V> From<BTreeMap<K, V>> for Value
-where
-    K: Into<String>,
-    V: Into<Value>,
-{
-    fn from(v: BTreeMap<K, V>) -> Self {
-        Self::Dict(Box::new(v.into()))
+impl From<Dict> for Value {
+    fn from(v: Dict) -> Self {
+        Value::Dict(Box::new(v))
     }
 }

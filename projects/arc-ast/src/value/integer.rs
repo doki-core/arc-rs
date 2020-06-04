@@ -39,3 +39,9 @@ macro_rules! native2value {
 
 native2value![u8, u16, u32, u64, u128, usize];
 native2value![i8, i16, i32, i64, i128, isize];
+
+impl From<Integer> for Value {
+    fn from(v: Integer) -> Self {
+        Value::Integer(Box::new(v))
+    }
+}
