@@ -9,9 +9,9 @@ impl From<Json> for Value {
     fn from(json: Json) -> Self {
         match json {
             Json::Null => Self::Null,
-            Json::Bool(v) => Self::Boolean(v),
+            Json::Bool(v) => v.into(),
             Json::Number(v) => v.into(),
-            Json::String(v) => unimplemented!(),
+            Json::String(v) => v.into(),
             Json::Array(v) => v.into(),
             Json::Object(v) => {
                 let mut dict = IndexMap::new();

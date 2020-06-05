@@ -4,5 +4,9 @@
     "false": false,
     "zero": 0,
     "one": 1.0,
-    "array": [0, 1, 2]
+    "string": "it a string",
+    "array": [0, 1, 2],
+    "object": {
+        "key": "value"
+    }
 }

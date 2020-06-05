@@ -1,10 +1,18 @@
-use crate::Value;
-use num::BigInt;
+use super::*;
 
-#[derive(Debug, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
 pub struct Integer {
     handler: Option<String>,
     value: BigInt,
+}
+
+impl Debug for Integer {
+    fn fmt(&self, f: &mut Formatter) -> fmt::Result {
+        match &self.handler {
+            Some(s) => write!(f, "{}{}", self.value, s),
+            None => write!(f, "{}", self.value),
+        }
+    }
 }
 
 macro_rules! native2integer {

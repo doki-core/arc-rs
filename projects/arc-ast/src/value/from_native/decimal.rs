@@ -1,11 +1,18 @@
-use crate::Value;
-use bigdecimal::BigDecimal;
-use std::convert::TryFrom;
+use super::*;
 
-#[derive(Debug, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
 pub struct Decimal {
     handler: Option<String>,
     value: BigDecimal,
+}
+
+impl Debug for Decimal {
+    fn fmt(&self, f: &mut Formatter) -> fmt::Result {
+        match &self.handler {
+            Some(s) => write!(f, "{}{}", self.value, s),
+            None => write!(f, "{}", self.value),
+        }
+    }
 }
 
 macro_rules! native2decimal {

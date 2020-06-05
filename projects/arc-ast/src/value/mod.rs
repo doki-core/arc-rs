@@ -1,12 +1,7 @@
-pub use crate::value::{byte::Byte, decimal::Decimal, dict::Dict, integer::Integer, list::List, string::Text};
-use std::fmt::{self, Debug, Formatter};
+mod from_native;
 
-mod byte;
-mod decimal;
-mod dict;
-mod integer;
-mod list;
-mod string;
+pub use crate::value::from_native::{Decimal, Dict, Integer, List, Text};
+use std::fmt::{self, Debug, Formatter};
 
 #[derive(Clone, Eq, PartialEq)]
 pub enum Value {
