@@ -1,7 +1,7 @@
 use crate::Value;
-use serde_json::{Number};
-use std::mem::transmute;
 use indexmap::IndexMap;
+use serde_json::Number;
+use std::mem::transmute;
 
 type Json = serde_json::Value;
 
@@ -12,14 +12,14 @@ impl From<Json> for Value {
             Json::Bool(v) => Self::Boolean(v),
             Json::Number(v) => v.into(),
             Json::String(v) => unimplemented!(),
-            Json::Array(v) => unimplemented!(),
+            Json::Array(v) => v.into(),
             Json::Object(v) => {
                 let mut dict = IndexMap::new();
-                for (k,v) in v.iter() {
-                    dict.insert(String::from(k),Value::from(v.clone()));
+                for (k, v) in v.iter() {
+                    dict.insert(String::from(k), Value::from(v.clone()));
                 }
                 dict.into()
-            },
+            }
         }
     }
 }

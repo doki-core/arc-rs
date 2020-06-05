@@ -1,6 +1,6 @@
 use crate::Value;
-use std::collections::{BTreeMap, HashMap};
 use indexmap::map::IndexMap;
+use std::collections::{BTreeMap, HashMap};
 
 #[derive(Debug, Clone, Eq, PartialEq)]
 pub struct Dict {

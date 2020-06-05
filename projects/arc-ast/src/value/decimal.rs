@@ -1,5 +1,5 @@
-use bigdecimal::{BigDecimal, ParseBigDecimalError};
 use crate::Value;
+use bigdecimal::BigDecimal;
 use std::convert::TryFrom;
 
 #[derive(Debug, Clone, Eq, PartialEq)]
@@ -24,38 +24,23 @@ macro_rules! native2decimal {
     };
 }
 
-// macro_rules! native2value {
-//     ($T:ty) => {
-//     native2decimal!($T);
-//     impl From<$T> for Value {
-//         fn from(n: $T) -> Self {
-//             Value::Decimal(Box::new(n.into()))
-//         }
-//     }
-//     };
-//     ($($T:ty), +) => {
-//         $(native2value!($T);)+
-//     };
-// }
-
-impl From<f64> for Value {
-    fn from(n: f64) -> Self {
-        match BigDecimal::try_from(n) {
-            Ok(value) => {
-                Decimal {
-                    handler: None,
-                    value,
-                }.into()
-            }
-            Err(_) => {
-                Value::Null
-            }
+macro_rules! native2value {
+    ($T:ty) => {
+    impl From<$T> for Value {
+        fn from(n: $T) -> Self {
+            BigDecimal::try_from(n)
+                .map(|value| Decimal { handler: None, value }.into())
+                .unwrap_or_default()
         }
     }
+    };
+    ($($T:ty ), +) => {
+        $(native2value!($T);)+
+    };
 }
 
-
 native2decimal![f32, f64];
+native2value![f32, f64];
 
 impl From<Decimal> for Value {
     fn from(v: Decimal) -> Self {
