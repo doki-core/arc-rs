@@ -1,4 +1,4 @@
-mod ast;
+pub mod ast;
 mod convert;
 
 pub mod value;

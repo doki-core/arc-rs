@@ -1,9 +1,19 @@
 use super::*;
 
-#[derive(Debug, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
 pub struct Dict {
     handler: Option<String>,
     value: IndexMap<String, Value>,
+}
+
+impl Debug for Dict {
+    fn fmt(&self, f: &mut Formatter) -> fmt::Result {
+        match &self.handler {
+            Some(s) => write!(f, "{}", s)?,
+            None => (),
+        }
+        Debug::fmt(&self.value, f)
+    }
 }
 
 macro_rules! native2dict {

@@ -1,10 +1,19 @@
-use crate::Value;
-use std::collections::{BTreeSet, HashSet, LinkedList, VecDeque};
+use super::*;
 
-#[derive(Debug, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
 pub struct List {
     handler: Option<String>,
     value: Vec<Value>,
+}
+
+impl Debug for List {
+    fn fmt(&self, f: &mut Formatter) -> fmt::Result {
+        match &self.handler {
+            Some(s) => write!(f, "{}", s)?,
+            None => (),
+        }
+        Debug::fmt(&self.value, f)
+    }
 }
 
 macro_rules! native2list {

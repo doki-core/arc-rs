@@ -17,13 +17,13 @@ use bigdecimal::BigDecimal;
 use indexmap::IndexMap;
 use num::BigInt;
 use std::{
-    collections::{BTreeMap, HashMap},
+    collections::{BTreeMap, BTreeSet, HashMap, HashSet, LinkedList, VecDeque},
     convert::TryFrom,
     fmt::{self, Debug, Formatter},
 };
 
 impl From<bool> for Value {
     fn from(v: bool) -> Self {
-       Self::Boolean(v)
+        Self::Boolean(v)
     }
 }
