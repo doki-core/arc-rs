@@ -17,8 +17,8 @@ num = "0.3"
 indexmap = "1.6"
 bigdecimal = "0.2"
 toml = "0.5"
+# toml_edit = "*"
 serde_yaml = "*"
-toml_edit = "*"
 
 
 [features]

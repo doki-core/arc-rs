@@ -14,22 +14,22 @@ pub struct AST {
 
 #[derive(Debug, Clone, Eq, PartialEq)]
 pub enum ASTKind {
+    /// Placeholder
     /// Unreachable structure
     None,
-    /// Root of all
-    Program(Vec<AST>),
+    /// Flattened structure
+    Sequence(Vec<AST>),
     /// Whitespace, Newline, Comment
     Span(String),
-    /// Flat structure
-    /// which can be flattened
-    Sequence(Vec<AST>),
+    ///
+    Pair(Box<AST>, Box<AST>),
 
     Null,
     Boolean(bool),
-    String(Box<ASTString>),
-    Symbol(Box<Symbol>),
-    Integer(Box<ASTInteger>),
-    Decimal(Box<ASTDecimal>),
+    // String(Box<ASTString>),
+    // Symbol(Box<Symbol>),
+    // Integer(Box<ASTInteger>),
+    // Decimal(Box<ASTDecimal>),
 }
 
 impl Debug for AST {
@@ -63,14 +63,14 @@ impl From<ASTKind> for AST {
     }
 }
 
-impl AST {
-    pub fn as_vec(&self) -> Vec<AST> {
-        match &self.kind {
-            ASTKind::Program(v) | ASTKind::Block(v) => v.to_owned(),
-            _ => vec![],
-        }
-    }
-}
+// impl AST {
+//     pub fn as_vec(&self) -> Vec<AST> {
+//         match &self.kind {
+//             ASTKind::Program(v) | ASTKind::Block(v) => v.to_owned(),
+//             _ => vec![],
+//         }
+//     }
+// }
 
 // impl AST {
 //     pub fn program(children: Vec<AST>) -> Self {
