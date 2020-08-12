@@ -7,6 +7,7 @@ pub enum Rule {
     statement,
     EmptyLine,
     RestOfLine,
+    include_statement,
     import_statement,
     dict_scope,
     dict_head,
@@ -35,20 +36,20 @@ pub enum Rule {
     StringNormal,
     StringApostrophe,
     StringQuotation,
-    Accent,
-    Vertical,
+    InlineString,
+    RestLineText,
     Apostrophe,
     Quotation,
-    Escape,
-    NameSpace,
+    namespace,
     Key,
     SYMBOL,
+    ExtraID,
     COMMENT,
     WHITESPACE,
     LineComment,
     MultiLineComment,
-    Cite,
     Dot,
+    Escape,
     Underline,
     SEPARATOR,
     Set,
@@ -76,7 +77,7 @@ impl ::pest::Parser<Rule> for ArcParser {
                 #[inline]
                 #[allow(non_snake_case, unused_variables)]
                 pub fn statement(state: Box<::pest::ParserState<Rule>>) -> ::pest::ParseResult<Box<::pest::ParserState<Rule>>> {
-                    self::SEPARATOR(state).or_else(|state| state.sequence(|state| self::EmptyLine(state).and_then(|state| super::hidden::skip(state)).and_then(|state| state.sequence(|state| state.optional(|state| self::EmptyLine(state).and_then(|state| state.repeat(|state| state.sequence(|state| super::hidden::skip(state).and_then(|state| self::EmptyLine(state)))))))))).or_else(|state| self::import_statement(state)).or_else(|state| self::dict_literal(state)).or_else(|state| self::dict_scope(state)).or_else(|state| self::dict_pair(state)).or_else(|state| self::list_scope(state))
+                    self::SEPARATOR(state).or_else(|state| state.sequence(|state| self::EmptyLine(state).and_then(|state| super::hidden::skip(state)).and_then(|state| state.sequence(|state| state.optional(|state| self::EmptyLine(state).and_then(|state| state.repeat(|state| state.sequence(|state| super::hidden::skip(state).and_then(|state| self::EmptyLine(state)))))))))).or_else(|state| self::dict_literal(state)).or_else(|state| self::dict_scope(state)).or_else(|state| self::dict_pair(state)).or_else(|state| self::list_scope(state))
                 }
                 #[inline]
                 #[allow(non_snake_case, unused_variables)]
@@ -90,8 +91,13 @@ impl ::pest::Parser<Rule> for ArcParser {
                 }
                 #[inline]
                 #[allow(non_snake_case, unused_variables)]
+                pub fn include_statement(state: Box<::pest::ParserState<Rule>>) -> ::pest::ParseResult<Box<::pest::ParserState<Rule>>> {
+                    state.rule(Rule::include_statement, |state| state.sequence(|state| state.match_string("@include").and_then(|state| super::hidden::skip(state)).and_then(|state| state.match_string("(")).and_then(|state| super::hidden::skip(state)).and_then(|state| self::StringNormal(state)).and_then(|state| super::hidden::skip(state)).and_then(|state| state.match_string(",")).and_then(|state| super::hidden::skip(state)).and_then(|state| self::SYMBOL(state)).and_then(|state| super::hidden::skip(state)).and_then(|state| state.match_string(")"))))
+                }
+                #[inline]
+                #[allow(non_snake_case, unused_variables)]
                 pub fn import_statement(state: Box<::pest::ParserState<Rule>>) -> ::pest::ParseResult<Box<::pest::ParserState<Rule>>> {
-                    state.rule(Rule::import_statement, |state| state.sequence(|state| state.match_string("@import").and_then(|state| super::hidden::skip(state)).and_then(|state| state.match_string("(")).and_then(|state| super::hidden::skip(state)).and_then(|state| state.optional(|state| self::SYMBOL(state))).and_then(|state| super::hidden::skip(state)).and_then(|state| self::StringNormal(state)).and_then(|state| super::hidden::skip(state)).and_then(|state| state.match_string(",")).and_then(|state| super::hidden::skip(state)).and_then(|state| self::SYMBOL(state)).and_then(|state| super::hidden::skip(state)).and_then(|state| state.match_string(")"))))
+                    state.rule(Rule::import_statement, |state| state.sequence(|state| state.match_string("@import").and_then(|state| super::hidden::skip(state)).and_then(|state| state.match_string("(")).and_then(|state| super::hidden::skip(state)).and_then(|state| self::StringNormal(state)).and_then(|state| super::hidden::skip(state)).and_then(|state| state.match_string(",")).and_then(|state| super::hidden::skip(state)).and_then(|state| self::SYMBOL(state)).and_then(|state| super::hidden::skip(state)).and_then(|state| state.match_string(")"))))
                 }
                 #[inline]
                 #[allow(non_snake_case, unused_variables)]
@@ -101,12 +107,12 @@ impl ::pest::Parser<Rule> for ArcParser {
                 #[inline]
                 #[allow(non_snake_case, unused_variables)]
                 pub fn dict_head(state: Box<::pest::ParserState<Rule>>) -> ::pest::ParseResult<Box<::pest::ParserState<Rule>>> {
-                    state.rule(Rule::dict_head, |state| state.sequence(|state| state.match_string("{").and_then(|state| super::hidden::skip(state)).and_then(|state| state.sequence(|state| state.optional(|state| self::Dot(state).and_then(|state| state.repeat(|state| state.sequence(|state| super::hidden::skip(state).and_then(|state| self::Dot(state)))))))).and_then(|state| super::hidden::skip(state)).and_then(|state| self::NameSpace(state)).and_then(|state| super::hidden::skip(state)).and_then(|state| state.match_string("}"))))
+                    state.rule(Rule::dict_head, |state| state.sequence(|state| state.match_string("{").and_then(|state| super::hidden::skip(state)).and_then(|state| state.sequence(|state| state.optional(|state| self::Dot(state).and_then(|state| state.repeat(|state| state.sequence(|state| super::hidden::skip(state).and_then(|state| self::Dot(state)))))))).and_then(|state| super::hidden::skip(state)).and_then(|state| self::namespace(state)).and_then(|state| super::hidden::skip(state)).and_then(|state| state.match_string("}"))))
                 }
                 #[inline]
                 #[allow(non_snake_case, unused_variables)]
                 pub fn dict_pair(state: Box<::pest::ParserState<Rule>>) -> ::pest::ParseResult<Box<::pest::ParserState<Rule>>> {
-                    state.rule(Rule::dict_pair, |state| state.sequence(|state| self::NameSpace(state).and_then(|state| super::hidden::skip(state)).and_then(|state| self::Set(state)).and_then(|state| super::hidden::skip(state)).and_then(|state| self::data(state))))
+                    state.rule(Rule::dict_pair, |state| state.sequence(|state| self::namespace(state).and_then(|state| super::hidden::skip(state)).and_then(|state| self::Set(state)).and_then(|state| super::hidden::skip(state)).and_then(|state| self::data(state))))
                 }
                 #[inline]
                 #[allow(non_snake_case, unused_variables)]
@@ -116,7 +122,7 @@ impl ::pest::Parser<Rule> for ArcParser {
                 #[inline]
                 #[allow(non_snake_case, unused_variables)]
                 pub fn list_head(state: Box<::pest::ParserState<Rule>>) -> ::pest::ParseResult<Box<::pest::ParserState<Rule>>> {
-                    state.rule(Rule::list_head, |state| state.sequence(|state| state.match_string("[").and_then(|state| super::hidden::skip(state)).and_then(|state| state.sequence(|state| state.optional(|state| self::Dot(state).and_then(|state| state.repeat(|state| state.sequence(|state| super::hidden::skip(state).and_then(|state| self::Dot(state)))))))).and_then(|state| super::hidden::skip(state)).and_then(|state| self::NameSpace(state)).and_then(|state| super::hidden::skip(state)).and_then(|state| state.match_string("]"))))
+                    state.rule(Rule::list_head, |state| state.sequence(|state| state.match_string("[").and_then(|state| super::hidden::skip(state)).and_then(|state| state.sequence(|state| state.optional(|state| self::Dot(state).and_then(|state| state.repeat(|state| state.sequence(|state| super::hidden::skip(state).and_then(|state| self::Dot(state)))))))).and_then(|state| super::hidden::skip(state)).and_then(|state| self::namespace(state)).and_then(|state| super::hidden::skip(state)).and_then(|state| state.match_string("]"))))
                 }
                 #[inline]
                 #[allow(non_snake_case, unused_variables)]
@@ -146,7 +152,7 @@ impl ::pest::Parser<Rule> for ArcParser {
                 #[inline]
                 #[allow(non_snake_case, unused_variables)]
                 pub fn data(state: Box<::pest::ParserState<Rule>>) -> ::pest::ParseResult<Box<::pest::ParserState<Rule>>> {
-                    state.rule(Rule::data, |state| self::Byte(state).or_else(|state| self::Number(state)).or_else(|state| self::Special(state)).or_else(|state| self::String(state)).or_else(|state| self::cite_value(state)).or_else(|state| self::dict_literal(state)).or_else(|state| self::list_literal(state)))
+                    state.rule(Rule::data, |state| self::Byte(state).or_else(|state| self::Number(state)).or_else(|state| self::Special(state)).or_else(|state| self::String(state)).or_else(|state| self::cite_value(state)).or_else(|state| self::dict_literal(state)).or_else(|state| self::list_literal(state)).or_else(|state| self::import_statement(state)).or_else(|state| self::InlineString(state)))
                 }
                 #[inline]
                 #[allow(non_snake_case, unused_variables)]
@@ -156,7 +162,7 @@ impl ::pest::Parser<Rule> for ArcParser {
                 #[inline]
                 #[allow(non_snake_case, unused_variables)]
                 pub fn cite_value(state: Box<::pest::ParserState<Rule>>) -> ::pest::ParseResult<Box<::pest::ParserState<Rule>>> {
-                    state.rule(Rule::cite_value, |state| state.sequence(|state| state.match_string("$").and_then(|state| super::hidden::skip(state)).and_then(|state| self::NameSpace(state))))
+                    state.rule(Rule::cite_value, |state| state.atomic(::pest::Atomicity::Atomic, |state| state.sequence(|state| state.match_string("$").and_then(|state| self::namespace(state)))))
                 }
                 #[inline]
                 #[allow(non_snake_case, unused_variables)]
@@ -206,12 +212,12 @@ impl ::pest::Parser<Rule> for ArcParser {
                 #[inline]
                 #[allow(non_snake_case, unused_variables)]
                 pub fn Exponent(state: Box<::pest::ParserState<Rule>>) -> ::pest::ParseResult<Box<::pest::ParserState<Rule>>> {
-                    state.rule(Rule::Exponent, |state| state.sequence(|state| self::SignedNumber(state).and_then(|state| super::hidden::skip(state)).and_then(|state| state.match_string("e").or_else(|state| state.match_string("E"))).and_then(|state| super::hidden::skip(state)).and_then(|state| state.optional(|state| self::Sign(state))).and_then(|state| super::hidden::skip(state)).and_then(|state| self::ASCII_DIGIT(state)).and_then(|state| super::hidden::skip(state)).and_then(|state| state.sequence(|state| state.optional(|state| self::ASCII_DIGIT(state).and_then(|state| state.repeat(|state| state.sequence(|state| super::hidden::skip(state).and_then(|state| self::ASCII_DIGIT(state))))))))))
+                    state.atomic(::pest::Atomicity::CompoundAtomic, |state| state.rule(Rule::Exponent, |state| state.sequence(|state| self::SignedNumber(state).and_then(|state| state.match_string("e").or_else(|state| state.match_string("E")).or_else(|state| state.match_string("**"))).and_then(|state| state.optional(|state| self::Sign(state))).and_then(|state| self::ASCII_DIGIT(state)).and_then(|state| state.repeat(|state| self::ASCII_DIGIT(state))))))
                 }
                 #[inline]
                 #[allow(non_snake_case, unused_variables)]
                 pub fn String(state: Box<::pest::ParserState<Rule>>) -> ::pest::ParseResult<Box<::pest::ParserState<Rule>>> {
-                    state.rule(Rule::String, |state| state.sequence(|state| state.optional(|state| self::SYMBOL(state)).and_then(|state| super::hidden::skip(state)).and_then(|state| self::StringNormal(state))))
+                    state.atomic(::pest::Atomicity::NonAtomic, |state| state.rule(Rule::String, |state| state.sequence(|state| state.optional(|state| self::SYMBOL(state)).and_then(|state| super::hidden::skip(state)).and_then(|state| self::StringNormal(state)))))
                 }
                 #[inline]
                 #[allow(non_snake_case, unused_variables)]
@@ -230,13 +236,13 @@ impl ::pest::Parser<Rule> for ArcParser {
                 }
                 #[inline]
                 #[allow(non_snake_case, unused_variables)]
-                pub fn Accent(state: Box<::pest::ParserState<Rule>>) -> ::pest::ParseResult<Box<::pest::ParserState<Rule>>> {
-                    state.rule(Rule::Accent, |state| state.atomic(::pest::Atomicity::Atomic, |state| state.match_string("`")))
+                pub fn InlineString(state: Box<::pest::ParserState<Rule>>) -> ::pest::ParseResult<Box<::pest::ParserState<Rule>>> {
+                    state.rule(Rule::InlineString, |state| state.atomic(::pest::Atomicity::Atomic, |state| state.sequence(|state| state.sequence(|state| state.lookahead(false, |state| self::SEPARATOR(state).or_else(|state| self::NEWLINE(state)).or_else(|state| state.match_string("]")).or_else(|state| state.match_string("}"))).and_then(|state| self::ANY(state))).and_then(|state| state.repeat(|state| state.sequence(|state| state.lookahead(false, |state| self::SEPARATOR(state).or_else(|state| self::NEWLINE(state)).or_else(|state| state.match_string("]")).or_else(|state| state.match_string("}"))).and_then(|state| self::ANY(state))))))))
                 }
                 #[inline]
                 #[allow(non_snake_case, unused_variables)]
-                pub fn Vertical(state: Box<::pest::ParserState<Rule>>) -> ::pest::ParseResult<Box<::pest::ParserState<Rule>>> {
-                    state.rule(Rule::Vertical, |state| state.atomic(::pest::Atomicity::Atomic, |state| state.match_string("|")))
+                pub fn RestLineText(state: Box<::pest::ParserState<Rule>>) -> ::pest::ParseResult<Box<::pest::ParserState<Rule>>> {
+                    state.rule(Rule::RestLineText, |state| state.atomic(::pest::Atomicity::Atomic, |state| state.sequence(|state| state.sequence(|state| state.lookahead(false, |state| self::NEWLINE(state)).and_then(|state| self::ANY(state))).and_then(|state| state.repeat(|state| state.sequence(|state| state.lookahead(false, |state| self::NEWLINE(state)).and_then(|state| self::ANY(state))))))))
                 }
                 #[inline]
                 #[allow(non_snake_case, unused_variables)]
@@ -250,13 +256,8 @@ impl ::pest::Parser<Rule> for ArcParser {
                 }
                 #[inline]
                 #[allow(non_snake_case, unused_variables)]
-                pub fn Escape(state: Box<::pest::ParserState<Rule>>) -> ::pest::ParseResult<Box<::pest::ParserState<Rule>>> {
-                    state.rule(Rule::Escape, |state| state.atomic(::pest::Atomicity::Atomic, |state| state.match_string("\\")))
-                }
-                #[inline]
-                #[allow(non_snake_case, unused_variables)]
-                pub fn NameSpace(state: Box<::pest::ParserState<Rule>>) -> ::pest::ParseResult<Box<::pest::ParserState<Rule>>> {
-                    state.rule(Rule::NameSpace, |state| state.sequence(|state| self::Key(state).and_then(|state| super::hidden::skip(state)).and_then(|state| state.sequence(|state| state.optional(|state| state.sequence(|state| self::Dot(state).and_then(|state| super::hidden::skip(state)).and_then(|state| self::Key(state))).and_then(|state| state.repeat(|state| state.sequence(|state| super::hidden::skip(state).and_then(|state| state.sequence(|state| self::Dot(state).and_then(|state| super::hidden::skip(state)).and_then(|state| self::Key(state))))))))))))
+                pub fn namespace(state: Box<::pest::ParserState<Rule>>) -> ::pest::ParseResult<Box<::pest::ParserState<Rule>>> {
+                    state.rule(Rule::namespace, |state| state.sequence(|state| self::Key(state).and_then(|state| super::hidden::skip(state)).and_then(|state| state.sequence(|state| state.optional(|state| state.sequence(|state| self::Dot(state).and_then(|state| super::hidden::skip(state)).and_then(|state| self::Key(state))).and_then(|state| state.repeat(|state| state.sequence(|state| super::hidden::skip(state).and_then(|state| state.sequence(|state| self::Dot(state).and_then(|state| super::hidden::skip(state)).and_then(|state| self::Key(state))))))))))))
                 }
                 #[inline]
                 #[allow(non_snake_case, unused_variables)]
@@ -266,7 +267,12 @@ impl ::pest::Parser<Rule> for ArcParser {
                 #[inline]
                 #[allow(non_snake_case, unused_variables)]
                 pub fn SYMBOL(state: Box<::pest::ParserState<Rule>>) -> ::pest::ParseResult<Box<::pest::ParserState<Rule>>> {
-                    state.rule(Rule::SYMBOL, |state| state.atomic(::pest::Atomicity::Atomic, |state| state.sequence(|state| state.match_string("_").or_else(|state| self::XID_START(state)).and_then(|state| state.repeat(|state| self::XID_CONTINUE(state))))))
+                    state.rule(Rule::SYMBOL, |state| state.atomic(::pest::Atomicity::Atomic, |state| state.sequence(|state| self::XID_START(state).or_else(|state| self::ExtraID(state)).and_then(|state| state.repeat(|state| self::XID_CONTINUE(state).or_else(|state| self::ExtraID(state)))))))
+                }
+                #[inline]
+                #[allow(non_snake_case, unused_variables)]
+                pub fn ExtraID(state: Box<::pest::ParserState<Rule>>) -> ::pest::ParseResult<Box<::pest::ParserState<Rule>>> {
+                    state.rule(Rule::ExtraID, |state| state.atomic(::pest::Atomicity::Atomic, |state| state.match_string("_")))
                 }
                 #[inline]
                 #[allow(non_snake_case, unused_variables)]
@@ -276,7 +282,7 @@ impl ::pest::Parser<Rule> for ArcParser {
                 #[inline]
                 #[allow(non_snake_case, unused_variables)]
                 pub fn WHITESPACE(state: Box<::pest::ParserState<Rule>>) -> ::pest::ParseResult<Box<::pest::ParserState<Rule>>> {
-                    state.atomic(::pest::Atomicity::Atomic, |state| self::NEWLINE(state).or_else(|state| self::SPACE_SEPARATOR(state)).or_else(|state| state.match_string("\t")))
+                    state.rule(Rule::WHITESPACE, |state| state.atomic(::pest::Atomicity::Atomic, |state| self::NEWLINE(state).or_else(|state| self::SPACE_SEPARATOR(state)).or_else(|state| state.match_string("\t"))))
                 }
                 #[inline]
                 #[allow(non_snake_case, unused_variables)]
@@ -290,13 +296,13 @@ impl ::pest::Parser<Rule> for ArcParser {
                 }
                 #[inline]
                 #[allow(non_snake_case, unused_variables)]
-                pub fn Cite(state: Box<::pest::ParserState<Rule>>) -> ::pest::ParseResult<Box<::pest::ParserState<Rule>>> {
-                    state.rule(Rule::Cite, |state| state.atomic(::pest::Atomicity::Atomic, |state| state.match_string("$")))
+                pub fn Dot(state: Box<::pest::ParserState<Rule>>) -> ::pest::ParseResult<Box<::pest::ParserState<Rule>>> {
+                    state.rule(Rule::Dot, |state| state.atomic(::pest::Atomicity::Atomic, |state| state.match_string(".")))
                 }
                 #[inline]
                 #[allow(non_snake_case, unused_variables)]
-                pub fn Dot(state: Box<::pest::ParserState<Rule>>) -> ::pest::ParseResult<Box<::pest::ParserState<Rule>>> {
-                    state.rule(Rule::Dot, |state| state.atomic(::pest::Atomicity::Atomic, |state| state.match_string(".")))
+                pub fn Escape(state: Box<::pest::ParserState<Rule>>) -> ::pest::ParseResult<Box<::pest::ParserState<Rule>>> {
+                    state.rule(Rule::Escape, |state| state.atomic(::pest::Atomicity::Atomic, |state| state.match_string("\\")))
                 }
                 #[inline]
                 #[allow(non_snake_case, unused_variables)]
@@ -306,7 +312,7 @@ impl ::pest::Parser<Rule> for ArcParser {
                 #[inline]
                 #[allow(non_snake_case, unused_variables)]
                 pub fn SEPARATOR(state: Box<::pest::ParserState<Rule>>) -> ::pest::ParseResult<Box<::pest::ParserState<Rule>>> {
-                    state.match_string(",").or_else(|state| state.match_string(";"))
+                    state.rule(Rule::SEPARATOR, |state| state.atomic(::pest::Atomicity::Atomic, |state| state.match_string(",").or_else(|state| state.match_string(";"))))
                 }
                 #[inline]
                 #[allow(non_snake_case, unused_variables)]
@@ -386,6 +392,7 @@ impl ::pest::Parser<Rule> for ArcParser {
             Rule::statement => rules::statement(state),
             Rule::EmptyLine => rules::EmptyLine(state),
             Rule::RestOfLine => rules::RestOfLine(state),
+            Rule::include_statement => rules::include_statement(state),
             Rule::import_statement => rules::import_statement(state),
             Rule::dict_scope => rules::dict_scope(state),
             Rule::dict_head => rules::dict_head(state),
@@ -414,20 +421,20 @@ impl ::pest::Parser<Rule> for ArcParser {
             Rule::StringNormal => rules::StringNormal(state),
             Rule::StringApostrophe => rules::StringApostrophe(state),
             Rule::StringQuotation => rules::StringQuotation(state),
-            Rule::Accent => rules::Accent(state),
-            Rule::Vertical => rules::Vertical(state),
+            Rule::InlineString => rules::InlineString(state),
+            Rule::RestLineText => rules::RestLineText(state),
             Rule::Apostrophe => rules::Apostrophe(state),
             Rule::Quotation => rules::Quotation(state),
-            Rule::Escape => rules::Escape(state),
-            Rule::NameSpace => rules::NameSpace(state),
+            Rule::namespace => rules::namespace(state),
             Rule::Key => rules::Key(state),
             Rule::SYMBOL => rules::SYMBOL(state),
+            Rule::ExtraID => rules::ExtraID(state),
             Rule::COMMENT => rules::COMMENT(state),
             Rule::WHITESPACE => rules::WHITESPACE(state),
             Rule::LineComment => rules::LineComment(state),
             Rule::MultiLineComment => rules::MultiLineComment(state),
-            Rule::Cite => rules::Cite(state),
             Rule::Dot => rules::Dot(state),
+            Rule::Escape => rules::Escape(state),
             Rule::Underline => rules::Underline(state),
             Rule::SEPARATOR => rules::SEPARATOR(state),
             Rule::Set => rules::Set(state),

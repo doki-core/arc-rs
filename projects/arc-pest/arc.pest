@@ -2,7 +2,7 @@ program = _{SOI ~ statement* ~ EOI}
 statement = _{
     SEPARATOR
   | EmptyLine{1,}
-  | import_statement
+//| include_statement
   | dict_literal
   | dict_scope
   | dict_pair
@@ -11,15 +11,22 @@ statement = _{
 EmptyLine  = @{WHITESPACE* ~ NEWLINE}
 RestOfLine = @{(!NEWLINE ~ ANY)*}
 /*====================================================================================================================*/
-//!#C678DD: Import|As
-import_statement = {"@import" ~ "(" ~ SYMBOL? ~ StringNormal ~ ("," ~ SYMBOL) ~ ")"}
+//!#C678DD: include_statement|import_statement
+include_statement = {
+    "@include" ~ "(" ~ StringNormal ~ ("," ~ SYMBOL) ~ ")"
+//| "@import" ~ "(" ~ SYMBOL ~ StringNormal ~ ")"
+}
+import_statement = {
+    "@import" ~ "(" ~ StringNormal ~ ("," ~ SYMBOL) ~ ")"
+//| "@import" ~ "(" ~ SYMBOL ~ StringNormal ~ ")"
+}
 /*====================================================================================================================*/
 dict_scope = {dict_head ~ (SEPARATOR? ~ dict_pair)*}
-dict_head  = {"{" ~ Dot* ~ NameSpace ~ "}"}
-dict_pair  = {NameSpace ~ Set ~ (data)}
+dict_head  = {"{" ~ Dot* ~ namespace ~ "}"}
+dict_pair  = {namespace ~ Set ~ data}
 /*====================================================================================================================*/
 list_scope = {list_head ~ (SEPARATOR? ~ list_pair)*}
-list_head  = {"[" ~ Dot* ~ NameSpace ~ "]"}
+list_head  = {"[" ~ Dot* ~ namespace ~ "]"}
 list_pair  = {
     Insert ~ dict_pair+
   | Append ~ data+
@@ -36,13 +43,18 @@ list_literal = {
   | "[" ~ (SEPARATOR? ~ data)+ ~ SEPARATOR? ~ "]"
 }
 /*====================================================================================================================*/
-data = {Byte|Number|Special|String|cite_value|dict_literal|list_literal}
+data = {
+    Byte|Number|Special|String
+  | cite_value|dict_literal|list_literal
+  | import_statement
+  | InlineString
+}
 /*====================================================================================================================*/
 ///#D19A66: Null|Unit
 Special = @{"true"|"false"|"null"}
 /*====================================================================================================================*/
 ///#56B6C2
-cite_value = {"$" ~ NameSpace}
+cite_value = @{"$" ~ namespace}
 /*====================================================================================================================*/
 ///#D19A66
 Byte     = ${(Byte_BIN|Byte_OCT|Byte_HEX)~ (Underline ~ SYMBOL)?}
@@ -56,12 +68,12 @@ SignedNumber = ${Sign? ~ (Decimal|DecimalBad|Integer)}
 Decimal      = ${Integer ~ Dot ~ (Underline? ~ ASCII_DIGIT)*}
 DecimalBad   = ${Integer ~ Dot|Dot ~ (Underline? ~ ASCII_DIGIT)*}
 Integer      = @{"0"|ASCII_NONZERO_DIGIT ~ (Underline? ~ ASCII_DIGIT)*}
-Exponent     =  {SignedNumber ~ ("e"|"E") ~ Sign? ~ ASCII_DIGIT+}
+Exponent     = ${SignedNumber ~ ("e"|"E"|"**") ~ Sign? ~ ASCII_DIGIT+}
 /*====================================================================================================================*/
-//!#3C963C: String
+//!#3C963C: String|InlineString|RestLineText
 //!#98C379: StringQuotation|StringAccent
 //!#D19A66: StringApostrophe
-String        =  {SYMBOL? ~ StringNormal}
+String        = !{SYMBOL? ~ StringNormal}
 StringNormal  =  {
     Quotation ~ StringQuotation ~ Quotation
   | Apostrophe ~ StringApostrophe ~ Apostrophe
@@ -69,16 +81,18 @@ StringNormal  =  {
 StringApostrophe =  {(Escape ~ ANY|!Apostrophe ~ ANY)*}
 StringQuotation  =  {(Escape ~ ANY|!Quotation ~ ANY)*}
 
-Accent     = @{"`"}
-Vertical   = @{"|"}
+InlineString = @{(!(SEPARATOR|NEWLINE|"]"|"}") ~ ANY)+}
+RestLineText = @{(!NEWLINE ~ ANY)+}
+
 Apostrophe = @{"'"}
 Quotation  = @{"\""}
-Escape     = @{"\\"}
 /*====================================================================================================================*/
 ///#61AFEF
-NameSpace =  {Key ~ (Dot ~ Key)*}
+namespace =  {Key ~ (Dot ~ Key)*}
 Key       =  {StringNormal|SYMBOL|Integer}
-SYMBOL    = @{("_"|XID_START) ~ XID_CONTINUE*}
+SYMBOL    = @{(XID_START|ExtraID) ~ (XID_CONTINUE|ExtraID)*}
+ExtraID   = @{"_"}
+// ExtraID   = @{"_"|"/"}
 /*====================================================================================================================*/
 // NEWLINE = @{"\r" ~ "\n"|"\r"|"\n"}
 
@@ -88,10 +102,10 @@ WHITESPACE       =  {NEWLINE|SPACE_SEPARATOR|"\t"}
 LineComment      = ${"//" ~ RestOfLine}
 MultiLineComment = ${"/*" ~ (MultiLineComment | !"*/" ~ ANY)* ~ "*/"}
 
-Dot    = @{"."}
 
-Underline  = @{"_"}
-SEPARATOR  = _{","|";"}
-
-Set      = @{"="|":"}
-Sign     = @{"+"|"-"}
+Dot       = @{"."}
+Escape    = @{"\\"}
+Underline = @{"_"}
+SEPARATOR = @{","|";"}
+Set       = @{"="|":"}
+Sign      = @{"+"|"-"}
