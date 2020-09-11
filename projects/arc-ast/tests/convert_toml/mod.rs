@@ -8,4 +8,3 @@ fn main() {
     let v: toml::Value = toml::from_str(json).unwrap();
     println!("{:#?}", Value::from(v))
 }
-

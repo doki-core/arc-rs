@@ -18,8 +18,8 @@ indexmap = "1.6"
 bigdecimal = "0.2"
 toml = "0.5"
 # toml_edit = "*"
-serde_yaml = "*"
-
+yaml-rust = "0.4"
+# serde_yaml = "*"
 
 [features]
 default = ["convert"]

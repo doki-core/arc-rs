@@ -1,7 +1,5 @@
 use super::*;
 
-
-
 #[derive(Clone, Eq, PartialEq)]
 pub struct Text {
     handler: Option<String>,
@@ -21,35 +19,35 @@ pub enum TextDelimiter {
     SingleAngleQuotation,
     /// `«`: U+00AB
     /// `»`: U+00BB
-    DoubleAngleQuotation
+    DoubleAngleQuotation,
 }
 
 impl Debug for Text {
     fn fmt(&self, f: &mut Formatter) -> fmt::Result {
         match &self.handler {
             None => (),
-            Some(s) => {write!(f,"{}",s)?}
+            Some(s) => write!(f, "{}", s)?,
         }
         match self.delimiter {
             TextDelimiter::Quotation(n) => {
-                write!(f,"{}","\"".repeat(n))?;
-                write!(f,"{}",self.value)?;
-                write!(f,"{}","\"".repeat(n))?;
+                write!(f, "{}", "\"".repeat(n))?;
+                write!(f, "{}", self.value)?;
+                write!(f, "{}", "\"".repeat(n))?;
             }
             TextDelimiter::Apostrophe(n) => {
-                write!(f,"{}","\'".repeat(n))?;
-                write!(f,"{}",self.value)?;
-                write!(f,"{}","\'".repeat(n))?;
+                write!(f, "{}", "\'".repeat(n))?;
+                write!(f, "{}", self.value)?;
+                write!(f, "{}", "\'".repeat(n))?;
             }
             TextDelimiter::DoubleAngleQuotation => {
-                write!(f,"«")?;
-                write!(f,"{}",self.value)?;
-                write!(f,"»")?;
+                write!(f, "«")?;
+                write!(f, "{}", self.value)?;
+                write!(f, "»")?;
             }
             TextDelimiter::SingleAngleQuotation => {
-                write!(f,"‹")?;
-                write!(f,"{}",self.value)?;
-                write!(f,"»")?;
+                write!(f, "‹")?;
+                write!(f, "{}", self.value)?;
+                write!(f, "»")?;
             }
         }
         Ok(())

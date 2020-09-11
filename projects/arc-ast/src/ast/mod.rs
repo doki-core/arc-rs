@@ -28,10 +28,10 @@ pub enum ASTKind {
 
     Null,
     Boolean(bool),
-    // String(Box<ASTString>),
-    // Symbol(Box<Symbol>),
-    // Integer(Box<ASTInteger>),
-    // Decimal(Box<ASTDecimal>),
+    /* String(Box<ASTString>),
+     * Symbol(Box<Symbol>),
+     * Integer(Box<ASTInteger>),
+     * Decimal(Box<ASTDecimal>), */
 }
 
 impl Debug for AST {
@@ -51,7 +51,6 @@ impl Debug for AST {
         }
     }
 }
-
 
 impl Default for AST {
     fn default() -> Self {
@@ -172,4 +171,3 @@ impl AST {
     //     Self { kind: ASTKind::Symbol(Box::new(Symbol::from(value))), range: box_range(r) }
     // }
 }
-

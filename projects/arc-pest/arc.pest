@@ -14,9 +14,7 @@ statement = _{
 EmptyLine  = @{WHITESPACE* ~ NEWLINE}
 /*====================================================================================================================*/
 //!#C678DD: include_statement|import_statement
-include_statement = {
-    "@include" ~ "(" ~ StringNormal ~ ("," ~ SYMBOL) ~ ")"
-}
+// include_statement = {"@include" ~ "(" ~ StringNormal ~ ("," ~ SYMBOL) ~ ")"}
 import_statement  = {
     "@import" ~ "(" ~ StringNormal ~ ("," ~ SYMBOL) ~ ")"
 //| "@import" ~ "(" ~ SYMBOL ~ StringNormal ~ ")"

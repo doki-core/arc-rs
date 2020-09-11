@@ -1,5 +1,4 @@
-use crate::ast::AST;
-use crate::Value;
+use crate::{ast::AST, Value};
 
 impl From<AST> for Value {
     fn from(ast: AST) -> Self {

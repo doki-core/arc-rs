@@ -1,11 +1,11 @@
-mod from_native;
-mod into_native;
 mod from_ast;
+mod from_native;
 mod into_ast;
+mod into_native;
 
+use crate::value::from_native::Byte;
 pub use crate::value::from_native::{Decimal, Dict, Integer, List, Text};
 use std::fmt::{self, Debug, Formatter};
-use crate::value::from_native::Byte;
 
 #[derive(Clone, Eq, PartialEq)]
 pub enum Value {

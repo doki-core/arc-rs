@@ -1,6 +1,4 @@
-use crate::utils::parse_pairs;
-use arc_convert_lib::indent;
-use std::f64;
+use crate::Value;
 use yaml_rust::{
     yaml::{Array, Hash},
     Yaml,
@@ -10,9 +8,9 @@ pub trait ToArc {
     fn to_arc(&self) -> String;
 }
 
-impl ToArc for Yaml {
-    fn to_arc(&self) -> String {
-        match self {
+impl From<Yaml> for Value {
+    fn from(yaml: Yaml) -> Self {
+        match yaml {
             Yaml::Real(r) => {
                 if r.to_lowercase().contains('e') {
                     match r.parse::<f64>() {
@@ -53,15 +51,15 @@ impl ToArc for Yaml {
     }
 }
 
-impl ToArc for Hash {
-    fn to_arc(&self) -> String {
+impl From<Hash> for Value {
+    fn from(_: Hash) -> Self {
         let kv = parse_pairs(self);
         if kv.len() == 1 { format!("{{{}}}", kv[0]) } else { format!("{{\n{}}}", indent(&kv.join("\n"), "    ")) }
     }
 }
 
-impl ToArc for Array {
-    fn to_arc(&self) -> String {
+impl From<Array> for Value {
+    fn from(_: Array) -> Self {
         let mut max = 0;
         let mut len = 0;
         let mut v = vec![];

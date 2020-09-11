@@ -11,7 +11,7 @@ impl From<Toml> for Value {
             Toml::Float(v) => v.into(),
             Toml::Boolean(v) => v.into(),
             // FIXME: turn into utc
-            Toml::Datetime(v) => format!("{}",v).into(),
+            Toml::Datetime(v) => format!("{}", v).into(),
             Toml::Array(v) => v.into(),
             Toml::Table(v) => {
                 let mut dict = IndexMap::new();
