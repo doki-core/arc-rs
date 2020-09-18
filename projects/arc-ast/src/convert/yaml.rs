@@ -1,6 +1,7 @@
 use crate::Value;
+use indexmap::map::IndexMap;
 use yaml_rust::{
-    yaml::{Array, Hash},
+    yaml::{ Hash},
     Yaml,
 };
 
@@ -11,67 +12,56 @@ pub trait ToArc {
 impl From<Yaml> for Value {
     fn from(yaml: Yaml) -> Self {
         match yaml {
+            Yaml::Null => Value::Null,
+            Yaml::BadValue => Value::Null,
+            Yaml::Integer(v) => v.into(),
             Yaml::Real(r) => {
-                if r.to_lowercase().contains('e') {
-                    match r.parse::<f64>() {
-                        Ok(o) => format!("{}", o),
-                        Err(_) => String::from("null"),
-                    }
+                if r.to_lowercase().contains("n") {
+                    // match r.to_lowercase().as_str() {
+                    //     ".inf" | "+.inf" | "inf" => format!("{:#X}f64", f64::INFINITY.to_bits()),
+                    //     "-inf" | "-.inf" => format!("{:#X}f64", f64::NEG_INFINITY.to_bits()),
+                    //     ".nan" | "nan" => format!("{:#X}f64", f64::NAN.to_bits()),
+                    //     _ => Value::Null,
+                    // }
+                    return Value::Null;
                 }
-                else if r.to_lowercase().contains("n") {
-                    match r.to_lowercase().as_str() {
-                        ".inf" | "+.inf" | "inf" => format!("{:#X}f64", f64::INFINITY.to_bits()),
-                        "-inf" | "-.inf" => format!("{:#X}f64", f64::NEG_INFINITY.to_bits()),
-                        ".nan" | "nan" => format!("{:#X}f64", f64::NAN.to_bits()),
-                        _ => String::from("null"),
-                    }
-                }
-                else if r.starts_with('.') {
+                let r = if r.starts_with('.') {
                     format!("0{}", r)
                 }
                 else if r.ends_with('.') {
                     format!("{}0", r)
                 }
                 else {
-                    format!("{}", r)
+                    r
+                };
+                match r.parse::<f64>() {
+                    Ok(o) => o.into(),
+                    Err(_) => Value::Null,
                 }
             }
-            Yaml::Integer(i) => format!("{}", i),
-            Yaml::String(s) => format!("{:?}", s),
-            Yaml::Boolean(b) => format!("{}", b),
-            Yaml::Array(a) => a.to_arc(),
-            Yaml::Hash(h) => h.to_arc(),
+            Yaml::String(v) => v.into(),
+            Yaml::Boolean(v) => v.into(),
+            Yaml::Array(v) => v.into(),
+            Yaml::Hash(v) => v.into(),
             Yaml::Alias(a) => {
                 println!("{:#?}", a);
                 unreachable!()
             }
-            Yaml::Null => String::from("null"),
-            Yaml::BadValue => String::from("null"),
         }
     }
 }
 
 impl From<Hash> for Value {
-    fn from(_: Hash) -> Self {
-        let kv = parse_pairs(self);
-        if kv.len() == 1 { format!("{{{}}}", kv[0]) } else { format!("{{\n{}}}", indent(&kv.join("\n"), "    ")) }
-    }
-}
-
-impl From<Array> for Value {
-    fn from(_: Array) -> Self {
-        let mut max = 0;
-        let mut len = 0;
-        let mut v = vec![];
-        for a in self {
-            let s = a.to_arc();
-            let l = s.lines().count();
-            if l > max {
-                max = l
-            }
-            len += s.len(); //for fast
-            v.push(s)
+    fn from(v: Hash) -> Self {
+        let mut dict = IndexMap::new();
+        for (k, v) in v.iter() {
+            let k = match k {
+                Yaml::Null => String::from("null"),
+                Yaml::String(s) => {s.to_owned()}
+                _ => unimplemented!("{:?}",k)
+            };
+            dict.insert(k, Value::from(v.clone()));
         }
-        if len < 128 && max <= 1 { format!("[{}]", v.join(", ")) } else { format!("[\n{}]", indent(&v.join("\n"), "    ")) }
+        dict.into()
     }
 }
