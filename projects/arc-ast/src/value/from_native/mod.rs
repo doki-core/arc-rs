@@ -27,3 +27,15 @@ impl From<bool> for Value {
         Self::Boolean(v)
     }
 }
+
+impl<T> From<Option<T>> for Value
+    where
+        T: Into<Value>,
+{
+    fn from(value: Option<T>) -> Self {
+        match value {
+            Some(value) => value.into(),
+            None => Value::Null,
+        }
+    }
+}
