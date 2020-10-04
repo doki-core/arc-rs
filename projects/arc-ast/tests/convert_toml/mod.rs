@@ -14,7 +14,7 @@ fn test_toml(name: &str) {
     let output = format!("tests/convert_toml/out/{}.arc", name);
     let toml = fs::read_to_string(input).unwrap();
     let out: toml::Value = toml::from_str(&toml).unwrap();
-    fs::write(output, format!("{:#?}",Value::from(out))).unwrap()
+    fs::write(output, format!("{:#?}", Value::from(out))).unwrap()
 }
 
 #[test]

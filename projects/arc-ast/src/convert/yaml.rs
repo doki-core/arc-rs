@@ -1,9 +1,6 @@
 use crate::Value;
 use indexmap::map::IndexMap;
-use yaml_rust::{
-    yaml::{ Hash},
-    Yaml,
-};
+use yaml_rust::{yaml::Hash, Yaml};
 
 pub trait ToArc {
     fn to_arc(&self) -> String;
@@ -57,8 +54,8 @@ impl From<Hash> for Value {
         for (k, v) in v.iter() {
             let k = match k {
                 Yaml::Null => String::from("null"),
-                Yaml::String(s) => {s.to_owned()}
-                _ => unimplemented!("{:?}",k)
+                Yaml::String(s) => s.to_owned(),
+                _ => unimplemented!("{:?}", k),
             };
             dict.insert(k, Value::from(v.clone()));
         }

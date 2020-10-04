@@ -8,10 +8,10 @@ fn test_yaml(name: &str) {
     let yaml = fs::read_to_string(input).unwrap();
     let out = YamlLoader::load_from_str(&yaml).unwrap();
     let value = match out.len() {
-        1=> Value::from(out[0].clone()),
-        _=>Value::from(out)
+        1 => Value::from(out[0].clone()),
+        _ => Value::from(out),
     };
-    fs::write(output, format!("{:#?}",value)).unwrap()
+    fs::write(output, format!("{:#?}", value)).unwrap()
 }
 
 #[test]

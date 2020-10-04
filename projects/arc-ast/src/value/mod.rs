@@ -1,10 +1,12 @@
+mod access;
+mod check;
 mod from_ast;
 mod from_native;
 mod into_ast;
 mod into_native;
 
-use crate::value::from_native::Byte;
-pub use crate::value::from_native::{Decimal, Dict, Integer, List, Text};
+pub use crate::value::from_native::{Byte, Decimal, Dict, Integer, List, Text};
+use indexmap::IndexMap;
 use std::fmt::{self, Debug, Formatter};
 
 #[derive(Clone, Eq, PartialEq)]

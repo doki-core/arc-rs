@@ -1,4 +1,5 @@
 use super::*;
+use std::ops::{Deref, DerefMut};
 
 #[derive(Clone, Eq, PartialEq)]
 pub struct Dict {
@@ -60,5 +61,19 @@ native2value![IndexMap<K, V>, HashMap<K, V>, BTreeMap<K, V>];
 impl From<Dict> for Value {
     fn from(v: Dict) -> Self {
         Value::Dict(Box::new(v))
+    }
+}
+
+impl Deref for Dict {
+    type Target = IndexMap<String, Value>;
+
+    fn deref(&self) -> &Self::Target {
+        &self.value
+    }
+}
+
+impl DerefMut for Dict {
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        &mut self.value
     }
 }

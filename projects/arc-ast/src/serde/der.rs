@@ -1,15 +1,13 @@
-
 use crate::Value;
-use std::fmt;
-use serde::{Deserialize, Deserializer};
-use serde::de::Visitor;
 use indexmap::map::IndexMap;
+use serde::{de::Visitor, Deserialize, Deserializer};
+use std::fmt;
 
 impl<'de> Deserialize<'de> for Value {
     #[inline]
     fn deserialize<D>(deserializer: D) -> Result<Value, D::Error>
-        where
-            D: Deserializer<'de>,
+    where
+        D: Deserializer<'de>,
     {
         struct ValueVisitor;
 
@@ -72,8 +70,8 @@ impl<'de> Deserialize<'de> for Value {
 
             #[inline]
             fn visit_str<E>(self, value: &str) -> Result<Value, E>
-                where
-                    E: ::serde::de::Error,
+            where
+                E: ::serde::de::Error,
             {
                 Ok(value.into())
             }
@@ -90,8 +88,8 @@ impl<'de> Deserialize<'de> for Value {
 
             #[inline]
             fn visit_some<D>(self, deserializer: D) -> Result<Value, D::Error>
-                where
-                    D: Deserializer<'de>,
+            where
+                D: Deserializer<'de>,
             {
                 Deserialize::deserialize(deserializer)
             }
@@ -103,10 +101,10 @@ impl<'de> Deserialize<'de> for Value {
 
             #[inline]
             fn visit_seq<V>(self, mut visitor: V) -> Result<Value, V::Error>
-                where
-                    V: ::serde::de::SeqAccess<'de>,
+            where
+                V: ::serde::de::SeqAccess<'de>,
             {
-                let mut list =vec![];
+                let mut list: Vec<Value> = vec![];
 
                 while let Some(elem) = visitor.next_element()? {
                     list.push(elem);
@@ -116,10 +114,10 @@ impl<'de> Deserialize<'de> for Value {
             }
 
             fn visit_map<V>(self, mut visitor: V) -> Result<Value, V::Error>
-                where
-                    V: ::serde::de::MapAccess<'de>,
+            where
+                V: ::serde::de::MapAccess<'de>,
             {
-                let mut dict = IndexMap::new();
+                let mut dict: IndexMap<String, Value> = IndexMap::new();
 
                 while let Some((key, value)) = visitor.next_entry()? {
                     dict.insert(key, value);

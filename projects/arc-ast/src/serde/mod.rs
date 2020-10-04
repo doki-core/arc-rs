@@ -1,4 +1,4 @@
-mod ser;
 mod der;
+mod ser;
 
-pub use ser::{CompactFormatter,PrettyFormatter,Serializer};
+pub use ser::{CompactFormatter, PrettyFormatter, Serializer};
