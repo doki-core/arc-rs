@@ -1,5 +1,4 @@
 use super::*;
-use std::ops::{Deref, DerefMut};
 
 #[derive(Clone, Eq, PartialEq)]
 pub struct Dict {
@@ -64,16 +63,40 @@ impl From<Dict> for Value {
     }
 }
 
-impl Deref for Dict {
-    type Target = IndexMap<String, Value>;
+impl Dict {
+    pub fn iter(&self) -> indexmap::map::Iter<String,Value> {
+        self.value.iter()
+    }
 
-    fn deref(&self) -> &Self::Target {
-        &self.value
+    pub fn get(&self, key: &str) -> &Value {
+        match self.value.get(key) {
+            Some(v) => v,
+            None => &Value::Null
+        }
+    }
+    pub fn get_mut(&mut self, key: &str) -> Option<&mut Value> {
+        self.value.get_mut(key)
+        // match self.value.get_mut(key) {
+        //     Some(v) => v,
+        //     None => &mut Value::Null
+        // }
+    }
+    pub fn insert(&mut self, key: String, value: Value) -> Option<Value> {
+        self.value.insert(key, value)
     }
 }
 
-impl DerefMut for Dict {
-    fn deref_mut(&mut self) -> &mut Self::Target {
-        &mut self.value
-    }
-}
+
+// impl Deref for Dict {
+//     type Target = IndexMap<String, Value>;
+//
+//     fn deref(&self) -> &Self::Target {
+//         &self.value
+//     }
+// }
+//
+// impl DerefMut for Dict {
+//     fn deref_mut(&mut self) -> &mut Self::Target {
+//         &mut self.value
+//     }
+// }

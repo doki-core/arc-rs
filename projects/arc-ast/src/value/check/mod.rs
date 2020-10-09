@@ -7,4 +7,10 @@ impl Value {
             _ => false,
         }
     }
+    pub fn is_dict(&self) -> bool {
+        match self {
+            Value::Dict(_) => true,
+            _ => false,
+        }
+    }
 }

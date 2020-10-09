@@ -6,7 +6,6 @@ mod into_ast;
 mod into_native;
 
 pub use crate::value::from_native::{Byte, Decimal, Dict, Integer, List, Text};
-use indexmap::IndexMap;
 use std::fmt::{self, Debug, Formatter};
 
 #[derive(Clone, Eq, PartialEq)]

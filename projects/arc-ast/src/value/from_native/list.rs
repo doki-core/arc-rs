@@ -60,3 +60,13 @@ impl From<List> for Value {
         Value::List(Box::new(v))
     }
 }
+
+impl List {
+    pub fn extend(&mut self, item: impl Into<List>) {
+        self.value.extend(item.into().value)
+    }
+    pub fn extend_one(&mut self, item: impl Into<Value>) {
+        // self.value.extend_one(item.into())
+        self.value.push(item.into())
+    }
+}

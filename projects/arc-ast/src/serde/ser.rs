@@ -1,3 +1,4 @@
+#[allow(dead_code)]
 pub struct Serializer<W, F = CompactFormatter> {
     writer: W,
     formatter: F,
