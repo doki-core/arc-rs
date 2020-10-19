@@ -64,28 +64,19 @@ impl From<Dict> for Value {
 }
 
 impl Dict {
-    pub fn iter(&self) -> indexmap::map::Iter<String,Value> {
+    pub fn iter(&self) -> indexmap::map::Iter<String, Value> {
         self.value.iter()
     }
-
-    pub fn get(&self, key: &str) -> &Value {
-        match self.value.get(key) {
-            Some(v) => v,
-            None => &Value::Null
-        }
+    pub fn get(&self, key: &str) -> Option<&Value> {
+        self.value.get(key)
     }
     pub fn get_mut(&mut self, key: &str) -> Option<&mut Value> {
         self.value.get_mut(key)
-        // match self.value.get_mut(key) {
-        //     Some(v) => v,
-        //     None => &mut Value::Null
-        // }
     }
     pub fn insert(&mut self, key: String, value: Value) -> Option<Value> {
         self.value.insert(key, value)
     }
 }
-
 
 // impl Deref for Dict {
 //     type Target = IndexMap<String, Value>;

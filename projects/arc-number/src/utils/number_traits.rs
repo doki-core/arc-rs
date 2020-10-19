@@ -1,5 +1,6 @@
 use crate::Number;
 use std::fmt::{self, Debug, Display};
+use std::mem::{transmute, transmute_copy};
 
 impl Debug for Number {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -18,14 +19,18 @@ impl Debug for Number {
             Number::Unsigned128(n) => write!(f, "Unsigned128({})", n),
             Number::Decimal(i) => write!(f, "Decimal({})", i),
             Number::Decimal32(i) => {
-                let mut s = format!("{}", i);
+                let mut s = unsafe {
+                    format!("{}", transmute_copy::<[u8;4], f32>(i))
+                };
                 if !s.ends_with('.') {
                     s.push_str(".0")
                 }
                 write!(f, "Decimal32({})", s)
             }
             Number::Decimal64(i) => {
-                let mut s = format!("{}", i);
+                let mut s = unsafe {
+                    format!("{}", transmute_copy::<[u8;8], f64>(i))
+                };
                 if !s.ends_with('.') {
                     s.push_str(".0")
                 }
@@ -51,14 +56,18 @@ impl Display for Number {
             Number::Unsigned64(i) => write!(f, "{}u64", i),
             Number::Unsigned128(i) => write!(f, "{}u128", i),
             Number::Decimal32(i) => {
-                let mut s = format!("{}", i);
+                let mut s = unsafe {
+                    format!("{}", transmute_copy::<[u8;4], f32>(i))
+                };
                 if !s.ends_with('.') {
                     s.push_str(".0")
                 }
                 write!(f, "{}f32", s)
             }
             Number::Decimal64(i) => {
-                let mut s = format!("{}", i);
+                let mut s = unsafe {
+                    format!("{}", transmute_copy::<[u8;8], f64>(i))
+                };
                 if !s.ends_with('.') {
                     s.push_str(".0")
                 }

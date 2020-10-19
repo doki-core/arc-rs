@@ -1,4 +1,5 @@
 use super::*;
+use std::ops::Index;
 
 #[derive(Clone, Eq, PartialEq)]
 pub struct List {
@@ -58,6 +59,13 @@ native2value![Vec<V>, VecDeque<V>, LinkedList<V>, HashSet<V>, BTreeSet<V>];
 impl From<List> for Value {
     fn from(v: List) -> Self {
         Value::List(Box::new(v))
+    }
+}
+
+impl Index<usize> for List {
+    type Output = Value;
+    fn index(&self, n: usize) -> &Self::Output {
+        self.value.index(n)
     }
 }
 

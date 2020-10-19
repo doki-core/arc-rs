@@ -1,5 +1,6 @@
 use crate::Number;
 use num::{BigInt, BigUint};
+use std::mem::transmute;
 
 impl From<BigInt> for Number {
     fn from(i: BigInt) -> Self {
@@ -208,31 +209,43 @@ impl From<Number> for u128 {
 
 impl From<f32> for Number {
     fn from(d: f32) -> Self {
-        Number::Decimal32(d)
+        unsafe {
+            Number::Decimal32(transmute::<f32,[u8;4]>(d))
+        }
     }
 }
 
 impl From<Number> for f32 {
     fn from(n: Number) -> Self {
-        match n {
-            Number::Decimal32(i) => i,
-            _ => 0.0,
+        unsafe {
+            match n {
+                Number::Decimal32(f) => {
+
+                        transmute::<[u8;4],f32>(f)
+
+                },
+                _ => 0.0,
+            }
         }
     }
 }
 
 impl From<f64> for Number {
     fn from(d: f64) -> Self {
-        Number::Decimal64(d)
+        unsafe {
+            Number::Decimal64(transmute::<f64,[u8;8]>(d))
+        }
     }
 }
 
 impl From<Number> for f64 {
     fn from(n: Number) -> Self {
-        match n {
-            Number::Decimal32(i) => i as f64,
-            Number::Decimal64(i) => i,
-            _ => 0.0,
+        unsafe {
+            match n {
+                Number::Decimal32(f) => transmute::<[u8;4],f32>(f) as f64,
+                Number::Decimal64(f) => transmute::<[u8;8],f64>(f),
+                _ => 0.0,
+            }
         }
     }
 }

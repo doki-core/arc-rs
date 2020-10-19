@@ -8,7 +8,7 @@ pub mod string;
 pub use byte::Byte;
 pub use decimal::Decimal;
 pub use dict::Dict;
-pub use integer::Integer;
+pub use integer::Number;
 pub use list::List;
 pub use string::Text;
 
