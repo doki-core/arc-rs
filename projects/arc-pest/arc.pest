@@ -1,6 +1,9 @@
 program = _{
-    SOI ~ statement* ~ EOI
+    SOI ~ heads* ~ statement* ~ EOI
   | SOI ~ data ~ EOI
+}
+heads = _ {
+    import_statement|extend_statement
 }
 statement = _{
     SEPARATOR
@@ -13,12 +16,11 @@ statement = _{
 }
 EmptyLine  = @{WHITESPACE* ~ NEWLINE}
 /*====================================================================================================================*/
-//!#C678DD: include_statement|import_statement
+//!#C678DD: Import
 // include_statement = {"@include" ~ "(" ~ StringNormal ~ ("," ~ SYMBOL) ~ ")"}
-import_statement  = {
-    "@import" ~ "(" ~ StringNormal ~ ("," ~ SYMBOL) ~ ")"
-//| "@import" ~ "(" ~ SYMBOL ~ StringNormal ~ ")"
-}
+import_statement =  {Import ~ String ~ "as" ~ SYMBOL}
+extend_statement =  {"@extend" ~ String}
+Import           = @{"@import"|"@import!"}
 /*====================================================================================================================*/
 dict_scope   = {dict_head ~ (SEPARATOR? ~ dict_pair)*}
 dict_head    = {"{" ~ Dot* ~ namespace ~ "}"}
@@ -40,12 +42,10 @@ list_literal = {
   | "[" ~ (SEPARATOR? ~ (data|InlineString))+ ~ SEPARATOR? ~ "]"
 }
 InlineString = @{(!(SEPARATOR|NEWLINE|"]"|"}") ~ ANY)+}
-
 /*====================================================================================================================*/
 data = {
-    Byte|Number|Special|String
-  | Cite|dict_literal|list_literal
-  | import_statement
+    Byte|Number|Special|Cite|String
+  | dict_literal|list_literal
 }
 /*====================================================================================================================*/
 ///#D19A66
