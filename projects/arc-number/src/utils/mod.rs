@@ -1,36 +1,44 @@
-// pub mod number_from;
+mod number_from;
+// mod number_into;
 // pub mod number_impl;
 // pub mod number_traits;
 
 use num::{BigInt, BigUint};
 use bigdecimal::BigDecimal;
+use std::fmt::{self, Formatter, Debug, Display};
 
-// #[derive(Clone, PartialEq)]
-#[derive(Clone,Eq, PartialEq)]
-pub enum Number {
-    Integer(BigInt),
-    Integer8(i8),
-    Integer16(i16),
-    Integer32(i32),
-    Integer64(i64),
-    Integer128(i128),
-    Unsigned(BigUint),
-    Unsigned8(u8),
-    Unsigned16(u16),
-    Unsigned32(u32),
-    Unsigned64(u64),
-    Unsigned128(u128),
-    Decimal(BigDecimal),
-    Decimal32([u8;4]),
-    Decimal64([u8;8]),
+#[derive(Debug, Clone, PartialEq)]
+pub enum NumberKind {
+    InlineInteger(usize),
+    InlineDecimal(f64),
+    BigInteger(BigInt),
+    BigDecimal(BigDecimal),
 }
+
+#[derive(Debug, Clone, Eq, PartialEq)]
+pub struct Number {
+    handler: Option<String>,
+    value: NumberKind,
+}
+
+impl Display for Number {
+    fn fmt(&self, f: &mut Formatter) -> fmt::Result {
+        match &self.handler {
+            Some(s) => write!(f, "{:?}{}", self.value, s),
+            None => write!(f, "{:?}", self.value),
+        }
+    }
+}
+
+impl Eq for NumberKind  {}
 
 #[test]
 fn test_size() {
     assert_eq!(std::mem::size_of::<f64>(), 8);
     assert_eq!(std::mem::size_of::<u64>(), 8);
-    assert_eq!(std::mem::size_of::<i128>(), 16);
+    assert_eq!(std::mem::size_of::<u128>(), 16);
     assert_eq!(std::mem::size_of::<BigInt>(), 32);
     assert_eq!(std::mem::size_of::<BigDecimal>(), 40);
-    assert_eq!(std::mem::size_of::<Number>(), 40);
+    assert_eq!(std::mem::size_of::<NumberKind>(), 48);
+    assert_eq!(std::mem::size_of::<Number>(), 72);
 }

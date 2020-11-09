@@ -2,8 +2,8 @@ use super::*;
 
 #[derive(Debug, Clone, Eq, PartialEq)]
 pub enum NumberKind {
-    InlineInteger(u64),
-    InlineDecimal([u8;4]),
+    InlineInteger(usize),
+    InlineDecimal(f64),
     BigInteger(BigInt),
     BigDecimal(BigDecimal),
 }

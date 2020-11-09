@@ -1,251 +1,68 @@
-use crate::Number;
-use num::{BigInt, BigUint};
-use std::mem::transmute;
+use super::*;
+use std::convert::TryFrom;
 
-impl From<BigInt> for Number {
-    fn from(i: BigInt) -> Self {
-        Number::Integer(i)
-    }
-}
+//
+// impl From<BigInt> for NumberKind {
+//     fn from(i: BigInt) -> Self {
+//         Self::BigInteger(BigInt::from(i))
+//     }
+// }
+//
+// impl From<BigUint> for NumberKind {
+//     fn from(i: BigUint) -> Self {
+//         Self::BigInteger(BigInt::from(i))
+//     }
+// }
 
-impl From<Number> for BigInt {
-    fn from(n: Number) -> Self {
-        match n {
-            Number::Integer8(i) => BigInt::from(i),
-            Number::Integer16(i) => BigInt::from(i),
-            Number::Integer32(i) => BigInt::from(i),
-            Number::Integer64(i) => BigInt::from(i),
-            Number::Integer128(i) => BigInt::from(i),
-            Number::Integer(i) => i,
-            _ => BigInt::from(0),
+macro_rules! cloned_integer {
+    ($T:ty) => {
+    impl From<$T> for NumberKind {
+        fn from(i: $T) -> Self {
+            Self::BigInteger(BigInt::from(i))
         }
     }
+    };
+    ($($T:ty ), +) => {
+        $(cloned_integer!($T);)+
+    };
 }
 
-impl From<BigUint> for Number {
-    fn from(i: BigUint) -> Self {
-        Number::Unsigned(i)
-    }
-}
-
-impl From<Number> for BigUint {
-    fn from(n: Number) -> Self {
-        match n {
-            Number::Unsigned(i) => i,
-            _ => BigUint::from(0u8),
-        }
-    }
-}
-
-impl From<i8> for Number {
-    fn from(i: i8) -> Self {
-        Number::Integer8(i)
-    }
-}
-
-impl From<Number> for i8 {
-    fn from(n: Number) -> Self {
-        match n {
-            Number::Integer8(i) => i,
-            _ => 0,
-        }
-    }
-}
-
-impl From<i16> for Number {
-    fn from(i: i16) -> Self {
-        Number::Integer16(i)
-    }
-}
-
-impl From<Number> for i16 {
-    fn from(n: Number) -> Self {
-        match n {
-            Number::Integer8(i) => i as i16,
-            Number::Integer16(i) => i,
-            _ => 0,
-        }
-    }
-}
-
-impl From<i32> for Number {
-    fn from(i: i32) -> Self {
-        Number::Integer32(i)
-    }
-}
-
-impl From<Number> for i32 {
-    fn from(n: Number) -> Self {
-        match n {
-            Number::Integer8(i) => i as i32,
-            Number::Integer16(i) => i as i32,
-            Number::Integer32(i) => i,
-            _ => 0,
-        }
-    }
-}
-
-impl From<i64> for Number {
-    fn from(i: i64) -> Self {
-        Number::Integer64(i)
-    }
-}
-
-impl From<Number> for i64 {
-    fn from(n: Number) -> Self {
-        match n {
-            Number::Integer8(i) => i as i64,
-            Number::Integer16(i) => i as i64,
-            Number::Integer32(i) => i as i64,
-            Number::Integer64(i) => i,
-            _ => 0,
-        }
-    }
-}
-
-impl From<i128> for Number {
-    fn from(i: i128) -> Self {
-        Number::Integer128(i)
-    }
-}
-
-impl From<Number> for i128 {
-    fn from(n: Number) -> Self {
-        match n {
-            Number::Integer8(i) => i as i128,
-            Number::Integer16(i) => i as i128,
-            Number::Integer32(i) => i as i128,
-            Number::Integer64(i) => i as i128,
-            Number::Integer128(i) => i,
-            _ => 0,
-        }
-    }
-}
-
-impl From<u8> for Number {
-    fn from(u: u8) -> Self {
-        Number::Unsigned8(u)
-    }
-}
-
-impl From<Number> for u8 {
-    fn from(n: Number) -> Self {
-        match n {
-            Number::Unsigned8(i) => i,
-            _ => 0,
-        }
-    }
-}
-
-impl From<u16> for Number {
-    fn from(u: u16) -> Self {
-        Number::Unsigned16(u)
-    }
-}
-
-impl From<Number> for u16 {
-    fn from(n: Number) -> Self {
-        match n {
-            Number::Unsigned8(i) => i as u16,
-            Number::Unsigned16(i) => i,
-            _ => 0,
-        }
-    }
-}
-
-impl From<u32> for Number {
-    fn from(u: u32) -> Self {
-        Number::Unsigned32(u)
-    }
-}
-
-impl From<Number> for u32 {
-    fn from(n: Number) -> Self {
-        match n {
-            Number::Unsigned8(i) => i as u32,
-            Number::Unsigned16(i) => i as u32,
-            Number::Unsigned32(i) => i,
-            _ => 0,
-        }
-    }
-}
-
-impl From<u64> for Number {
-    fn from(u: u64) -> Self {
-        Number::Unsigned64(u)
-    }
-}
-
-impl From<Number> for u64 {
-    fn from(n: Number) -> Self {
-        match n {
-            Number::Unsigned8(i) => i as u64,
-            Number::Unsigned16(i) => i as u64,
-            Number::Unsigned32(i) => i as u64,
-            Number::Unsigned64(i) => i,
-            _ => 0,
-        }
-    }
-}
-
-impl From<u128> for Number {
-    fn from(u: u128) -> Self {
-        Number::Unsigned128(u)
-    }
-}
-
-impl From<Number> for u128 {
-    fn from(n: Number) -> Self {
-        match n {
-            Number::Unsigned8(i) => i as u128,
-            Number::Unsigned16(i) => i as u128,
-            Number::Unsigned32(i) => i as u128,
-            Number::Unsigned64(i) => i as u128,
-            Number::Unsigned128(i) => i,
-            _ => 0,
-        }
-    }
-}
-
-impl From<f32> for Number {
-    fn from(d: f32) -> Self {
-        unsafe {
-            Number::Decimal32(transmute::<f32,[u8;4]>(d))
-        }
-    }
-}
-
-impl From<Number> for f32 {
-    fn from(n: Number) -> Self {
-        unsafe {
-            match n {
-                Number::Decimal32(f) => {
-
-                        transmute::<[u8;4],f32>(f)
-
-                },
-                _ => 0.0,
+macro_rules! copied_integer {
+    ($T:ty) => {
+    impl From<$T> for NumberKind {
+        fn from(i: $T) -> Self {
+            match usize::try_from(i) {
+                Ok(u) => Self::InlineInteger(u),
+                Err(_) => {
+                    Self::BigInteger(BigInt::from(i))
+                }
             }
         }
     }
+    };
+    ($($T:ty ), +) => {
+        $(copied_integer!($T);)+
+    };
 }
 
-impl From<f64> for Number {
-    fn from(d: f64) -> Self {
-        unsafe {
-            Number::Decimal64(transmute::<f64,[u8;8]>(d))
-        }
+cloned_integer![BigInt,BigUint];
+copied_integer![u8, u16, u32, u64, u128, usize];
+copied_integer![i8, i16, i32, i64, i128, isize];
+
+impl From<f32> for NumberKind {
+    fn from(f: f32) -> Self {
+        Self::InlineDecimal(f as f64)
     }
 }
 
-impl From<Number> for f64 {
-    fn from(n: Number) -> Self {
-        unsafe {
-            match n {
-                Number::Decimal32(f) => transmute::<[u8;4],f32>(f) as f64,
-                Number::Decimal64(f) => transmute::<[u8;8],f64>(f),
-                _ => 0.0,
-            }
-        }
+impl From<f64> for NumberKind {
+    fn from(f: f64) -> Self {
+        Self::InlineDecimal(f)
+    }
+}
+
+impl From<BigDecimal> for NumberKind {
+    fn from(f: BigDecimal) -> Self {
+        Self::BigDecimal(f)
     }
 }
