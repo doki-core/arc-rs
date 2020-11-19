@@ -1,11 +1,10 @@
 mod number_from;
-// mod number_into;
-// pub mod number_impl;
-// pub mod number_traits;
+mod number_into;
+mod number_traits;
 
-use num::{BigInt, BigUint};
 use bigdecimal::BigDecimal;
-use std::fmt::{self, Formatter, Debug, Display};
+use num::{BigInt, BigUint};
+use std::fmt::{self, Debug, Display, Formatter};
 
 #[derive(Debug, Clone, PartialEq)]
 pub enum NumberKind {
@@ -21,16 +20,7 @@ pub struct Number {
     value: NumberKind,
 }
 
-impl Display for Number {
-    fn fmt(&self, f: &mut Formatter) -> fmt::Result {
-        match &self.handler {
-            Some(s) => write!(f, "{:?}{}", self.value, s),
-            None => write!(f, "{:?}", self.value),
-        }
-    }
-}
 
-impl Eq for NumberKind  {}
 
 #[test]
 fn test_size() {

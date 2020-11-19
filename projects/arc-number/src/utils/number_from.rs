@@ -1,19 +1,6 @@
 use super::*;
 use std::convert::TryFrom;
 
-//
-// impl From<BigInt> for NumberKind {
-//     fn from(i: BigInt) -> Self {
-//         Self::BigInteger(BigInt::from(i))
-//     }
-// }
-//
-// impl From<BigUint> for NumberKind {
-//     fn from(i: BigUint) -> Self {
-//         Self::BigInteger(BigInt::from(i))
-//     }
-// }
-
 macro_rules! cloned_integer {
     ($T:ty) => {
     impl From<$T> for NumberKind {
@@ -45,7 +32,7 @@ macro_rules! copied_integer {
     };
 }
 
-cloned_integer![BigInt,BigUint];
+cloned_integer![BigInt, BigUint];
 copied_integer![u8, u16, u32, u64, u128, usize];
 copied_integer![i8, i16, i32, i64, i128, isize];
 

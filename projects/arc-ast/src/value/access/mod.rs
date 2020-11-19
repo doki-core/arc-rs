@@ -3,8 +3,8 @@ use super::*;
 impl Value {
     /// Merge in a configuration property source.
     pub fn merge(&mut self, incoming: Value) {
-        if !self.is_dict() || ! incoming.is_dict() {
-            return *self = incoming
+        if !self.is_dict() || !incoming.is_dict() {
+            return *self = incoming;
         }
         match (self, incoming) {
             // FIXME: remove ref in rhs
