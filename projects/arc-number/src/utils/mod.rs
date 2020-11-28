@@ -4,6 +4,8 @@ mod number_traits;
 
 use bigdecimal::BigDecimal;
 use num::{BigInt, BigUint};
+use num::{FromPrimitive, ToPrimitive};
+use std::convert::TryFrom;
 use std::fmt::{self, Debug, Display, Formatter};
 
 #[derive(Debug, Clone, PartialEq)]
@@ -20,10 +22,8 @@ pub struct Number {
     value: NumberKind,
 }
 
-
-
 #[test]
-fn test_size() {
+fn check_size() {
     assert_eq!(std::mem::size_of::<f64>(), 8);
     assert_eq!(std::mem::size_of::<u64>(), 8);
     assert_eq!(std::mem::size_of::<u128>(), 16);

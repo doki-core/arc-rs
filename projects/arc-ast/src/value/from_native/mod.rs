@@ -1,26 +1,27 @@
 pub mod byte;
-pub mod decimal;
 pub mod dict;
-pub mod integer;
 pub mod list;
+pub mod number;
 pub mod string;
 
 pub use byte::Byte;
-pub use decimal::Decimal;
 pub use dict::Dict;
-pub use integer::Number;
 pub use list::List;
 pub use string::Text;
 
 use crate::Value;
-use bigdecimal::BigDecimal;
+use arc_number::{BigDecimal, BigInt, BigUint};
 use indexmap::IndexMap;
-use num::BigInt;
 use std::{
     collections::{BTreeMap, BTreeSet, HashMap, HashSet, LinkedList, VecDeque},
-    convert::TryFrom,
     fmt::{self, Debug, Formatter},
 };
+
+impl From<()> for Value {
+    fn from(_: ()) -> Self {
+        Self::List(Box::new(List::default()))
+    }
+}
 
 impl From<bool> for Value {
     fn from(v: bool) -> Self {
@@ -36,6 +37,18 @@ where
         match value {
             Some(value) => value.into(),
             None => Value::Null,
+        }
+    }
+}
+
+impl<T, E> From<Result<T, E>> for Value
+where
+    T: Into<Value>,
+{
+    fn from(value: Result<T, E>) -> Self {
+        match value {
+            Ok(value) => value.into(),
+            Err(_) => Value::Null,
         }
     }
 }

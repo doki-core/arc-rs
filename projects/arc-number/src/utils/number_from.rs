@@ -1,5 +1,4 @@
 use super::*;
-use std::convert::TryFrom;
 
 macro_rules! cloned_integer {
     ($T:ty) => {
