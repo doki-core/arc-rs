@@ -5,7 +5,8 @@ mod from_native;
 mod into_ast;
 mod into_native;
 
-pub use crate::value::from_native::{Byte, Dict, List, Number, Text};
+pub use crate::value::from_native::{Byte, Dict, List, Text};
+pub use arc_number::Number;
 use std::fmt::{self, Debug, Formatter};
 
 #[derive(Clone, Eq, PartialEq)]

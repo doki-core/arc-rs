@@ -53,7 +53,10 @@ impl Value {
         // }
         // Some(target)
     }
-    pub fn pointer_mut(&mut self, path: &str) {
+    pub fn pointer_mut(&mut self, path: &str) -> Option<&mut Value> {
+        if path.is_empty() {
+            return Some(self);
+        }
         unimplemented!()
     }
 }

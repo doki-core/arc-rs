@@ -62,6 +62,17 @@ impl From<NumberKind> for f64 {
     }
 }
 
+impl From<&NumberKind> for f64 {
+    fn from(n: &NumberKind) -> Self {
+        match n {
+            NumberKind::BigInteger(i) => i.to_f64().unwrap_or_default(),
+            NumberKind::InlineInteger(u) => *u as f64,
+            NumberKind::InlineDecimal(f) => *f,
+            NumberKind::BigDecimal(f) => f.to_f64().unwrap_or_default(),
+        }
+    }
+}
+
 impl From<NumberKind> for BigDecimal {
     fn from(n: NumberKind) -> Self {
         match n {

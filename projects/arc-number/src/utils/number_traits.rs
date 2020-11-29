@@ -1,4 +1,5 @@
 use super::*;
+use std::cmp::Ordering;
 
 impl Display for Number {
     fn fmt(&self, f: &mut Formatter) -> fmt::Result {
@@ -20,6 +21,21 @@ impl Display for NumberKind {
     }
 }
 
+impl Default for Number {
+    fn default() -> Self {
+        Self {
+            handler: None,
+            value: NumberKind::default()
+        }
+    }
+}
+
+impl Default for NumberKind {
+    fn default() -> Self {
+        Self::InlineInteger(0)
+    }
+}
+
 impl<T> From<T> for Number
 where
     T: Into<NumberKind>,
@@ -33,3 +49,19 @@ where
 }
 
 impl Eq for NumberKind {}
+
+impl PartialEq for NumberKind {
+    fn eq(&self, other: &Self) -> bool {
+        let lhs = f64::from(self);
+        let rhs = f64::from(other);
+        lhs == rhs
+    }
+}
+
+impl PartialOrd for NumberKind {
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+        let lhs = f64::from(self);
+        let rhs = f64::from(other);
+        lhs.partial_cmp(&rhs)
+    }
+}

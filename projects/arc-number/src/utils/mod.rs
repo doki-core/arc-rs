@@ -8,7 +8,7 @@ use num::{FromPrimitive, ToPrimitive};
 use std::convert::TryFrom;
 use std::fmt::{self, Debug, Display, Formatter};
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone)]
 pub enum NumberKind {
     InlineInteger(usize),
     InlineDecimal(f64),

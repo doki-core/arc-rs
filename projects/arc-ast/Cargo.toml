@@ -11,9 +11,9 @@ edition = "2018"
 
 
 [dependencies]
-num = "0.3"
+arc_number = {version = "0.3", path = "../arc-number"}
 indexmap = "1.6"
-bigdecimal = "0.2"
+
 serde = "1.0"
 serde_json = { version = "1.0", optional = true }
 toml = { version = "0.5", optional = true }

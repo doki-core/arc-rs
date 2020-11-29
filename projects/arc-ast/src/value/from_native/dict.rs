@@ -16,6 +16,15 @@ impl Debug for Dict {
     }
 }
 
+impl  Default for Dict {
+    fn default() -> Self {
+        Self {
+            handler: None,
+            value: IndexMap::new()
+        }
+    }
+}
+
 macro_rules! native2dict {
     ($T:ty) => {
     impl<K, V> From<$T> for Dict

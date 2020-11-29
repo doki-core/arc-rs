@@ -17,6 +17,15 @@ impl Debug for List {
     }
 }
 
+impl Default for List {
+    fn default() -> Self {
+        Self {
+            handler: None,
+            value: vec![]
+        }
+    }
+}
+
 macro_rules! native2list {
     ($T:ty) => {
     impl<V> From<$T> for List
