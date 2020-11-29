@@ -8,7 +8,7 @@ repository = "https://github.com/Moe-Net/arc-rs"
 license = "MPL-2.0"
 
 [dependencies]
-num = "0.4"
+num = "0.3"
 bigdecimal = "0.2"
 serde1 = { version = "1.0", optional = true }
 

@@ -20,9 +20,13 @@ toml = { version = "0.5", optional = true }
 # toml_edit = "*"
 yaml-rust = { version = "0.4", optional = true }
 # serde_yaml = "*"
+serde-hjson = { version = "0.9", optional = true }
+
 
 [features]
 default = ["convert"]
+
 convert = ["json", "toml", "yaml"]
 json = ["serde_json"]
 yaml = ["yaml-rust"]
+hjson = ["serde-hjson"]

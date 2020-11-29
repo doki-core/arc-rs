@@ -2,7 +2,7 @@ use crate::{
     ast::{KeyNode, KeyPath, KeyType},
     Arc,
 };
-use arc_parser::{ArcParser, Rule};
+use arc_pest::{ArcParser, Rule};
 use linked_hash_map::LinkedHashMap;
 use pest::{iterators::Pair, Parser};
 use std::{
@@ -10,6 +10,7 @@ use std::{
     collections::{hash_map::RandomState, VecDeque},
     fs::read_to_string,
 };
+
 
 macro_rules! debug_cases {
     ($i:ident) => {{

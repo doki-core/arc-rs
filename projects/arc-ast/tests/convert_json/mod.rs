@@ -1,8 +1,8 @@
-use arc_ast::Value;
+use arc_ast::utils::parse_json;
 
 #[test]
 fn json() {
     let json = include_str!("test.json");
-    let v: serde_json::Value = serde_json::from_str(json).unwrap();
-    println!("{:#?}", Value::from(v))
+    let v= parse_json(json).unwrap();
+    println!("{:#?}", v)
 }

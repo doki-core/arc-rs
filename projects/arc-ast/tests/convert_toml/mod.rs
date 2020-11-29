@@ -1,12 +1,13 @@
 use arc_ast::Value;
 
 use std::fs;
+use arc_ast::utils::parse_toml;
 
 #[test]
 fn main() {
     let json = include_str!("example.toml");
-    let v: toml::Value = toml::from_str(json).unwrap();
-    println!("{:#?}", Value::from(v))
+    let v  = parse_toml(json).unwrap();
+    println!("{:#?}", v)
 }
 
 fn test_toml(name: &str) {
