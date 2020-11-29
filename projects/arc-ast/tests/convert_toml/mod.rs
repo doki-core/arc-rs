@@ -1,26 +1,21 @@
-use arc_ast::Value;
+use arc_ast::{Value, Result};
 
-use std::fs;
+use std::fs::{self, read_to_string};
 use arc_ast::utils::parse_toml;
 
-#[test]
-fn main() {
-    let json = include_str!("example.toml");
-    let v  = parse_toml(json).unwrap();
-    println!("{:#?}", v)
-}
 
-fn test_toml(name: &str) {
+fn test_toml(name: &str) -> Result<()> {
     let input = format!("tests/convert_toml/{}.toml", name);
     let output = format!("tests/convert_toml/out/{}.arc", name);
-    let toml = fs::read_to_string(input).unwrap();
-    let out: toml::Value = toml::from_str(&toml).unwrap();
-    fs::write(output, format!("{:#?}", Value::from(out))).unwrap()
+    let out =  parse_toml( &read_to_string(input)?)?;
+    fs::write(output, format!("{:#?}", Value::from(out)))?;
+    Ok(())
 }
 
 #[test]
-fn test_hard() {
-    test_toml("example");
-    test_toml("hard");
-    test_toml("hard_unicode");
+fn test_hard()-> Result<()> {
+    test_toml("example")?;
+    test_toml("hard")?;
+    test_toml("hard_unicode")?;
+    Ok(())
 }
