@@ -54,13 +54,9 @@ impl Debug for Text {
     }
 }
 
-impl  Default for Text {
+impl Default for Text {
     fn default() -> Self {
-        Self {
-            handler: None,
-            delimiter: TextDelimiter::SingleAngleQuotation,
-            value: String::new()
-        }
+        Self { handler: None, delimiter: TextDelimiter::SingleAngleQuotation, value: String::new() }
     }
 }
 

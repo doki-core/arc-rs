@@ -1,14 +1,29 @@
 [
     {
         "item": "Super Hoop",
-        "quantity": 1,
+        "quantity": Number {
+            handler: None,
+            value: InlineInteger(
+                1,
+            ),
+        },
     },
     {
         "item": "Basketball",
-        "quantity": 4,
+        "quantity": Number {
+            handler: None,
+            value: InlineInteger(
+                4,
+            ),
+        },
     },
     {
         "item": "Big Shoes",
-        "quantity": 1,
+        "quantity": Number {
+            handler: None,
+            value: InlineInteger(
+                1,
+            ),
+        },
     },
 ]

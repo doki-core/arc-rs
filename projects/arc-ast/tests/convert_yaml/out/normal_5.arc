@@ -1,6 +1,11 @@
 [
     {
-        "invoice": 34843,
+        "invoice": Number {
+            handler: None,
+            value: InlineInteger(
+                34843,
+            ),
+        },
         "date": "2001-01-23",
         "bill-to": {
             "given": "Chris",
@@ -11,7 +16,12 @@
                 ",
                 "city": "Royal Oak",
                 "state": "MI",
-                "postal": 48046,
+                "postal": Number {
+                    handler: None,
+                    value: InlineInteger(
+                        48046,
+                    ),
+                },
             },
         },
         "ship-to": {
@@ -23,25 +33,60 @@
                 ",
                 "city": "Royal Oak",
                 "state": "MI",
-                "postal": 48046,
+                "postal": Number {
+                    handler: None,
+                    value: InlineInteger(
+                        48046,
+                    ),
+                },
             },
         },
         "product": [
             {
                 "sku": "BL394D",
-                "quantity": 4,
+                "quantity": Number {
+                    handler: None,
+                    value: InlineInteger(
+                        4,
+                    ),
+                },
                 "description": "Basketball",
-                "price": 450.0000000000000,
+                "price": Number {
+                    handler: None,
+                    value: InlineDecimal(
+                        450.0,
+                    ),
+                },
             },
             {
                 "sku": "BL4438H",
-                "quantity": 1,
+                "quantity": Number {
+                    handler: None,
+                    value: InlineInteger(
+                        1,
+                    ),
+                },
                 "description": "Super Hoop",
-                "price": 2392.000000000000,
+                "price": Number {
+                    handler: None,
+                    value: InlineDecimal(
+                        2392.0,
+                    ),
+                },
             },
         ],
-        "tax": 251.4200000000000,
-        "total": 4443.520000000000,
+        "tax": Number {
+            handler: None,
+            value: InlineDecimal(
+                251.42,
+            ),
+        },
+        "total": Number {
+            handler: None,
+            value: InlineDecimal(
+                4443.52,
+            ),
+        },
         "comments": "Late afternoon is best. Backup contact is Nancy Billsmer @ 338-4338.",
     },
     {
@@ -61,13 +106,23 @@
         "Stack": [
             {
                 "file": "TopClass.py",
-                "line": 23,
+                "line": Number {
+                    handler: None,
+                    value: InlineInteger(
+                        23,
+                    ),
+                },
                 "code": "x = MoreObject("345\n")
                 ",
             },
             {
                 "file": "MoreClass.py",
-                "line": 58,
+                "line": Number {
+                    handler: None,
+                    value: InlineInteger(
+                        58,
+                    ),
+                },
                 "code": "foo = bar",
             },
         ],

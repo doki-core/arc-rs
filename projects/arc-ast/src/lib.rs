@@ -1,10 +1,10 @@
 pub mod ast;
 pub mod serde;
-pub mod value;
 pub mod utils;
+pub mod value;
 
 mod convert;
 mod errors;
 
-pub use value::Value;
 pub use errors::{Result, RuntimeError};
+pub use value::Value;

@@ -25,7 +25,7 @@ impl Default for Number {
     fn default() -> Self {
         Self {
             handler: None,
-            value: NumberKind::default()
+            value: NumberKind::default(),
         }
     }
 }

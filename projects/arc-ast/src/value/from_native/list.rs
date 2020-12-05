@@ -19,10 +19,7 @@ impl Debug for List {
 
 impl Default for List {
     fn default() -> Self {
-        Self {
-            handler: None,
-            value: vec![]
-        }
+        Self { handler: None, value: vec![] }
     }
 }
 

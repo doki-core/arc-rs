@@ -11,7 +11,6 @@ use std::{
     fs::read_to_string,
 };
 
-
 macro_rules! debug_cases {
     ($i:ident) => {{
         println!("Rule::{:?}=>continue,", $i.as_rule());

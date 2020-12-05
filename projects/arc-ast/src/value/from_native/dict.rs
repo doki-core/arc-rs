@@ -16,12 +16,9 @@ impl Debug for Dict {
     }
 }
 
-impl  Default for Dict {
+impl Default for Dict {
     fn default() -> Self {
-        Self {
-            handler: None,
-            value: IndexMap::new()
-        }
+        Self { handler: None, value: IndexMap::new() }
     }
 }
 

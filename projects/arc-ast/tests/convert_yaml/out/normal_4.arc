@@ -1,11 +1,46 @@
 {
-    "canonical": 12345,
-    "decimal": 12345,
-    "octal": 12,
-    "hexadecimal": 12,
-    "canonical2": 1230.150000000000,
-    "exponential": 1230.150000000000,
-    "fixed": 1230.150000000000,
+    "canonical": Number {
+        handler: None,
+        value: InlineInteger(
+            12345,
+        ),
+    },
+    "decimal": Number {
+        handler: None,
+        value: InlineInteger(
+            12345,
+        ),
+    },
+    "octal": Number {
+        handler: None,
+        value: InlineInteger(
+            12,
+        ),
+    },
+    "hexadecimal": Number {
+        handler: None,
+        value: InlineInteger(
+            12,
+        ),
+    },
+    "canonical2": Number {
+        handler: None,
+        value: InlineDecimal(
+            1230.15,
+        ),
+    },
+    "exponential": Number {
+        handler: None,
+        value: InlineDecimal(
+            1230.15,
+        ),
+    },
+    "fixed": Number {
+        handler: None,
+        value: InlineDecimal(
+            1230.15,
+        ),
+    },
     "negative infinity": null,
     "not a number": null,
     "null": null,
