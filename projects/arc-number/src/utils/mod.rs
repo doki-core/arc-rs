@@ -1,12 +1,15 @@
 mod number_from;
+mod number_impls;
 mod number_into;
 mod number_traits;
 
 use bigdecimal::BigDecimal;
+use num::Zero;
 use num::{BigInt, BigUint};
 use num::{FromPrimitive, ToPrimitive};
 use std::convert::TryFrom;
 use std::fmt::{self, Debug, Display, Formatter};
+use std::ops::Deref;
 
 #[derive(Debug, Clone)]
 pub enum NumberKind {
