@@ -5,12 +5,12 @@
     {
         "name": "Mark McGwire",
         "hr": 65,
-        "avg": 0.2780000000000000,
+        "avg": 0.278,
     },
     {
         "name": "Sammy Sosa",
         "hr": 63,
-        "avg": 0.2880000000000000,
+        "avg": 0.288,
     },
     [
         "name",
@@ -20,12 +20,12 @@
     [
         "Mark McGwire",
         65,
-        0.2780000000000000,
+        0.278,
     ],
     [
         "Sammy Sosa",
         63,
-        0.2880000000000000,
+        0.288,
     ],
     "Chicago Cubs",
     "St Louis Cardinals",

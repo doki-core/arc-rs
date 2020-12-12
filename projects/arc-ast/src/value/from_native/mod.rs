@@ -16,6 +16,8 @@ use std::{
     collections::{BTreeMap, BTreeSet, HashMap, HashSet, LinkedList, VecDeque},
     fmt::{self, Debug, Formatter},
 };
+use std::ops::Index;
+use std::fmt::Display;
 
 impl From<()> for Value {
     fn from(_: ()) -> Self {

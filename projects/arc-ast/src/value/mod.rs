@@ -7,7 +7,7 @@ mod into_native;
 
 pub use crate::value::from_native::{Byte, Dict, List, Text};
 pub use arc_number::Number;
-use std::fmt::{self, Debug, Formatter};
+use std::fmt::{self, Debug, Display, Formatter};
 
 #[derive(Clone, Eq, PartialEq)]
 pub enum Value {
@@ -30,9 +30,9 @@ impl Debug for Value {
     fn fmt(&self, f: &mut Formatter) -> fmt::Result {
         match self {
             Value::Null => write!(f, "null"),
-            Value::Boolean(v) => Debug::fmt(v, f),
-            Value::Number(v) => Debug::fmt(v, f),
-            Value::String(v) => Debug::fmt(v, f),
+            Value::Boolean(v) => Display::fmt(v, f),
+            Value::Number(v) => Display::fmt(v, f),
+            Value::String(v) => Display::fmt(v, f),
             Value::Byte(v) => Debug::fmt(v, f),
             Value::List(v) => Debug::fmt(v, f),
             Value::Dict(v) => Debug::fmt(v, f),

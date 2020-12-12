@@ -59,16 +59,40 @@ impl Value {
         }
         unimplemented!()
     }
+
+    pub fn as_vec(&self) -> Vec<Value> {
+        match self {
+            Value::Null => vec![],
+            Value::Boolean(_) => { vec![self.to_owned()] }
+            Value::Number(_) => { vec![self.to_owned()] }
+            Value::String(_) => { vec![self.to_owned()] }
+            Value::Byte(_) => { vec![self.to_owned()] }
+            Value::List(v) => { v.as_vec() }
+            Value::Dict(v) => { v.as_vec() }
+        }
+    }
+
+    pub fn as_string_vec(&self) -> Vec<String> {
+        match self {
+            Value::Null => vec![],
+            Value::Boolean(v) => { vec![format!("{}", v)] }
+            Value::Number(v) => { vec![format!("{}", v)] }
+            Value::String(v) => { vec![format!("{:?}", v)] }
+            Value::Byte(v) => { vec![format!("{:?}", v)] }
+            Value::List(v) => { vec![format!("{:?}", v)] }
+            Value::Dict(v) => { vec![format!("{:?}", v)] }
+        }
+    }
 }
 
-// #[test]
-// fn test() {
-//     use serde_json::json;
-//     let data = json!({
-//     "x": {
-//         "y": ["z", "zz"]
-//     }
-// });
-//     let v = Value::from(data).pointer("x.y.1");
-//     println!("{:?}",v)
-// }
+#[test]
+fn test() {
+    use crate::{dict, list};
+    let data = dict! {
+    "x": dict!{
+        "y": list!["z", "zz"]
+    }
+};
+    let v = data.pointer("x.y.1");
+    println!("{:?}", v)
+}

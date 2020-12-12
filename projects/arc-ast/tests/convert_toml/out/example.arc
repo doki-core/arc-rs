@@ -6,18 +6,8 @@
                 "delta",
             ],
             [
-                Number {
-                    handler: None,
-                    value: InlineInteger(
-                        1,
-                    ),
-                },
-                Number {
-                    handler: None,
-                    value: InlineInteger(
-                        2,
-                    ),
-                },
+                1,
+                2,
             ],
         ],
         "hosts": [
@@ -26,32 +16,12 @@
         ],
     },
     "database": {
-        "connection_max": Number {
-            handler: None,
-            value: InlineInteger(
-                5000,
-            ),
-        },
+        "connection_max": 5000,
         "enabled": true,
         "ports": [
-            Number {
-                handler: None,
-                value: InlineInteger(
-                    8001,
-                ),
-            },
-            Number {
-                handler: None,
-                value: InlineInteger(
-                    8001,
-                ),
-            },
-            Number {
-                handler: None,
-                value: InlineInteger(
-                    8002,
-                ),
-            },
+            8001,
+            8001,
+            8002,
         ],
         "server": "192.168.1.1",
     },
@@ -65,22 +35,12 @@
     "products": [
         {
             "name": "Hammer",
-            "sku": Number {
-                handler: None,
-                value: InlineInteger(
-                    738594937,
-                ),
-            },
+            "sku": 738594937,
         },
         {
             "color": "gray",
             "name": "Nail",
-            "sku": Number {
-                handler: None,
-                value: InlineInteger(
-                    284758393,
-                ),
-            },
+            "sku": 284758393,
         },
     ],
     "servers": {

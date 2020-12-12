@@ -70,6 +70,10 @@ impl From<Dict> for Value {
 }
 
 impl Dict {
+    pub fn empty() -> Value {
+        Value::from(Dict::default())
+    }
+
     pub fn iter(&self) -> indexmap::map::Iter<String, Value> {
         self.value.iter()
     }
@@ -81,6 +85,10 @@ impl Dict {
     }
     pub fn insert(&mut self, key: String, value: Value) -> Option<Value> {
         self.value.insert(key, value)
+    }
+
+    pub fn as_vec(&self) -> Vec<Value> {
+        self.value.values().cloned().collect()
     }
 }
 

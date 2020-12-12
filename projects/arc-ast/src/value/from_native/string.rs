@@ -1,6 +1,8 @@
 use super::*;
 
-#[derive(Clone, Eq, PartialEq)]
+
+
+#[derive(Debug, Clone, Eq, PartialEq)]
 pub struct Text {
     handler: Option<String>,
     delimiter: TextDelimiter,
@@ -22,7 +24,7 @@ pub enum TextDelimiter {
     DoubleAngleQuotation,
 }
 
-impl Debug for Text {
+impl Display for Text {
     fn fmt(&self, f: &mut Formatter) -> fmt::Result {
         match &self.handler {
             None => (),
