@@ -30,6 +30,7 @@ dict_literal = {
   | "{" ~ (SEPARATOR? ~ dict_pair)+ ~ SEPARATOR? ~ "}"
 }
 RestLineText = @{(!(NEWLINE|"]"|"}") ~ ANY)+}
+Set          = @{"="|":"}
 /*====================================================================================================================*/
 list_scope   = {list_head ~ (SEPARATOR? ~ list_pair)*}
 list_head    = {"[" ~ Dot* ~ namespace ~ "]"}
@@ -42,9 +43,12 @@ list_literal = {
   | "[" ~ (SEPARATOR? ~ (data|InlineString))+ ~ SEPARATOR? ~ "]"
 }
 InlineString = @{(!(SEPARATOR|NEWLINE|"]"|"}") ~ ANY)+}
+
+Insert       = @{"^"}
+Append       = @{">"}
 /*====================================================================================================================*/
 data = {
-    Byte|Number|Special|Cite|String
+    Number|Special|Cite|String
   | dict_literal|list_literal
 }
 /*====================================================================================================================*/
@@ -54,19 +58,14 @@ Special = @{"true"|"false"|"null"}
 ///#56B6C2
 Cite = ${"$" ~ namespace}
 /*====================================================================================================================*/
-///#D19A66
-Byte     = ${(Byte_BIN|Byte_OCT|Byte_HEX)~ (Underline ~ SYMBOL)?}
-Byte_BIN = @{"0" ~ ("b"|"B") ~ ASCII_BIN_DIGIT+}
-Byte_OCT = @{"0" ~ ("o"|"O") ~ ASCII_OCT_DIGIT+}
-Byte_HEX = @{"0" ~ ("x"|"X") ~ ASCII_HEX_DIGIT+}
-/*====================================================================================================================*/
 //!#D19A66: SignedNumber
 Number       = ${(Exponent|SignedNumber) ~ SYMBOL?}
 SignedNumber = ${Sign? ~ (Decimal|DecimalBad|Integer)}
-Decimal      = ${Integer ~ Dot ~ (Underline? ~ ASCII_DIGIT)*}
-DecimalBad   = ${Integer ~ Dot|Dot ~ (Underline? ~ ASCII_DIGIT)*}
-Integer      = @{"0"|ASCII_NONZERO_DIGIT ~ (Underline? ~ ASCII_DIGIT)*}
+Decimal      = ${Integer ~ Dot ~ ("_"? ~ ASCII_DIGIT)*}
+DecimalBad   = ${Integer ~ Dot|Dot ~ ("_"? ~ ASCII_DIGIT)*}
+Integer      = @{"0"|ASCII_NONZERO_DIGIT ~ ("_"? ~ ASCII_DIGIT)*}
 Exponent     = ${SignedNumber ~ ("e"|"E"|"**") ~ Sign? ~ ASCII_DIGIT+}
+Sign         = @{"+"|"-"}
 /*====================================================================================================================*/
 //!#3C963C: String|InlineString|RestLineText
 //!#98C379: StringQuotation|StringAccent
@@ -80,18 +79,18 @@ StringNormal = ${
 //| "«" ~ NS4 ~ "»"
 }
 NS1 = @{(!(S1 ~ PEEK) ~ ANY)+}
-NS2 = @{Escape ~ ANY | (!(S2 ~ PEEK) ~ ANY)+}
+NS2 = @{"\\" ~ ANY | (!(S2 ~ PEEK) ~ ANY)+}
 // NS3 = @{(!"»" ~ ANY)+}
 // NS4 = @{Escape ~ ANY|(!"»" ~ ANY)+}
-S1  = @{"'"}
-S2  = @{"\""}
+S1 = @{"'"}
+S2 = @{"\""}
 /*====================================================================================================================*/
 ///#61AFEF
 namespace =  {Key ~ (Dot ~ Key)*}
 Key       =  {StringNormal|SYMBOL|Integer}
 SYMBOL    = @{(XID_START|ExtraID) ~ (XID_CONTINUE|ExtraID)*}
 ExtraID   = @{"_"}
-// ExtraID   = @{"_"|"/"}
+Dot       = @{"."}
 /*====================================================================================================================*/
 // NEWLINE = @{"\r" ~ "\n"|"\r"|"\n"}
 
@@ -101,12 +100,5 @@ WHITESPACE       =  {NEWLINE|SPACE_SEPARATOR|"\t"}
 LineComment      = ${DEPRECATED ~ (!NEWLINE ~ ANY)*}
 MultiLineComment = ${"/*" ~ (MultiLineComment | !"*/" ~ ANY)* ~ "*/"}
 
-Underline  = @{"_"}
-Dot        = @{"."}
-Escape     = @{"\\"}
-Insert     = @{"*"}
-Append     = @{"&"}
 SEPARATOR  = @{","|";"}
 DEPRECATED = @{"//"|"#"}
-Set        = @{"="|":"}
-Sign       = @{"+"|"-"}
