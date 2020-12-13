@@ -1,5 +1,4 @@
 use super::*;
-use std::cmp::Ordering;
 
 impl Display for Number {
     fn fmt(&self, f: &mut Formatter) -> fmt::Result {

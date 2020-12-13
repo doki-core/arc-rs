@@ -7,6 +7,12 @@ impl Deref for Number {
     }
 }
 
+impl Number {
+    pub fn get_handler(&self) -> Option<String> {
+        self.handler.to_owned()
+    }
+}
+
 impl NumberKind {
     pub fn is_integer(&self) -> bool {
         match self {

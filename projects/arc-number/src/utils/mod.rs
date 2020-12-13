@@ -7,6 +7,7 @@ use bigdecimal::BigDecimal;
 use num::Zero;
 use num::{BigInt, BigUint};
 use num::{FromPrimitive, ToPrimitive};
+use std::cmp::Ordering;
 use std::convert::TryFrom;
 use std::fmt::{self, Debug, Display, Formatter};
 use std::ops::Deref;

@@ -1,5 +1,5 @@
 use super::*;
-
+use std::{slice::Iter, str::FromStr, vec::IntoIter};
 
 #[derive(Clone, Eq, PartialEq)]
 pub struct List {
@@ -80,14 +80,36 @@ impl List {
         Value::from(List::default())
     }
 
+    pub fn into_iter(self) -> IntoIter<Value> {
+        self.value.into_iter()
+    }
+
+    pub fn length(&self) -> usize {
+        self.value.len()
+    }
+    pub fn as_vec(&self) -> Vec<Value> {
+        self.value.to_owned()
+    }
+
+    pub fn iter(&self) -> Iter<'_, Value> {
+        self.value.iter()
+    }
+    pub fn get_handler(&self) -> Option<String> {
+        self.handler.to_owned()
+    }
+    pub fn get(&self, index: &str) -> Option<&Value> {
+        let i = match isize::from_str(index) {
+            Ok(o) => o,
+            Err(_) => return None,
+        };
+        if i > 0 { self.value.get(i as usize) } else { self.value.get((self.value.len() as isize + i) as usize) }
+    }
+
     pub fn extend(&mut self, item: impl Into<List>) {
         self.value.extend(item.into().value)
     }
     pub fn extend_one(&mut self, item: impl Into<Value>) {
         // self.value.extend_one(item.into())
         self.value.push(item.into())
-    }
-    pub fn as_vec(&self) -> Vec<Value> {
-        self.value.to_owned()
     }
 }

@@ -14,10 +14,9 @@ use arc_number::{BigDecimal, BigInt, BigUint};
 use indexmap::IndexMap;
 use std::{
     collections::{BTreeMap, BTreeSet, HashMap, HashSet, LinkedList, VecDeque},
-    fmt::{self, Debug, Formatter},
+    fmt::{self, Debug, Display, Formatter},
+    ops::Index,
 };
-use std::ops::Index;
-use std::fmt::Display;
 
 impl From<()> for Value {
     fn from(_: ()) -> Self {

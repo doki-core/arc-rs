@@ -85,4 +85,14 @@ impl Value {
             _ => false,
         }
     }
+    pub fn get_handler(&self) -> Option<String> {
+        match self {
+            Value::Null | Value::Boolean(_) => None,
+            Value::Number(v) => v.get_handler(),
+            Value::String(v) => v.get_handler(),
+            Value::Byte(v) => v.get_handler(),
+            Value::List(v) => v.get_handler(),
+            Value::Dict(v) => v.get_handler(),
+        }
+    }
 }

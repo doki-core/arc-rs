@@ -74,8 +74,16 @@ impl Dict {
         Value::from(Dict::default())
     }
 
+    pub fn length(&self) -> usize {
+        self.value.len()
+    }
+
     pub fn iter(&self) -> indexmap::map::Iter<String, Value> {
         self.value.iter()
+    }
+
+    pub fn get_handler(&self) -> Option<String> {
+        self.handler.to_owned()
     }
     pub fn get(&self, key: &str) -> Option<&Value> {
         self.value.get(key)

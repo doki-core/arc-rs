@@ -1,7 +1,5 @@
 use super::*;
 
-
-
 #[derive(Debug, Clone, Eq, PartialEq)]
 pub struct Text {
     handler: Option<String>,
@@ -98,5 +96,11 @@ native2value![char, &str, String, &String];
 impl From<Text> for Value {
     fn from(v: Text) -> Self {
         Value::String(Box::new(v))
+    }
+}
+
+impl Text {
+    pub fn get_handler(&self) -> Option<String> {
+        self.handler.to_owned()
     }
 }

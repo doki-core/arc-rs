@@ -32,26 +32,18 @@ impl Value {
         if path.is_empty() {
             return Some(self);
         }
-        unimplemented!()
-        // let tokens = path.split('.');
-        // let mut target = self;
-        //
-        // for token in tokens {
-        //     let target_opt = match *target {
-        //         Value::Dict(ref dict) =>dict.get(&token),
-        //         Value::List(ref list) => list.get(&tokens),
-        //         _ => return None,
-        //     };
-        //     match target_opt {
-        //         Some(t) => {
-        //             target = t;
-        //         }
-        //         None => {
-        //             return None;
-        //         }
-        //     }
-        // }
-        // Some(target)
+        let mut target = self;
+        for token in path.split('.') {
+            let try_get = match target {
+                Value::Dict(dict) => dict.get(&token),
+                Value::List(list) => list.get(&token),
+                _ => return None,
+            };
+            if let None = try_get.map(|t| target = t) {
+                return None;
+            }
+        }
+        Some(target)
     }
     pub fn pointer_mut(&mut self, path: &str) -> Option<&mut Value> {
         if path.is_empty() {
@@ -63,24 +55,30 @@ impl Value {
     pub fn as_vec(&self) -> Vec<Value> {
         match self {
             Value::Null => vec![],
-            Value::Boolean(_) => { vec![self.to_owned()] }
-            Value::Number(_) => { vec![self.to_owned()] }
-            Value::String(_) => { vec![self.to_owned()] }
-            Value::Byte(_) => { vec![self.to_owned()] }
-            Value::List(v) => { v.as_vec() }
-            Value::Dict(v) => { v.as_vec() }
+            Value::Boolean(_) => vec![self.to_owned()],
+            Value::Number(_) => vec![self.to_owned()],
+            Value::String(_) => vec![self.to_owned()],
+            Value::Byte(_) => vec![self.to_owned()],
+            Value::List(v) => v.as_vec(),
+            Value::Dict(v) => v.as_vec(),
         }
     }
 
     pub fn as_string_vec(&self) -> Vec<String> {
         match self {
             Value::Null => vec![],
-            Value::Boolean(v) => { vec![format!("{}", v)] }
-            Value::Number(v) => { vec![format!("{}", v)] }
-            Value::String(v) => { vec![format!("{:?}", v)] }
-            Value::Byte(v) => { vec![format!("{:?}", v)] }
-            Value::List(v) => { vec![format!("{:?}", v)] }
-            Value::Dict(v) => { vec![format!("{:?}", v)] }
+            Value::Boolean(v) => vec![format!("{}", v)],
+            Value::Number(v) => vec![format!("{}", v)],
+            Value::String(v) => vec![format!("{:?}", v)],
+            Value::Byte(v) => vec![format!("{:?}", v)],
+            Value::List(v) => {
+                let mut vec = Vec::with_capacity(v.length());
+                for item in v.iter() {
+                    vec.push(format!("{:?}", item))
+                }
+                return vec;
+            }
+            Value::Dict(v) => vec![format!("{:?}", v)],
         }
     }
 }
@@ -89,10 +87,10 @@ impl Value {
 fn test() {
     use crate::{dict, list};
     let data = dict! {
-    "x": dict!{
-        "y": list!["z", "zz"]
-    }
-};
-    let v = data.pointer("x.y.1");
+        "x": dict!{
+            "y": list!["z", "zz"]
+        }
+    };
+    let v = data.pointer("x.y.-1");
     println!("{:?}", v)
 }
