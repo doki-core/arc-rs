@@ -9,5 +9,6 @@ mod function;
 #[macro_use]
 mod macros;
 
+pub use ast::{AST,TextRange};
 pub use errors::{Result, RuntimeError};
 pub use value::Value;

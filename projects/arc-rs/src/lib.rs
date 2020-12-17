@@ -1,4 +1,5 @@
 // mod ast;
+mod parser;
 mod errors;
 pub mod utils;
 // pub use ast::{
@@ -6,3 +7,4 @@ pub mod utils;
 //     Arc,
 // };
 pub use errors::{ArcError, Result};
+pub use parser::ParserConfig;
