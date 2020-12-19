@@ -16,6 +16,7 @@ where
     }
 }
 
+#[allow(dead_code)]
 fn print_input(args: &[Value], options: &IndexMap<String, Value>) -> Result<Value> {
     println!("{:?}", args);
     println!("{:?}", options);

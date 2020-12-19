@@ -26,8 +26,8 @@ dict_scope   = {dict_head ~ (SEPARATOR? ~ dict_pair)*}
 dict_head    = {"{" ~ Dot* ~ namespace ~ "}"}
 dict_pair    = {namespace ~ Set ~ (data|RestLineText)}
 dict_literal = {
-    "{" ~ "}"
-  | "{" ~ (SEPARATOR? ~ dict_pair)+ ~ SEPARATOR? ~ "}"
+    SYMBOL? ~  "{" ~ "}"
+  | SYMBOL? ~ "{" ~ (SEPARATOR? ~ dict_pair)+ ~ SEPARATOR? ~ "}"
 }
 RestLineText = @{(!(NEWLINE|"]"|"}") ~ ANY)+}
 Set          = @{"="|":"}
@@ -39,8 +39,8 @@ list_pair    = {
   | Append ~ (data|InlineString)+
 }
 list_literal = {
-    "[" ~ "]"
-  | "[" ~ (SEPARATOR? ~ (data|InlineString))+ ~ SEPARATOR? ~ "]"
+    SYMBOL? ~ "[" ~ "]"
+  | SYMBOL? ~ "[" ~ (SEPARATOR? ~ (data|InlineString))+ ~ SEPARATOR? ~ "]"
 }
 InlineString = @{(!(SEPARATOR|NEWLINE|"]"|"}") ~ ANY)+}
 
@@ -63,7 +63,8 @@ Number       = ${(Exponent|SignedNumber) ~ SYMBOL?}
 SignedNumber = ${Sign? ~ (Decimal|DecimalBad|Integer)}
 Decimal      = ${Integer ~ Dot ~ ("_"? ~ ASCII_DIGIT)*}
 DecimalBad   = ${Integer ~ Dot|Dot ~ ("_"? ~ ASCII_DIGIT)*}
-Integer      = @{"0"|ASCII_NONZERO_DIGIT ~ ("_"? ~ ASCII_DIGIT)*}
+//Integer    = @{"0"|ASCII_NONZERO_DIGIT ~ ("_"? ~ ASCII_DIGIT)*}
+Integer      = @{ASCII_DIGIT ~ ("_"? ~ ASCII_DIGIT)*}
 Exponent     = ${SignedNumber ~ ("e"|"E"|"**") ~ Sign? ~ ASCII_DIGIT+}
 Sign         = @{"+"|"-"}
 /*====================================================================================================================*/
@@ -79,7 +80,12 @@ StringNormal = ${
 //| "«" ~ NS4 ~ "»"
 }
 NS1 = @{(!(S1 ~ PEEK) ~ ANY)+}
-NS2 = @{"\\" ~ ANY | (!(S2 ~ PEEK) ~ ANY)+}
+NS2 = @{
+    "\\u" ~ ASCII_HEX_DIGIT{4}
+  | "\\u" ~ "{" ~(ASCII_HEX_DIGIT|SPACE_SEPARATOR)+ ~ "}"
+  | "\\" ~ ANY
+  | (!(S2 ~ PEEK) ~ ANY)+
+}
 // NS3 = @{(!"»" ~ ANY)+}
 // NS4 = @{Escape ~ ANY|(!"»" ~ ANY)+}
 S1 = @{"'"}
@@ -87,7 +93,7 @@ S2 = @{"\""}
 /*====================================================================================================================*/
 ///#61AFEF
 namespace =  {Key ~ (Dot ~ Key)*}
-Key       =  {StringNormal|SYMBOL|Integer}
+Key       = _{StringNormal|SYMBOL|Integer}
 SYMBOL    = @{(XID_START|ExtraID) ~ (XID_CONTINUE|ExtraID)*}
 ExtraID   = @{"_"}
 Dot       = @{"."}
@@ -96,7 +102,7 @@ Dot       = @{"."}
 
 ///Gray
 COMMENT          =  {MultiLineComment|LineComment}
-WHITESPACE       =  {NEWLINE|SPACE_SEPARATOR|"\t"}
+WHITESPACE       = _{NEWLINE|SPACE_SEPARATOR|"\t"}
 LineComment      = ${DEPRECATED ~ (!NEWLINE ~ ANY)*}
 MultiLineComment = ${"/*" ~ (MultiLineComment | !"*/" ~ ANY)* ~ "*/"}
 

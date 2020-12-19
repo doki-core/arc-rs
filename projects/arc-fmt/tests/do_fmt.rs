@@ -5,7 +5,7 @@ use arc_fmt::Settings;
 #[test]
 fn fmt_packages() {
     let s = Settings::default();
-    s.format_file("tests/package.json", "tests/out/package.arc");
+    s.format_file("tests/package.json", "tests/out/package.json");
 }
 
 #[test]

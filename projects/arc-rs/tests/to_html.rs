@@ -12,6 +12,6 @@ fn test_list() {
 
 #[test]
 fn test_dict() {
-    let d = parse(include_str!("json_compatibility/package.arc"));
+    let d = parse(include_str!("json_compatibility/package.json"));
     println!("{}", d);
 }
