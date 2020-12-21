@@ -2,14 +2,15 @@ use super::*;
 
 #[derive(Debug, Clone, Eq, PartialEq)]
 pub struct Text {
-    handler: Option<String>,
-    delimiter: TextDelimiter,
-    value: String,
+    pub(crate) handler: Option<String>,
+    pub(crate)  delimiter: TextDelimiter,
+    pub(crate)  value: String,
 }
 
 #[allow(dead_code)]
 #[derive(Debug, Clone, Eq, PartialEq)]
 pub enum TextDelimiter {
+    Bare,
     // "
     Quotation(usize),
     // '
@@ -29,6 +30,9 @@ impl Display for Text {
             Some(s) => write!(f, "{}", s)?,
         }
         match self.delimiter {
+            TextDelimiter::Bare => {
+                write!(f, "{}", self.value)?;
+            }
             TextDelimiter::Quotation(n) => {
                 write!(f, "{}", "\"".repeat(n))?;
                 write!(f, "{}", self.value)?;
@@ -49,6 +53,7 @@ impl Display for Text {
                 write!(f, "{}", self.value)?;
                 write!(f, "»")?;
             }
+
         }
         Ok(())
     }
@@ -56,7 +61,7 @@ impl Display for Text {
 
 impl Default for Text {
     fn default() -> Self {
-        Self { handler: None, delimiter: TextDelimiter::SingleAngleQuotation, value: String::new() }
+        Self { handler: None, delimiter: TextDelimiter::Bare, value: String::new() }
     }
 }
 

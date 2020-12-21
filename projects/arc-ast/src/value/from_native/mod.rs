@@ -7,7 +7,7 @@ pub mod string;
 pub use byte::Byte;
 pub use dict::Dict;
 pub use list::List;
-pub use string::Text;
+pub use string::{Text,TextDelimiter};
 
 use crate::Value;
 use arc_number::{BigDecimal, BigInt, BigUint};

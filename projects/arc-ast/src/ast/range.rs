@@ -35,14 +35,22 @@ impl TextRange {
     pub fn as_tuple(&self) -> (RangeSize, RangeSize, RangeSize, RangeSize) {
         (self.start.0, self.start.1, self.end.0, self.end.1)
     }
-    pub fn boxed(self) -> Option<Box<TextRange>> {
+    pub fn boxed(self) -> Option<TextRange> {
         box_range(self)
     }
 }
 
-pub fn box_range(r: TextRange) -> Option<Box<TextRange>> {
+// pub fn box_range(r: TextRange) -> Option<Box<TextRange>> {
+//     match r.sum() {
+//         0 => None,
+//         _ => Some(Box::new(r)),
+//     }
+// }
+
+
+pub fn box_range(r: TextRange) -> Option<TextRange> {
     match r.sum() {
         0 => None,
-        _ => Some(Box::new(r)),
+        _ => Some(r),
     }
 }

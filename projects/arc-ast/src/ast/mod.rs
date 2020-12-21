@@ -1,15 +1,20 @@
 mod range;
-
+mod literal;
 use std::fmt::{self, Debug, Formatter};
 
 pub use crate::ast::range::TextRange;
+pub use crate::ast::literal::Symbol;
+use crate::value::{Text, TextDelimiter};
+use arc_number::Number;
+
 // use bigdecimal::BigDecimal;
 // use num::BigInt;
 
 #[derive(Clone, Eq, PartialEq)]
 pub struct AST {
-    pub kind: ASTKind,
-    pub range: Option<Box<TextRange>>,
+    kind: ASTKind,
+    range: Option<TextRange>,
+    additional: Option<String>,
 }
 
 #[derive(Debug, Clone, Eq, PartialEq)]
@@ -28,23 +33,23 @@ pub enum ASTKind {
 
     Null,
     Boolean(bool),
-    /* String(Box<ASTString>),
-     * Symbol(Box<Symbol>),
-     * Integer(Box<ASTInteger>),
-     * Decimal(Box<ASTDecimal>), */
+    Namespace(Vec<AST>),
+    Symbol(Box<Symbol>),
+    String(Box<Text>),
+    Number(Box<Number>),
 }
 
 impl Debug for AST {
     fn fmt(&self, f: &mut Formatter) -> fmt::Result {
         match self {
-            AST { kind, range } => {
+            AST { kind, range, additional } => {
                 let mut builder = f.debug_struct("AST");
                 builder.field("kind", kind);
-                match range {
-                    None => (),
-                    Some(s) => {
-                        builder.field("range", s.as_ref());
-                    }
+                if let Some(s) = range {
+                    builder.field("range", s);
+                }
+                if let Some(s) = additional {
+                    builder.field("additional", s);
                 }
                 builder.finish()
             }
@@ -54,13 +59,13 @@ impl Debug for AST {
 
 impl Default for AST {
     fn default() -> Self {
-        Self { kind: ASTKind::None, range: Default::default() }
+        Self { kind: ASTKind::None, range: Default::default(), additional: None }
     }
 }
 
 impl From<ASTKind> for AST {
     fn from(kind: ASTKind) -> Self {
-        Self { kind, range: None }
+        Self { kind, range: None, additional: None }
     }
 }
 
@@ -74,11 +79,20 @@ impl From<ASTKind> for AST {
 // }
 
 impl AST {
-    pub fn program(children: Vec<AST>) -> Self {
-        Self { kind: ASTKind::Program(children), range: Default::default() }
+    pub fn set_additional(&mut self, info: impl Into<String>) {
+        self.additional = Some(info.into())
     }
-    pub fn block(children: Vec<AST>, r: TextRange) -> Self {
-        Self { kind: ASTKind::Sequence(children), range: r.boxed() }
+    pub fn set_range(&mut self, range: TextRange) {
+        self.range = Some(range)
+    }
+}
+
+impl AST {
+    pub fn program(children: Vec<AST>) -> Self {
+        Self { kind: ASTKind::Program(children), range: None, additional: None }
+    }
+    pub fn block(children: Vec<AST>) -> Self {
+        Self { kind: ASTKind::Sequence(children), range: None, additional: None }
     }
     // pub fn statement(children: Vec<AST>, r: TextRange) -> Self {
     //     Self { kind: ASTKind::Statement(children), range: box_range(r) }
@@ -153,9 +167,32 @@ impl AST {
     // pub fn boolean(value: bool, r: TextRange) -> Self {
     //     Self { kind: ASTKind::Boolean(value), range: box_range(r) }
     // }
-    // pub fn string(value: String, r: TextRange) -> Self {
-    //     Self { kind: ASTKind::UnescapedText(value), range: box_range(r) }
-    // }
+    pub fn string_escaped(value: String, handler: impl Into<String>, delimiter: usize) -> Self {
+        let handler = handler.into();
+        let handler = match handler.len() {
+            0 => None,
+            _ => Some(handler)
+        };
+        let text = Text {
+            handler,
+            delimiter: TextDelimiter::Quotation(delimiter),
+            value
+        };
+        Self { kind: ASTKind::String(Box::new(text)), range:None, additional: None }
+    }
+    pub fn string_literal(value: String, handler: impl Into<String>, delimiter: usize) -> Self {
+        let handler = handler.into();
+        let handler = match handler.len() {
+            0 => None,
+            _ => Some(handler)
+        };
+        let text = Text {
+            handler,
+            delimiter: TextDelimiter::Apostrophe(delimiter),
+            value
+        };
+        Self { kind: ASTKind::String(Box::new(text)), range:None, additional: None }
+    }
     // pub fn string_escaped(value: String, r: TextRange) -> Self {
     //     Self { kind: ASTKind::EscapedText(value), range: box_range(r) }
     // }
@@ -167,7 +204,7 @@ impl AST {
     //     let n = BigDecimal::parse_bytes(value.as_bytes(), base).unwrap_or_default();
     //     Self { kind: ASTKind::Decimal(Box::new(n)), range: box_range(r) }
     // }
-    // pub fn symbol(value: Vec<AST>, r: TextRange) -> Self {
-    //     Self { kind: ASTKind::Symbol(Box::new(Symbol::from(value))), range: box_range(r) }
-    // }
+    pub fn namespace(value: Vec<AST>) -> Self {
+        Self { kind: ASTKind::Namespace(value), range: None, additional: None }
+    }
 }
