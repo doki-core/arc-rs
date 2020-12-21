@@ -5,7 +5,7 @@ mod from_native;
 mod into_ast;
 mod into_native;
 
-pub use crate::value::from_native::{Byte, Dict, List, Text,TextDelimiter};
+pub use crate::value::from_native::{Byte, Dict, List, Text, TextDelimiter};
 pub use arc_number::Number;
 use std::fmt::{self, Debug, Display, Formatter};
 

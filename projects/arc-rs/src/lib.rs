@@ -1,6 +1,6 @@
 // mod ast;
-mod parser;
 mod errors;
+mod parser;
 pub mod utils;
 // pub use ast::{
 //     ast_impl::{Getter, Setter},

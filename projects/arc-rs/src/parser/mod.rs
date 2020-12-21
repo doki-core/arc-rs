@@ -1,9 +1,8 @@
 mod config;
-use arc_ast::{AST, TextRange};
-use arc_pest::Span;
 pub use crate::parser::config::ParserConfig;
-use crate::{ Result};
-use arc_pest::{Pair, Pairs, Parser, Rule, ArcParser};
+use crate::Result;
+use arc_ast::{value::Text, TextRange, AST};
+use arc_pest::{ArcParser, Pair, Pairs, Parser, Rule, Span};
 
 macro_rules! debug_cases {
     ($i:ident) => {{
@@ -26,9 +25,9 @@ impl ParserConfig {
                 Rule::statement => {
                     codes.push(self.parse_statement(pair));
                 }
-                Rule::data=>{
+                Rule::data => {
                     codes.push(self.parse_data(pair));
-                },
+                }
                 _ => debug_cases!(pair),
             };
         }
@@ -64,14 +63,13 @@ impl ParserConfig {
     fn parse_data(&self, pairs: Pair<Rule>) -> AST {
         let pair = pairs.into_inner().nth(0).unwrap();
         match pair.as_rule() {
-            Rule::dict_literal=>self.parse_dict_literal(pair),
-            Rule::String=>self.parse_string(pair),
+            Rule::dict_literal => self.parse_dict_literal(pair),
+            Rule::String => self.parse_string(pair),
             // Rule::list => self.parse_list(pair),
             // Rule::String => self.parse_string(pair),
             // Rule::Number => self.parse_number(pair),
             // Rule::Symbol => self.parse_namespace(pair),
             // Rule::SpecialValue => self.parse_special(pair),
-
             _ => debug_cases!(pair),
         }
     }
@@ -80,16 +78,13 @@ impl ParserConfig {
         let mut codes = vec![];
         for pair in pairs.into_inner() {
             let code = match pair.as_rule() {
-                Rule::dict_pair=>self.parse_dict_pair(pair),
-                // Rule::WHITESPACE => continue,
-                // Rule::expression => self.parse_expression(pair),
-                // Rule::if_statement => self.parse_if_else(pair),
-                // Rule::for_statement => self.parse_for_in(pair),
-                // Rule::assign_statement => self.parse_assign(pair),
+                Rule::SEPARATOR => continue,
+                Rule::dict_pair => self.parse_dict_pair(pair),
                 _ => debug_cases!(pair),
             };
             codes.push(code);
         }
+        println!("{:#?}", codes);
         unimplemented!()
     }
     fn parse_dict_pair(&self, pairs: Pair<Rule>) -> AST {
@@ -98,13 +93,15 @@ impl ParserConfig {
         let mut value = AST::default();
         for pair in pairs.into_inner() {
             match pair.as_rule() {
-                Rule::Set=>continue,
-                Rule::namespace=>key = self.parse_namespace(pair),
-                Rule::data=> value = self.parse_data(pair),
+                Rule::Set => continue,
+                Rule::namespace => key = self.parse_namespace(pair),
+                Rule::data => value = self.parse_data(pair),
                 _ => debug_cases!(pair),
             };
         }
-        unimplemented!()
+        let mut out = AST::pair(key, value);
+        out.set_range(r);
+        return out;
     }
     //
     // fn parse_list(&self, pairs: Pair<Rule>) -> AST {
@@ -137,13 +134,16 @@ impl ParserConfig {
         let mut symbols: Vec<AST> = vec![];
         for pair in pairs.into_inner() {
             match pair.as_rule() {
-                Rule::StringNormal=> symbols.push(self.parse_string_inner(pair)) ,
+                Rule::StringNormal => {
+                    let text = AST::string(self.parse_string_inner(pair));
+                    symbols.push(text)
+                }
                 _ => debug_cases!(pair),
             };
         }
         let mut out = AST::namespace(symbols);
         out.set_range(r);
-        return out
+        return out;
     }
     fn parse_symbol(&self, pairs: Pair<Rule>) -> AST {
         let r = self.get_position(pairs.as_span());
@@ -202,41 +202,32 @@ impl ParserConfig {
     //
     fn parse_string(&self, pairs: Pair<Rule>) -> AST {
         let r = self.get_position(pairs.as_span());
-        let mut value: Vec<AST> = vec![];
+        let mut text = Text::default();
         for pair in pairs.into_inner() {
             match pair.as_rule() {
-                Rule::StringNormal=>continue,
+                Rule::StringNormal => text = self.parse_string_inner(pair),
                 _ => debug_cases!(pair),
             };
         }
-        unimplemented!()
+        let mut out = AST::string(text);
+        out.set_range(r);
+        return out;
     }
-    fn parse_string_inner(&self, pairs: Pair<Rule>) -> AST {
-        let r = self.get_position(pairs.as_span());
+    fn parse_string_inner(&self, pairs: Pair<Rule>) -> Text {
         let mut is_literal = false;
         let mut text = String::with_capacity(pairs.as_str().len());
         let mut delimiter = 0;
         for pair in pairs.into_inner() {
             match pair.as_rule() {
-                Rule::S2=> {
-                    delimiter+=1
-                },
-                Rule::NS2=> {
-                    text.push_str(pair.as_str())
-                },
+                Rule::S2 => delimiter += 1,
+                Rule::NS2 => text.push_str(pair.as_str()),
                 _ => debug_cases!(pair),
             };
         }
-        let mut out = match is_literal {
-            true => {
-                AST::string_literal(text, "", delimiter)
-            }
-            false => {
-                AST::string_escaped(text, "", delimiter)
-            }
-        };
-        out.set_range(r);
-        return out
+        match is_literal {
+            true => Text::string_literal(text, "", delimiter),
+            false => Text::string_escaped(text, "", delimiter),
+        }
     }
     // fn parse_number(&self, pairs: Pair<Rule>) -> AST {
     //     let r = self.get_position(pairs.as_span());

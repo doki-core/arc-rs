@@ -1,9 +1,8 @@
-mod range;
 mod literal;
+mod range;
 use std::fmt::{self, Debug, Formatter};
 
-pub use crate::ast::range::TextRange;
-pub use crate::ast::literal::Symbol;
+pub use crate::ast::{literal::Symbol, range::TextRange};
 use crate::value::{Text, TextDelimiter};
 use arc_number::Number;
 
@@ -163,35 +162,14 @@ impl AST {
     // pub fn null(r: TextRange) -> Self {
     //     Self { kind: ASTKind::Null, range: box_range(r) }
     // }
-    //
+    pub fn pair(lhs: AST, rhs: AST) -> Self {
+        Self { kind: ASTKind::Pair(Box::new(lhs), Box::new(rhs)), range: None, additional: None }
+    }
     // pub fn boolean(value: bool, r: TextRange) -> Self {
     //     Self { kind: ASTKind::Boolean(value), range: box_range(r) }
     // }
-    pub fn string_escaped(value: String, handler: impl Into<String>, delimiter: usize) -> Self {
-        let handler = handler.into();
-        let handler = match handler.len() {
-            0 => None,
-            _ => Some(handler)
-        };
-        let text = Text {
-            handler,
-            delimiter: TextDelimiter::Quotation(delimiter),
-            value
-        };
-        Self { kind: ASTKind::String(Box::new(text)), range:None, additional: None }
-    }
-    pub fn string_literal(value: String, handler: impl Into<String>, delimiter: usize) -> Self {
-        let handler = handler.into();
-        let handler = match handler.len() {
-            0 => None,
-            _ => Some(handler)
-        };
-        let text = Text {
-            handler,
-            delimiter: TextDelimiter::Apostrophe(delimiter),
-            value
-        };
-        Self { kind: ASTKind::String(Box::new(text)), range:None, additional: None }
+    pub fn string(value: Text) -> Self {
+        Self { kind: ASTKind::String(Box::new(value)), range: None, additional: None }
     }
     // pub fn string_escaped(value: String, r: TextRange) -> Self {
     //     Self { kind: ASTKind::EscapedText(value), range: box_range(r) }
@@ -206,5 +184,24 @@ impl AST {
     // }
     pub fn namespace(value: Vec<AST>) -> Self {
         Self { kind: ASTKind::Namespace(value), range: None, additional: None }
+    }
+}
+
+impl Text {
+    pub fn string_escaped(value: String, handler: impl Into<String>, delimiter: usize) -> Self {
+        let handler = handler.into();
+        let handler = match handler.len() {
+            0 => None,
+            _ => Some(handler),
+        };
+        Text { handler, delimiter: TextDelimiter::Quotation(delimiter), value }
+    }
+    pub fn string_literal(value: String, handler: impl Into<String>, delimiter: usize) -> Self {
+        let handler = handler.into();
+        let handler = match handler.len() {
+            0 => None,
+            _ => Some(handler),
+        };
+        Text { handler, delimiter: TextDelimiter::Apostrophe(delimiter), value }
     }
 }

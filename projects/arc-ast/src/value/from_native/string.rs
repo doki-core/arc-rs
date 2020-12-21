@@ -3,8 +3,8 @@ use super::*;
 #[derive(Debug, Clone, Eq, PartialEq)]
 pub struct Text {
     pub(crate) handler: Option<String>,
-    pub(crate)  delimiter: TextDelimiter,
-    pub(crate)  value: String,
+    pub(crate) delimiter: TextDelimiter,
+    pub(crate) value: String,
 }
 
 #[allow(dead_code)]
@@ -53,7 +53,6 @@ impl Display for Text {
                 write!(f, "{}", self.value)?;
                 write!(f, "»")?;
             }
-
         }
         Ok(())
     }
@@ -105,6 +104,9 @@ impl From<Text> for Value {
 }
 
 impl Text {
+    pub fn set_handler(&mut self, handler: impl Into<String>) {
+        self.handler = Some(handler.into())
+    }
     pub fn get_handler(&self) -> Option<String> {
         self.handler.to_owned()
     }

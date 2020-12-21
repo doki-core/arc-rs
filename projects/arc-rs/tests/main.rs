@@ -1,8 +1,9 @@
-use arc_rs::ParserConfig;
-use arc_rs::Result;
 use arc_ast::AST;
-use std::fs::{self, read_to_string};
-use std::path::Path;
+use arc_rs::{ParserConfig, Result};
+use std::{
+    fs::{self, read_to_string},
+    path::Path,
+};
 
 mod json_compatibility;
 
@@ -11,7 +12,6 @@ fn parse(file: impl AsRef<Path>) -> Result<AST> {
     let ast = parser.parse(&read_to_string(file.as_ref())?)?;
     Ok(ast)
 }
-
 
 #[test]
 fn ready() {

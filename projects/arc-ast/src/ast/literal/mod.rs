@@ -1,11 +1,8 @@
-
 #[derive(Debug, Clone, Eq, PartialEq)]
 pub enum Symbol {
     Index(usize),
     Key(String),
 }
-
-
 
 impl Symbol {
     pub fn index(input: &str) -> Self {

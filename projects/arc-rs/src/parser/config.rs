@@ -1,6 +1,5 @@
 use super::*;
 
-
 pub struct ParserConfig {
     pub tab_size: usize,
 }

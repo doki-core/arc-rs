@@ -47,7 +47,6 @@ impl TextRange {
 //     }
 // }
 
-
 pub fn box_range(r: TextRange) -> Option<TextRange> {
     match r.sum() {
         0 => None,
