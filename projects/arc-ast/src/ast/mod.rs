@@ -1,7 +1,8 @@
 mod literal;
 mod range;
-use std::fmt::{self, Debug, Formatter};
+mod into_value;
 
+use std::fmt::{self, Debug, Formatter};
 pub use crate::ast::{literal::Symbol, range::TextRange};
 use crate::value::{Text, TextDelimiter};
 use arc_number::Number;
@@ -11,7 +12,7 @@ use arc_number::Number;
 
 #[derive(Clone, Eq, PartialEq)]
 pub struct AST {
-    kind: ASTKind,
+    pub(crate) kind: ASTKind,
     range: Option<TextRange>,
     additional: Option<String>,
 }
@@ -32,10 +33,13 @@ pub enum ASTKind {
 
     Null,
     Boolean(bool),
-    Namespace(Vec<AST>),
-    Symbol(Box<Symbol>),
     String(Box<Text>),
     Number(Box<Number>),
+    Symbol(Box<Symbol>),
+
+    Namespace(Vec<AST>),
+    Dict(Vec<AST>),
+    List(Vec<AST>),
 }
 
 impl Debug for AST {
@@ -155,16 +159,10 @@ impl AST {
     //     Self { kind: ASTKind::Template(Box::new(value)), range: box_range(r) }
     // }
     //
-    // pub fn list(value: Vec<AST>, r: TextRange) -> Self {
-    //     Self { kind: ASTKind::List(value), range: box_range(r) }
-    // }
-    //
     // pub fn null(r: TextRange) -> Self {
     //     Self { kind: ASTKind::Null, range: box_range(r) }
     // }
-    pub fn pair(lhs: AST, rhs: AST) -> Self {
-        Self { kind: ASTKind::Pair(Box::new(lhs), Box::new(rhs)), range: None, additional: None }
-    }
+
     // pub fn boolean(value: bool, r: TextRange) -> Self {
     //     Self { kind: ASTKind::Boolean(value), range: box_range(r) }
     // }
@@ -184,6 +182,15 @@ impl AST {
     // }
     pub fn namespace(value: Vec<AST>) -> Self {
         Self { kind: ASTKind::Namespace(value), range: None, additional: None }
+    }
+    pub fn list(value: Vec<AST>) -> Self {
+        Self { kind: ASTKind::List(value), range: None, additional: None }
+    }
+    pub fn dict(pairs: Vec<AST> ) -> Self {
+        Self { kind: ASTKind::Dict(pairs), range: None, additional: None }
+    }
+    pub fn pair(lhs: AST, rhs: AST) -> Self {
+        Self { kind: ASTKind::Pair(Box::new(lhs), Box::new(rhs)), range: None, additional: None }
     }
 }
 

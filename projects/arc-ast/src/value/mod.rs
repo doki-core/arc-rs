@@ -1,6 +1,5 @@
 mod access;
 mod check;
-mod from_ast;
 mod from_native;
 mod into_ast;
 mod into_native;

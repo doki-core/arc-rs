@@ -22,11 +22,12 @@ impl ParserConfig {
         let mut codes = vec![];
         for pair in pairs {
             match pair.as_rule() {
+                Rule::EOI=>continue,
                 Rule::statement => {
                     codes.push(self.parse_statement(pair));
                 }
                 Rule::data => {
-                    codes.push(self.parse_data(pair));
+                    return self.parse_data(pair)
                 }
                 _ => debug_cases!(pair),
             };
@@ -63,6 +64,7 @@ impl ParserConfig {
     fn parse_data(&self, pairs: Pair<Rule>) -> AST {
         let pair = pairs.into_inner().nth(0).unwrap();
         match pair.as_rule() {
+            Rule::list_literal=> self.parse_list_literal(pair),
             Rule::dict_literal => self.parse_dict_literal(pair),
             Rule::String => self.parse_string(pair),
             // Rule::list => self.parse_list(pair),
@@ -73,19 +75,33 @@ impl ParserConfig {
             _ => debug_cases!(pair),
         }
     }
+    fn parse_list_literal(&self, pairs: Pair<Rule>) -> AST {
+        let r = self.get_position(pairs.as_span());
+        let mut codes = vec![];
+        for pair in pairs.into_inner() {
+            match pair.as_rule() {
+                Rule::SEPARATOR => continue,
+                Rule::data => codes.push(self.parse_data(pair)),
+                _ => debug_cases!(pair),
+            };
+        }
+        let mut out = AST::list(codes);
+        out.set_range(r);
+        return out;
+    }
     fn parse_dict_literal(&self, pairs: Pair<Rule>) -> AST {
         let r = self.get_position(pairs.as_span());
         let mut codes = vec![];
         for pair in pairs.into_inner() {
-            let code = match pair.as_rule() {
+            match pair.as_rule() {
                 Rule::SEPARATOR => continue,
-                Rule::dict_pair => self.parse_dict_pair(pair),
+                Rule::dict_pair => codes.push(self.parse_dict_pair(pair)),
                 _ => debug_cases!(pair),
             };
-            codes.push(code);
         }
-        println!("{:#?}", codes);
-        unimplemented!()
+        let mut out = AST::dict(codes);
+        out.set_range(r);
+        return out;
     }
     fn parse_dict_pair(&self, pairs: Pair<Rule>) -> AST {
         let r = self.get_position(pairs.as_span());
