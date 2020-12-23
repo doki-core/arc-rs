@@ -1,10 +1,8 @@
-pub mod byte;
 pub mod dict;
 pub mod list;
 pub mod number;
 pub mod string;
 
-pub use byte::Byte;
 pub use dict::Dict;
 pub use list::List;
 pub use string::{Text, TextDelimiter};

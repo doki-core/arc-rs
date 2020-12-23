@@ -4,7 +4,7 @@ mod from_native;
 mod into_ast;
 mod into_native;
 
-pub use crate::value::from_native::{Byte, Dict, List, Text, TextDelimiter};
+pub use crate::value::from_native::{Dict, List, Text, TextDelimiter};
 pub use arc_number::Number;
 use std::fmt::{self, Debug, Display, Formatter};
 
@@ -14,7 +14,6 @@ pub enum Value {
     Boolean(bool),
     Number(Box<Number>),
     String(Box<Text>),
-    Byte(Box<Byte>),
     List(Box<List>),
     Dict(Box<Dict>),
 }
@@ -32,7 +31,6 @@ impl Debug for Value {
             Value::Boolean(v) => Display::fmt(v, f),
             Value::Number(v) => Display::fmt(v, f),
             Value::String(v) => Display::fmt(v, f),
-            Value::Byte(v) => Debug::fmt(v, f),
             Value::List(v) => Debug::fmt(v, f),
             Value::Dict(v) => Debug::fmt(v, f),
         }

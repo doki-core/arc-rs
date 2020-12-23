@@ -58,7 +58,6 @@ impl Value {
             Value::Boolean(_) => vec![self.to_owned()],
             Value::Number(_) => vec![self.to_owned()],
             Value::String(_) => vec![self.to_owned()],
-            Value::Byte(_) => vec![self.to_owned()],
             Value::List(v) => v.as_vec(),
             Value::Dict(v) => v.as_vec(),
         }
@@ -70,7 +69,6 @@ impl Value {
             Value::Boolean(v) => vec![format!("{}", v)],
             Value::Number(v) => vec![format!("{}", v)],
             Value::String(v) => vec![format!("{:?}", v)],
-            Value::Byte(v) => vec![format!("{:?}", v)],
             Value::List(v) => {
                 let mut vec = Vec::with_capacity(v.length());
                 for item in v.iter() {

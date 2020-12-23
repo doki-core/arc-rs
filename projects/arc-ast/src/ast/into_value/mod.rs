@@ -46,7 +46,7 @@ impl Scope {
         for item in ast {
             match item.kind {
                 ASTKind::Pair(key, value) => {
-                    self.get_pointer(key);
+                    self.get_pointer(*key);
                     unimplemented!()
                 }
                 _ => unimplemented!("ASTKind::{:#?} => {{}}", item.kind)
@@ -54,32 +54,38 @@ impl Scope {
         }
         return self.top.to_owned();
     }
-    pub fn pointer(&mut self, namespace: AST) {
-        let namespace = match namespace.kind {
-            ASTKind::Namespace(s) => s,
-            _ => unreachable!()
-        };
+    pub fn get_pointer(&mut self, namespace: AST) -> &mut Value {
+        let namespace = self.extract_namespace(namespace);
         for path in self.pin_path.iter().flatten().chain(namespace.iter()) {
-            match path.kind {
-                ASTKind::String(key) => {
+            match path {
+                Value::String(key) => {
                     println!("{:?}", key)
                 }
-                ASTKind::Number(index) => {
+                Value::Number(index) => {
                     println!("{:?}", index)
                 }
                 _ => unreachable!()
             }
         }
+        unimplemented!()
     }
-    pub fn extract_namespace(&self, namespace: AST ) {
+    pub fn extract_namespace(&self, namespace: AST )->Vec<Value> {
+        let mut out = vec![];
         match namespace.kind {
             ASTKind::Namespace(ns) => {
                 for item in ns {
+                    match item.kind {
+                        ASTKind::String(v) => {
+                            out.push(Value::from(*v))
+                        }
+                        ASTKind::Number(v) => {  out.push(Value::from(*v))},
+                        _ => unreachable!()
+                    }
 
                 }
-
             },
             _ => unreachable!()
         };
+        return out
     }
 }
