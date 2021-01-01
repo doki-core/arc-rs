@@ -1,4 +1,5 @@
 use super::*;
+use indexmap::map::Entry;
 
 #[derive(Clone, Eq, PartialEq)]
 pub struct Dict {
@@ -97,6 +98,10 @@ impl Dict {
 
     pub fn as_vec(&self) -> Vec<Value> {
         self.value.values().cloned().collect()
+    }
+
+    pub fn entry(&mut self, key: String) ->  Entry<String, Value> {
+        self.value.entry(key)
     }
 }
 

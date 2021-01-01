@@ -110,4 +110,7 @@ impl Text {
     pub fn get_handler(&self) -> Option<String> {
         self.handler.to_owned()
     }
+    pub fn as_str(&self) -> &str {
+        self.value.as_str()
+    }
 }
