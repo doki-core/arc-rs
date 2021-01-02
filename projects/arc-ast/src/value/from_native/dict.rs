@@ -75,6 +75,7 @@ impl Dict {
         Value::from(Dict::default())
     }
 
+
     pub fn length(&self) -> usize {
         self.value.len()
     }

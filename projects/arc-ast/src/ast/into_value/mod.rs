@@ -36,51 +36,42 @@ impl<'a> Default for Scope {
 
 
 impl Scope {
-    pub fn build(&mut self, ast: ASTKind) -> Value {
+    pub fn build(&mut self, ast: ASTKind ) -> Value {
         match ast {
-            ASTKind::Program(_) => {
-                unimplemented!()
-            }
-            ASTKind::Dict(ast) => {
-                for item in ast {
-                    match item.kind {
-                        ASTKind::Pair(key, value) => {
-                            *self.get_pointer(*key) = self.get_item(value.kind)
-                        }
-                        _ => unimplemented!("ASTKind::{:#?} => {{}}", item.kind)
-                    }
-                }
-            }
-
-            _ => unimplemented!("ASTKind::{:?}", ast)
-        }
-        return self.top.to_owned();
-    }
-    fn get_item(&mut self, ast: ASTKind) ->Value {
-        match ast {
-            ASTKind::Dict(v) => {
-                let dict = IndexMap::<String,Value>::new();
-                for item in v {
-                    match item.kind {
-                        ASTKind::Pair(key, value) => {
-                            *self.get_pointer(key.kind) = self.get_item(value.kind)
-                        }
-                        _ => unimplemented!("ASTKind::{:#?} => {{}}", item.kind)
-                    }
-                }
-                Value::from(dict)
+            ASTKind::Program(v)|ASTKind::Dict(v) => {
+                v.into_iter().for_each(|item|self.visit_ast(item.kind))
             }
             ASTKind::String(v) => {
-                Value::from(*v)
+                self.top = Value::from(*v)
             }
+            _ => unimplemented!("ASTKind::{:?}", ast)
+        }
+        self.top.to_owned()
+    }
+
+    pub fn visit_ast(&mut self, ast: ASTKind) {
+        match ast {
+            ASTKind::Dict(v) => {
+                for item in v {
+                    self.visit_ast(item.kind);
+                }
+            }
+                ASTKind::Pair(key, value) => {
+                    self.push_key(key.kind);
+                    self.visit_ast(value.kind);
+                    self.pop_key();
+                }
+            ASTKind::String(v) => {
+                *self.get_pointer() = Value::from(*v)
+            }
+
             _ => unimplemented!("ASTKind::{:?}", ast)
         }
     }
 
-    fn get_pointer(&mut self, namespace: ASTKind) -> &mut Value {
-        let namespace = self.extract_namespace(namespace);
+    fn get_pointer(&mut self) -> &mut Value {
         let mut pointer = &mut self.top;
-        for path in self.pin_path.iter().flatten().chain(self.key_path.iter().flatten()).chain(namespace.iter()) {
+        for path in self.pin_path.iter().flatten().chain(self.key_path.iter().flatten()) {
             match path {
                 Value::String(key) => {
                     pointer = pointer.ensure_key(key.as_str().to_string())
@@ -93,6 +84,20 @@ impl Scope {
             }
         }
         return pointer
+    }
+
+    fn new_pin(&mut self, namespace: ASTKind) {
+        let namespace = self.extract_namespace(namespace);
+        self.key_path.push(namespace)
+    }
+
+    fn push_key(&mut self, namespace: ASTKind) {
+        let namespace = self.extract_namespace(namespace);
+        self.key_path.push(namespace)
+    }
+
+    fn pop_key(&mut self) -> Option<Vec<Value>> {
+        self.key_path.pop()
     }
 
     fn extract_namespace(&self, namespace: ASTKind )->Vec<Value> {
@@ -119,7 +124,13 @@ impl Scope {
 impl Value {
     pub fn ensure_key(&mut self, key: String) -> &'_ mut Value {
         match self {
+            Value::Null => {
+                *self = Dict::empty();
+                self
+            }
+
             Value::Dict(dict) => {dict.ensure_key(key)}
+
             _ => unimplemented!("{:?}",self)
         }
     }
