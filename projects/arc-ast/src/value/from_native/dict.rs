@@ -75,7 +75,6 @@ impl Dict {
         Value::from(Dict::default())
     }
 
-
     pub fn length(&self) -> usize {
         self.value.len()
     }
@@ -101,7 +100,7 @@ impl Dict {
         self.value.values().cloned().collect()
     }
 
-    pub fn entry(&mut self, key: String) ->  Entry<String, Value> {
+    pub fn entry(&mut self, key: String) -> Entry<String, Value> {
         self.value.entry(key)
     }
 }

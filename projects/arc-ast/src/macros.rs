@@ -17,7 +17,7 @@ macro_rules! dict {
     };
     {$($key:tt: $value:expr,)*} => ({
         let size = 0 $( + {let _ = $key; 1} )*;
-        let mut dict = indexmap::IndexMap::with_capacity(size);
+        let mut dict = $crate::utils::IndexMap::with_capacity(size);
         $(dict.insert(String::from($key), $crate::Value::from($value));)*
         $crate::Value::from(dict)
     })

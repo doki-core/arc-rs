@@ -1,11 +1,11 @@
+mod into_value;
 mod literal;
 mod range;
-mod into_value;
 
-use std::fmt::{self, Debug, Formatter};
 pub use crate::ast::{literal::Symbol, range::TextRange};
 use crate::value::{Text, TextDelimiter};
 use arc_number::Number;
+use std::fmt::{self, Debug, Formatter};
 
 // use bigdecimal::BigDecimal;
 // use num::BigInt;
@@ -186,7 +186,7 @@ impl AST {
     pub fn list(value: Vec<AST>) -> Self {
         Self { kind: ASTKind::List(value), range: None, additional: None }
     }
-    pub fn dict(pairs: Vec<AST> ) -> Self {
+    pub fn dict(pairs: Vec<AST>) -> Self {
         Self { kind: ASTKind::Dict(pairs), range: None, additional: None }
     }
     pub fn pair(lhs: AST, rhs: AST) -> Self {

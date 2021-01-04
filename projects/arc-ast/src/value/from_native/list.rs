@@ -1,10 +1,11 @@
 use super::*;
 use std::{slice::Iter, str::FromStr, vec::IntoIter};
+use std::collections::btree_map::Values;
 
 #[derive(Clone, Eq, PartialEq)]
 pub struct List {
     handler: Option<String>,
-    value: Vec<Value>,
+    value: BTreeMap<usize, Value>,
 }
 
 impl Debug for List {
@@ -19,7 +20,7 @@ impl Debug for List {
 
 impl Default for List {
     fn default() -> Self {
-        Self { handler: None, value: vec![] }
+        Self { handler: None, value: Default::default() }
     }
 }
 
@@ -30,9 +31,10 @@ macro_rules! native2list {
         V: Into<Value>,
     {
         fn from(input: $T) -> Self {
-            let mut list = vec![];
-            for i in input.into_iter() {
-                list.push(i.into())
+            let mut list = BTreeMap::new();
+
+            for (i, v) in input.into_iter().enumerate() {
+                list.insert(i, Value::from(v))
             }
             Self { handler: None, value: list }
         }
@@ -68,32 +70,30 @@ impl From<List> for Value {
     }
 }
 
-impl Index<usize> for List {
-    type Output = Value;
-    fn index(&self, n: usize) -> &Self::Output {
-        self.value.index(n)
-    }
-}
+// impl Index<usize> for List {
+//     type Output = Value;
+//     fn index(&self, n: usize) -> &Self::Output {
+//         self.value.index(n)
+//     }
+// }
 
 impl List {
     pub fn empty() -> Value {
         Value::from(List::default())
     }
 
-    pub fn into_iter(self) -> IntoIter<Value> {
-        self.value.into_iter()
+    pub fn as_iter(&self) -> Values<'_, usize, Value> {
+        self.value.values()
     }
 
     pub fn length(&self) -> usize {
         self.value.len()
     }
+
     pub fn as_vec(&self) -> Vec<Value> {
-        self.value.to_owned()
+        self.value.values().collect()
     }
 
-    pub fn iter(&self) -> Iter<'_, Value> {
-        self.value.iter()
-    }
     pub fn get_handler(&self) -> Option<String> {
         self.handler.to_owned()
     }
@@ -109,7 +109,7 @@ impl List {
         self.value.extend(item.into().value)
     }
     pub fn extend_one(&mut self, item: impl Into<Value>) {
-        // self.value.extend_one(item.into())
-        self.value.push(item.into())
+       unimplemented!()
+
     }
 }

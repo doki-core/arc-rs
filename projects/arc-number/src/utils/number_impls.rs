@@ -35,3 +35,8 @@ impl NumberKind {
         }
     }
 }
+impl NumberKind {
+    pub fn as_index(&self) -> Option<usize> {
+        usize::try_from(self.clone()).ok()
+    }
+}
