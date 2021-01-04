@@ -12,7 +12,6 @@ fn json_string() {
     println!("{:#?}", Value::from(ast))
 }
 
-
 #[test]
 fn json_number() {
     let ast = parse("tests/json_compatibility/number.json").unwrap();
@@ -24,4 +23,3 @@ fn json_object() {
     let ast = parse("tests/json_compatibility/object.json").unwrap();
     println!("{:#?}", Value::from(ast))
 }
-
