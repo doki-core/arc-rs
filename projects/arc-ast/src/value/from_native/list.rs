@@ -1,6 +1,10 @@
 use super::*;
-use std::{slice::Iter, str::FromStr, vec::IntoIter};
-use std::collections::btree_map::Values;
+use std::{
+    collections::btree_map::{Entry, Values},
+    slice::Iter,
+    str::FromStr,
+    vec::IntoIter,
+};
 
 #[derive(Clone, Eq, PartialEq)]
 pub struct List {
@@ -14,7 +18,7 @@ impl Debug for List {
             Some(s) => write!(f, "{}", s)?,
             None => (),
         }
-        Debug::fmt(&self.value, f)
+        f.debug_list().entries(self.value.values()).finish()
     }
 }
 
@@ -34,7 +38,7 @@ macro_rules! native2list {
             let mut list = BTreeMap::new();
 
             for (i, v) in input.into_iter().enumerate() {
-                list.insert(i, Value::from(v))
+                list.insert(i, v.into());
             }
             Self { handler: None, value: list }
         }
@@ -82,16 +86,16 @@ impl List {
         Value::from(List::default())
     }
 
-    pub fn as_iter(&self) -> Values<'_, usize, Value> {
-        self.value.values()
-    }
-
     pub fn length(&self) -> usize {
         self.value.len()
     }
 
     pub fn as_vec(&self) -> Vec<Value> {
-        self.value.values().collect()
+        self.value.values().cloned().collect()
+    }
+
+    pub fn entry(&mut self, index: usize) -> Entry<'_, usize, Value> {
+        self.value.entry(index)
     }
 
     pub fn get_handler(&self) -> Option<String> {
@@ -102,14 +106,16 @@ impl List {
             Ok(o) => o,
             Err(_) => return None,
         };
-        if i > 0 { self.value.get(i as usize) } else { self.value.get((self.value.len() as isize + i) as usize) }
+        match i > 0 {
+            true => self.value.get(&(i as usize)),
+            false => self.value.get(&((self.value.len() as isize + i) as usize)),
+        }
     }
 
     pub fn extend(&mut self, item: impl Into<List>) {
         self.value.extend(item.into().value)
     }
     pub fn extend_one(&mut self, item: impl Into<Value>) {
-       unimplemented!()
-
+        unimplemented!()
     }
 }

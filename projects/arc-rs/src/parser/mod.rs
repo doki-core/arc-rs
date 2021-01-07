@@ -64,10 +64,7 @@ impl ParserConfig {
         match pair.as_rule() {
             Rule::list_literal => self.parse_list_literal(pair),
             Rule::dict_literal => self.parse_dict_literal(pair),
-            Rule::String => {
-                self.parse_string(pair)
-
-            },
+            Rule::String => self.parse_string(pair),
             // Rule::list => self.parse_list(pair),
             // Rule::String => self.parse_string(pair),
             // Rule::Number => self.parse_number(pair),
@@ -151,16 +148,15 @@ impl ParserConfig {
         let mut symbols: Vec<AST> = vec![];
         for pair in pairs.into_inner() {
             match pair.as_rule() {
-                Rule::Dot=>continue,
+                Rule::Dot => continue,
                 Rule::StringNormal => {
                     let text = AST::string(self.parse_string_inner(pair));
                     symbols.push(text)
                 }
-                Rule::SYMBOL=> {
+                Rule::SYMBOL => {
                     let text = AST::string(Text::from(pair.as_str()));
                     symbols.push(text)
-
-                     },
+                }
                 _ => debug_cases!(pair),
             };
         }
@@ -238,8 +234,8 @@ impl ParserConfig {
             };
         }
         match is_literal {
-            true => Text::string_literal(text, "", delimiter /2),
-            false => Text::string_escaped(text, "", delimiter/2),
+            true => Text::string_literal(text, "", delimiter / 2),
+            false => Text::string_escaped(text, "", delimiter / 2),
         }
     }
     // fn parse_number(&self, pairs: Pair<Rule>) -> AST {

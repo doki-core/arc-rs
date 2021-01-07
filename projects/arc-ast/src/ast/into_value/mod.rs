@@ -74,7 +74,6 @@ impl Scope {
                 Value::String(key) => pointer = pointer.ensure_key(key.as_str().to_string()),
                 Value::Number(index) => {
                     pointer = pointer.ensure_index(index.as_index().unwrap());
-                    unimplemented!()
                 }
                 _ => unreachable!(),
             }
@@ -137,7 +136,7 @@ impl Value {
     pub fn ensure_index(&mut self, index: usize) -> &'_ mut Value {
         match self {
             Value::Null => {
-                *self = List::new(index);
+                *self = List::empty();
                 self.ensure_index(index)
             }
             Value::List(list) => list.ensure_index(index),
@@ -154,6 +153,6 @@ impl Dict {
 
 impl List {
     pub fn ensure_index(&mut self, index: usize) -> &'_ mut Value {
-        self.value.or;
+        self.entry(index).or_default()
     }
 }

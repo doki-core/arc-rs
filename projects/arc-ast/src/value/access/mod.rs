@@ -71,7 +71,7 @@ impl Value {
             Value::String(v) => vec![format!("{:?}", v)],
             Value::List(v) => {
                 let mut vec = Vec::with_capacity(v.length());
-                for item in v.iter() {
+                for item in v.as_vec() {
                     vec.push(format!("{:?}", item))
                 }
                 return vec;

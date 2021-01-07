@@ -1,5 +1,5 @@
 use super::*;
-use arc_ast::{AST, value::Text, dict};
+use arc_ast::{dict, value::Text, AST};
 
 #[test]
 fn test() {
@@ -7,7 +7,7 @@ fn test() {
     println!("{:?}", Value::from(Text::from("x")));
     println!("{:?}", AST::string(Text::from("x")));
     println!("{:?}", Value::from(AST::string(Text::from("x"))));
-    println!("{:?}", dict!{"a": "1"});
+    println!("{:?}", dict! {"a": "1"});
 }
 
 //

@@ -5,11 +5,10 @@ use std::{
     path::Path,
 };
 
-
-mod json_compatibility;
+mod display;
 mod easy_structure;
 mod hard_structure;
-mod display;
+mod json_compatibility;
 
 fn parse(file: impl AsRef<Path>) -> Result<AST> {
     let parser = ParserConfig::default();
