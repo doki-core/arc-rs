@@ -60,9 +60,11 @@ impl Scope {
                 self.visit_ast(value.kind);
                 self.pop_key();
             }
-
+            ASTKind::Null => {
+                self.get_pointer();
+            },
+            ASTKind::Boolean(v) => *self.get_pointer() = Value::from(v),
             ASTKind::String(v) => *self.get_pointer() = Value::from(*v),
-
             _ => unimplemented!("ASTKind::{:?}", ast),
         }
     }
@@ -73,7 +75,7 @@ impl Scope {
             match path {
                 Value::String(key) => pointer = pointer.ensure_key(key.as_str().to_string()),
                 Value::Number(index) => {
-                    pointer = pointer.ensure_index(index.as_index().unwrap());
+                    pointer = pointer.ensure_index(index.as_index().unwrap_or_default());
                 }
                 _ => unreachable!(),
             }
@@ -153,6 +155,7 @@ impl Dict {
 
 impl List {
     pub fn ensure_index(&mut self, index: usize) -> &'_ mut Value {
+
         self.entry(index).or_default()
     }
 }

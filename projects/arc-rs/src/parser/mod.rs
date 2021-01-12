@@ -4,6 +4,7 @@ use crate::Result;
 use arc_ast::{value::Text, TextRange, AST};
 use arc_pest::{ArcParser, Pair, Pairs, Parser, Rule, Span};
 
+
 macro_rules! debug_cases {
     ($i:ident) => {{
         println!("Rule::{:?}=>continue,", $i.as_rule());
@@ -27,6 +28,9 @@ impl ParserConfig {
                     codes.push(self.parse_statement(pair));
                 }
                 Rule::data => return self.parse_data(pair),
+                Rule::dict_pair=> {
+                    codes.push(self.parse_dict_pair(pair))
+                     },
                 _ => debug_cases!(pair),
             };
         }
@@ -65,6 +69,7 @@ impl ParserConfig {
             Rule::list_literal => self.parse_list_literal(pair),
             Rule::dict_literal => self.parse_dict_literal(pair),
             Rule::String => self.parse_string(pair),
+            Rule::Special=>self.parse_special(pair),
             // Rule::list => self.parse_list(pair),
             // Rule::String => self.parse_string(pair),
             // Rule::Number => self.parse_number(pair),
@@ -150,13 +155,17 @@ impl ParserConfig {
             match pair.as_rule() {
                 Rule::Dot => continue,
                 Rule::StringNormal => {
-                    let text = AST::string(self.parse_string_inner(pair));
-                    symbols.push(text)
+                    let key = AST::string(self.parse_string_inner(pair));
+                    symbols.push(key)
                 }
                 Rule::SYMBOL => {
-                    let text = AST::string(Text::from(pair.as_str()));
-                    symbols.push(text)
+                    let key = AST::string(Text::from(pair.as_str()));
+                    symbols.push(key)
                 }
+                Rule::SignedNumber=> {
+                    let index = AST::integer(pair.as_str(), 10);
+                    symbols.push(index)
+                },
                 _ => debug_cases!(pair),
             };
         }
@@ -263,12 +272,14 @@ impl ParserConfig {
     //         _ => unreachable!(),
     //     }
     // }
-    // fn parse_special(&self, pairs: Pair<Rule>) -> AST {
-    //     let r = self.get_position(pairs.as_span());
-    //     match pairs.as_str() {
-    //         "true" => AST::boolean(true, r),
-    //         "false" => AST::boolean(false, r),
-    //         _ => AST::null(r),
-    //     }
-    // }
+    fn parse_special(&self, pairs: Pair<Rule>) -> AST {
+        let r = self.get_position(pairs.as_span());
+        let mut out = match pairs.as_str() {
+            "true" => AST::boolean(true),
+            "false" => AST::boolean(false),
+            _ => AST::null(),
+        };
+        out.set_range(r);
+        return out
+    }
 }

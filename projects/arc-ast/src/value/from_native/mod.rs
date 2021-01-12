@@ -13,7 +13,7 @@ use indexmap::IndexMap;
 use std::{
     collections::{BTreeMap, BTreeSet, HashMap, HashSet, LinkedList, VecDeque},
     fmt::{self, Debug, Display, Formatter},
-    ops::Index,
+
 };
 
 impl From<()> for Value {

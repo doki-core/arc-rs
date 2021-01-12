@@ -4,7 +4,7 @@ mod range;
 
 pub use crate::ast::{literal::Symbol, range::TextRange};
 use crate::value::{Text, TextDelimiter};
-use arc_number::Number;
+use arc_number::{Number, BigInt};
 use std::fmt::{self, Debug, Formatter};
 
 // use bigdecimal::BigDecimal;
@@ -159,23 +159,23 @@ impl AST {
     //     Self { kind: ASTKind::Template(Box::new(value)), range: box_range(r) }
     // }
     //
-    // pub fn null(r: TextRange) -> Self {
-    //     Self { kind: ASTKind::Null, range: box_range(r) }
-    // }
+    pub fn null() -> Self {
+        Self { kind: ASTKind::Null, range: None, additional: None }
+    }
 
-    // pub fn boolean(value: bool, r: TextRange) -> Self {
-    //     Self { kind: ASTKind::Boolean(value), range: box_range(r) }
-    // }
+    pub fn boolean(value: bool) -> Self {
+        Self { kind: ASTKind::Boolean(value), range: None, additional: None }
+    }
     pub fn string(value: Text) -> Self {
         Self { kind: ASTKind::String(Box::new(value)), range: None, additional: None }
     }
     // pub fn string_escaped(value: String, r: TextRange) -> Self {
     //     Self { kind: ASTKind::EscapedText(value), range: box_range(r) }
     // }
-    // pub fn integer(value: &str, base: u32, r: TextRange) -> Self {
-    //     let n = BigInt::parse_bytes(value.as_bytes(), base).unwrap_or_default();
-    //     Self { kind: ASTKind::Integer(Box::new(n)), range: box_range(r) }
-    // }
+    pub fn integer(value: &str, base: u32) -> Self {
+        let n = BigInt::parse_bytes(value.as_bytes(), base).unwrap_or_default();
+        Self { kind: ASTKind::Number(Box::new(Number::from(n))), range: None, additional: None }
+    }
     // pub fn decimal(value: &str, base: u32, r: TextRange) -> Self {
     //     let n = BigDecimal::parse_bytes(value.as_bytes(), base).unwrap_or_default();
     //     Self { kind: ASTKind::Decimal(Box::new(n)), range: box_range(r) }
