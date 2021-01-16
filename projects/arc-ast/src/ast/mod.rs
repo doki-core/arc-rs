@@ -4,7 +4,7 @@ mod range;
 
 pub use crate::ast::{literal::Symbol, range::TextRange};
 use crate::value::{Text, TextDelimiter};
-use arc_number::{Number, BigInt};
+use arc_number::{BigInt, Number};
 use std::fmt::{self, Debug, Formatter};
 
 // use bigdecimal::BigDecimal;
@@ -212,3 +212,4 @@ impl Text {
         Text { handler, delimiter: TextDelimiter::Apostrophe(delimiter), value }
     }
 }
+

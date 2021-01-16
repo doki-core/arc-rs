@@ -3,7 +3,7 @@ pub use crate::parser::config::ParserConfig;
 use crate::Result;
 use arc_ast::{value::Text, TextRange, AST};
 use arc_pest::{ArcParser, Pair, Pairs, Parser, Rule, Span};
-
+use crate::utils::BigInt;
 
 macro_rules! debug_cases {
     ($i:ident) => {{
@@ -28,9 +28,7 @@ impl ParserConfig {
                     codes.push(self.parse_statement(pair));
                 }
                 Rule::data => return self.parse_data(pair),
-                Rule::dict_pair=> {
-                    codes.push(self.parse_dict_pair(pair))
-                     },
+                Rule::dict_pair => codes.push(self.parse_dict_pair(pair)),
                 _ => debug_cases!(pair),
             };
         }
@@ -69,10 +67,9 @@ impl ParserConfig {
             Rule::list_literal => self.parse_list_literal(pair),
             Rule::dict_literal => self.parse_dict_literal(pair),
             Rule::String => self.parse_string(pair),
-            Rule::Special=>self.parse_special(pair),
+            Rule::Special => self.parse_special(pair),
             // Rule::list => self.parse_list(pair),
-            // Rule::String => self.parse_string(pair),
-            // Rule::Number => self.parse_number(pair),
+            Rule::Number => self.parse_signed_number(pair),
             // Rule::Symbol => self.parse_namespace(pair),
             // Rule::SpecialValue => self.parse_special(pair),
             _ => debug_cases!(pair),
@@ -162,10 +159,10 @@ impl ParserConfig {
                     let key = AST::string(Text::from(pair.as_str()));
                     symbols.push(key)
                 }
-                Rule::SignedNumber=> {
+                Rule::SignedNumber => {
                     let index = AST::integer(pair.as_str(), 10);
                     symbols.push(index)
-                },
+                }
                 _ => debug_cases!(pair),
             };
         }
@@ -247,31 +244,50 @@ impl ParserConfig {
             false => Text::string_escaped(text, "", delimiter / 2),
         }
     }
-    // fn parse_number(&self, pairs: Pair<Rule>) -> AST {
-    //     let r = self.get_position(pairs.as_span());
-    //     let pair = pairs.into_inner().nth(0).unwrap();
-    //     match pair.as_rule() {
-    //         Rule::Integer => AST::integer(pair.as_str(), 10, r),
-    //         Rule::Decimal => AST::decimal(pair.as_str(), 10, r),
-    //         Rule::DecimalBad => {
-    //             let s = pair.as_str().to_string();
-    //             match s.starts_with(".") {
-    //                 true => AST::decimal(&format!("0{}", s), 10, r),
-    //                 false => AST::decimal(&format!("{}0", s), 10, r),
-    //             }
-    //         }
-    //         Rule::Byte => {
-    //             let s = pair.as_str().to_string();
-    //             match &s[0..1] {
-    //                 "0b" => AST::integer(pair.as_str(), 2, r),
-    //                 "0o" => AST::integer(pair.as_str(), 8, r),
-    //                 "0x" => AST::integer(pair.as_str(), 16, r),
-    //                 _ => AST::decimal(pair.as_str(), 16, r),
-    //             }
-    //         }
-    //         _ => unreachable!(),
-    //     }
-    // }
+    fn parse_number(&self, pairs: Pair<Rule>) -> AST {
+        let r = self.get_position(pairs.as_span());
+        let mut items = pairs.into_inner();
+        let num = items.next().unwrap();
+        let mut out = match num.as_rule() {
+            Rule::SignedNumber=> {
+
+                self.parse_signed_number(num.as_str())
+            },
+            // Rule::Decimal => AST::decimal(pair.as_str(), 10, r),
+            // Rule::DecimalBad => {
+            //     let s = pair.as_str().to_string();
+            //     match s.starts_with(".") {
+            //         true => AST::decimal(&format!("0{}", s), 10, r),
+            //         false => AST::decimal(&format!("{}0", s), 10, r),
+            //     }
+            // }
+            // _ => unreachable!(),
+            _ => debug_cases!(num),
+        };
+        unimplemented!();
+        //out.set_range(r);
+        //return out
+    }
+    fn parse_signed_number(&self, pairs: Pair<Rule>) -> AST {
+        let r = self.get_position(pairs.as_span());
+        let pair = pairs.into_inner().nth(0).unwrap();
+        let mut out = match pair.as_rule() {
+            // Rule::Integer => AST::integer(pair.as_str(), 10),
+            // Rule::Decimal => AST::decimal(pair.as_str(), 10, r),
+            // Rule::DecimalBad => {
+            //     let s = pair.as_str().to_string();
+            //     match s.starts_with(".") {
+            //         true => AST::decimal(&format!("0{}", s), 10, r),
+            //         false => AST::decimal(&format!("{}0", s), 10, r),
+            //     }
+            // }
+            // _ => unreachable!(),
+            _ => debug_cases!(pair),
+        };
+        unimplemented!();
+        //out.set_range(r);
+        //return out
+    }
     fn parse_special(&self, pairs: Pair<Rule>) -> AST {
         let r = self.get_position(pairs.as_span());
         let mut out = match pairs.as_str() {
@@ -280,6 +296,6 @@ impl ParserConfig {
             _ => AST::null(),
         };
         out.set_range(r);
-        return out
+        return out;
     }
 }

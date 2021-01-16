@@ -3,7 +3,7 @@ use crate::{
     value::{Dict, List},
     Value,
 };
-use indexmap::IndexMap;
+
 use std::convert::TryInto;
 
 impl From<AST> for Value {
@@ -62,7 +62,7 @@ impl Scope {
             }
             ASTKind::Null => {
                 self.get_pointer();
-            },
+            }
             ASTKind::Boolean(v) => *self.get_pointer() = Value::from(v),
             ASTKind::String(v) => *self.get_pointer() = Value::from(*v),
             _ => unimplemented!("ASTKind::{:?}", ast),
@@ -155,7 +155,6 @@ impl Dict {
 
 impl List {
     pub fn ensure_index(&mut self, index: usize) -> &'_ mut Value {
-
         self.entry(index).or_default()
     }
 }
