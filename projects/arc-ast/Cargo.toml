@@ -1,6 +1,6 @@
 [package]
 name = "arc_ast"
-version = "0.3.0"
+version = "0.3.1"
 authors = ["Aster <galaster@foxmail.com>"]
 description = "Arc Readable Configuration Parser via Pest"
 license = "MPL-2.0"

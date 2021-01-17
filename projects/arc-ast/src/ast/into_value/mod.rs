@@ -4,8 +4,6 @@ use crate::{
     Value,
 };
 
-use std::convert::TryInto;
-
 impl From<AST> for Value {
     fn from(ast: AST) -> Self {
         Value::from(ast.kind)

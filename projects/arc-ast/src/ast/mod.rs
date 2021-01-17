@@ -2,7 +2,7 @@ mod into_value;
 mod literal;
 mod range;
 
-pub use crate::ast::{literal::Symbol, range::TextRange};
+pub use crate::ast::range::TextRange;
 use crate::value::{Text, TextDelimiter};
 use arc_number::{BigInt, Number};
 use std::fmt::{self, Debug, Formatter};
@@ -35,7 +35,6 @@ pub enum ASTKind {
     Boolean(bool),
     String(Box<Text>),
     Number(Box<Number>),
-    Symbol(Box<Symbol>),
 
     Namespace(Vec<AST>),
     Dict(Vec<AST>),
@@ -212,4 +211,3 @@ impl Text {
         Text { handler, delimiter: TextDelimiter::Apostrophe(delimiter), value }
     }
 }
-

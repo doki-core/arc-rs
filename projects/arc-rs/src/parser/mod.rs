@@ -1,9 +1,8 @@
 mod config;
 pub use crate::parser::config::ParserConfig;
-use crate::Result;
+use crate::{utils::BigInt, Result};
 use arc_ast::{value::Text, TextRange, AST};
 use arc_pest::{ArcParser, Pair, Pairs, Parser, Rule, Span};
-use crate::utils::BigInt;
 
 macro_rules! debug_cases {
     ($i:ident) => {{
@@ -69,7 +68,7 @@ impl ParserConfig {
             Rule::String => self.parse_string(pair),
             Rule::Special => self.parse_special(pair),
             // Rule::list => self.parse_list(pair),
-            Rule::Number => self.parse_signed_number(pair),
+            Rule::Number => self.parse_number(pair),
             // Rule::Symbol => self.parse_namespace(pair),
             // Rule::SpecialValue => self.parse_special(pair),
             _ => debug_cases!(pair),
@@ -249,10 +248,6 @@ impl ParserConfig {
         let mut items = pairs.into_inner();
         let num = items.next().unwrap();
         let mut out = match num.as_rule() {
-            Rule::SignedNumber=> {
-
-                self.parse_signed_number(num.as_str())
-            },
             // Rule::Decimal => AST::decimal(pair.as_str(), 10, r),
             // Rule::DecimalBad => {
             //     let s = pair.as_str().to_string();
@@ -263,26 +258,6 @@ impl ParserConfig {
             // }
             // _ => unreachable!(),
             _ => debug_cases!(num),
-        };
-        unimplemented!();
-        //out.set_range(r);
-        //return out
-    }
-    fn parse_signed_number(&self, pairs: Pair<Rule>) -> AST {
-        let r = self.get_position(pairs.as_span());
-        let pair = pairs.into_inner().nth(0).unwrap();
-        let mut out = match pair.as_rule() {
-            // Rule::Integer => AST::integer(pair.as_str(), 10),
-            // Rule::Decimal => AST::decimal(pair.as_str(), 10, r),
-            // Rule::DecimalBad => {
-            //     let s = pair.as_str().to_string();
-            //     match s.starts_with(".") {
-            //         true => AST::decimal(&format!("0{}", s), 10, r),
-            //         false => AST::decimal(&format!("{}0", s), 10, r),
-            //     }
-            // }
-            // _ => unreachable!(),
-            _ => debug_cases!(pair),
         };
         unimplemented!();
         //out.set_range(r);
