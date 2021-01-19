@@ -93,7 +93,7 @@ S2 = @{"\""}
 /*====================================================================================================================*/
 ///#61AFEF
 namespace =  {Key ~ (Dot ~ Key)*}
-Key       = _{StringNormal|SYMBOL|Integer}
+Key       = _{StringNormal|SYMBOL|SignedNumber}
 SYMBOL    = @{(XID_START|ExtraID) ~ (XID_CONTINUE|ExtraID)*}
 ExtraID   = @{"_"}
 Dot       = @{"."}

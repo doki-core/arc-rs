@@ -1,6 +1,6 @@
 mod wrap_parser;
 
-pub use arc_number::{parse_decimal, parse_integer, BigDecimal, BigInt, BigUint, Number};
+pub use arc_number::{parse_decimal, parse_integer, parse_number, BigDecimal, BigInt, BigUint, Number};
 pub use indexmap::IndexMap;
 
 #[cfg(feature = "json")]

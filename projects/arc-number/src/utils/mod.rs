@@ -4,13 +4,13 @@ mod number_into;
 mod number_traits;
 
 use bigdecimal::BigDecimal;
-use num::Zero;
-use num::{BigInt, BigUint};
-use num::{FromPrimitive, ToPrimitive};
-use std::cmp::Ordering;
-use std::convert::TryFrom;
-use std::fmt::{self, Debug, Display, Formatter};
-use std::ops::Deref;
+use num::{BigInt, BigUint, FromPrimitive, ToPrimitive, Zero};
+use std::{
+    cmp::Ordering,
+    convert::TryFrom,
+    fmt::{self, Debug, Display, Formatter},
+    ops::Deref,
+};
 
 #[derive(Debug, Clone)]
 pub enum NumberKind {

@@ -22,10 +22,7 @@ impl Display for NumberKind {
 
 impl Default for Number {
     fn default() -> Self {
-        Self {
-            handler: None,
-            value: NumberKind::default(),
-        }
+        Self { handler: None, value: NumberKind::default() }
     }
 }
 
@@ -40,10 +37,7 @@ where
     T: Into<NumberKind>,
 {
     fn from(v: T) -> Self {
-        Self {
-            handler: None,
-            value: v.into(),
-        }
+        Self { handler: None, value: v.into() }
     }
 }
 
