@@ -1,14 +1,16 @@
 pub mod dict;
 pub mod list;
-pub mod number;
+pub mod integer;
+pub mod decimal;
 pub mod string;
 
 pub use dict::Dict;
 pub use list::List;
 pub use string::{Text, TextDelimiter};
 
+use num::{BigInt,BigUint};
+use bigdecimal::BigDecimal;
 use crate::Value;
-use arc_number::{BigDecimal, BigInt, BigUint};
 use indexmap::IndexMap;
 use std::{
     collections::{BTreeMap, BTreeSet, HashMap, HashSet, LinkedList, VecDeque},

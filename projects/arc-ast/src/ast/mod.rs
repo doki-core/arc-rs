@@ -4,7 +4,6 @@ mod range;
 
 pub use crate::ast::range::TextRange;
 use crate::value::{Text, TextDelimiter};
-use arc_number::{BigInt, Number};
 use std::fmt::{self, Debug, Formatter};
 
 // use bigdecimal::BigDecimal;
@@ -34,7 +33,7 @@ pub enum ASTKind {
     Null,
     Boolean(bool),
     String(Box<Text>),
-    Number(Box<Number>),
+    Number(Box<String>),
 
     Namespace(Vec<AST>),
     Dict(Vec<AST>),
@@ -172,8 +171,9 @@ impl AST {
     //     Self { kind: ASTKind::EscapedText(value), range: box_range(r) }
     // }
     pub fn integer(value: &str, base: u32) -> Self {
-        let n = BigInt::parse_bytes(value.as_bytes(), base).unwrap_or_default();
-        Self { kind: ASTKind::Number(Box::new(Number::from(n))), range: None, additional: None }
+        unimplemented!()
+        // let n = BigInt::parse_bytes(value.as_bytes(), base).unwrap_or_default();
+        // Self { kind: ASTKind::Number(Box::new(Number::from(n))), range: None, additional: None }
     }
     // pub fn decimal(value: &str, base: u32, r: TextRange) -> Self {
     //     let n = BigDecimal::parse_bytes(value.as_bytes(), base).unwrap_or_default();

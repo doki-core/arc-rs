@@ -72,7 +72,7 @@ impl Scope {
         for path in self.pin_path.iter().flatten().chain(self.key_path.iter().flatten()) {
             match path {
                 Value::String(key) => pointer = pointer.ensure_key(key.as_str().to_string()),
-                Value::Number(index) => {
+                Value::Integer(index) => {
                     pointer = pointer.ensure_index(index.as_index().unwrap_or_default());
                 }
                 _ => unreachable!(),

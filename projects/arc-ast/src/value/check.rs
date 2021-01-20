@@ -53,25 +53,25 @@ impl Value {
     }
     pub fn is_number(&self) -> bool {
         match self {
-            Value::Number(_) => true,
+            Value::Integer(_) => true,
             _ => false,
         }
     }
     pub fn is_integer(&self) -> bool {
         match self {
-            Value::Number(n) => n.is_integer(),
+            Value::Integer(n) => n.is_integer(),
             _ => false,
         }
     }
     pub fn is_decimal(&self) -> bool {
         match self {
-            Value::Number(n) => n.is_decimal(),
+            Value::Integer(n) => n.is_decimal(),
             _ => false,
         }
     }
     pub fn is_zero(&self) -> bool {
         match self {
-            Value::Number(n) => n.is_zero(),
+            Value::Integer(n) => n.is_zero(),
             _ => false,
         }
     }
@@ -88,7 +88,7 @@ impl Value {
     pub fn get_handler(&self) -> Option<String> {
         match self {
             Value::Null | Value::Boolean(_) => None,
-            Value::Number(v) => v.get_handler(),
+            Value::Integer(v) => v.get_handler(),
             Value::String(v) => v.get_handler(),
             Value::List(v) => v.get_handler(),
             Value::Dict(v) => v.get_handler(),

@@ -11,7 +11,8 @@ edition = "2018"
 
 
 [dependencies]
-arc_number = {version = "0.3", path = "../arc-number"}
+num = "0.3"
+bigdecimal = "0.2"
 indexmap = "1.6"
 
 serde = "1.0"
