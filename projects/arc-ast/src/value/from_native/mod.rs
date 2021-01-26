@@ -7,7 +7,11 @@ pub mod string;
 pub use dict::Dict;
 pub use list::List;
 pub use string::{Text, TextDelimiter};
+pub use integer::Integer;
+pub use decimal::Decimal;
 
+use std::convert::TryFrom;
+use std::ops::Deref;
 use num::{BigInt,BigUint};
 use bigdecimal::BigDecimal;
 use crate::Value;

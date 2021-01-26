@@ -1,4 +1,5 @@
 use super::*;
+use num::Zero;
 
 impl Value {
     pub fn is_null(&self) -> bool {
@@ -59,19 +60,20 @@ impl Value {
     }
     pub fn is_integer(&self) -> bool {
         match self {
-            Value::Integer(n) => n.is_integer(),
+            Value::Integer(_) => true,
             _ => false,
         }
     }
     pub fn is_decimal(&self) -> bool {
         match self {
-            Value::Integer(n) => n.is_decimal(),
+            Value::Decimal(_) => true,
             _ => false,
         }
     }
     pub fn is_zero(&self) -> bool {
         match self {
             Value::Integer(n) => n.is_zero(),
+            Value::Decimal(n) => n.is_zero(),
             _ => false,
         }
     }
@@ -89,6 +91,7 @@ impl Value {
         match self {
             Value::Null | Value::Boolean(_) => None,
             Value::Integer(v) => v.get_handler(),
+            Value::Decimal(v) => v.get_handler(),
             Value::String(v) => v.get_handler(),
             Value::List(v) => v.get_handler(),
             Value::Dict(v) => v.get_handler(),

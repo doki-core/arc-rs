@@ -7,34 +7,89 @@ pub struct Decimal {
     value: BigDecimal,
 }
 
-macro_rules! native2decimal {
-    ($T:ty) => {
-    impl From<$T> for Decimal {
-        fn from(v: $T) -> Self {
-            Self {
-                handler: None,
-                value: BigDecimal::from(v),
+impl From<f32> for Decimal {
+    fn from(v: f32) -> Self {
+        Self {
+            handler: None,
+            value: BigDecimal::try_from(v).unwrap_or_default(),
+        }
+    }
+}
+
+impl From<f32> for Value {
+    fn from(v: f32) -> Self {
+        match BigDecimal::try_from(v) {
+            Ok(v) => {
+                Value::from(v)
+            }
+            Err(_) => {
+                Value::Null
             }
         }
     }
-    };
-    ($($T:ty), +) => {
-        $(wrap_native!($T);)+
-    };
 }
 
-macro_rules! native2value {
-    ($T:ty) => {
-    native2decimal!($T);
-    impl From<$T> for Value {
-        fn from(v: $T) -> Self {
-            Value::Decimal(Box::new(v.into()))
+impl From<f64> for Decimal {
+    fn from(v: f64) -> Self {
+        Self {
+            handler: None,
+            value: BigDecimal::try_from(v).unwrap_or_default(),
         }
     }
-    };
-    ($($T:ty), +) => {
-        $(native2value!($T);)+
-    };
 }
 
-native2value![f32, f64, BigDecimal];
+impl From<f64> for Value {
+    fn from(v: f64) -> Self {
+        match BigDecimal::try_from(v) {
+            Ok(v) => {
+                Value::from(v)
+            }
+            Err(_) => {
+                Value::Null
+            }
+        }
+    }
+}
+
+impl From<BigDecimal> for Decimal {
+    fn from(v: BigDecimal) -> Self {
+        Self {
+            handler: None,
+            value: v,
+        }
+    }
+}
+
+impl From<BigDecimal> for Value {
+    fn from(v: BigDecimal) -> Self {
+        Value::Decimal(Box::new(v.into()))
+    }
+}
+
+impl Display for Decimal {
+    fn fmt(&self, f: &mut Formatter) -> fmt::Result {
+        write!(f, "{}", self.value)?;
+        match &self.handler {
+            None => (),
+            Some(s) => write!(f, "{}", s)?,
+        }
+        Ok(())
+    }
+}
+
+impl Deref for Decimal {
+    type Target = BigDecimal;
+
+    fn deref(&self) -> &Self::Target {
+        &self.value
+    }
+}
+
+impl Decimal {
+    pub fn set_handler(&mut self, handler: impl Into<String>) {
+        self.handler = Some(handler.into())
+    }
+    pub fn get_handler(&self) -> Option<String> {
+        self.handler.to_owned()
+    }
+}

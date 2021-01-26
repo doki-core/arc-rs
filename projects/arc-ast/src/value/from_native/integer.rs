@@ -1,6 +1,5 @@
 use super::*;
 
-
 #[derive(Debug, Clone, Eq, PartialEq)]
 pub struct Integer {
     handler: Option<String>,
@@ -41,12 +40,30 @@ native2value![BigInt, BigUint];
 native2value![u8, u16, u32, u64, u128, usize];
 native2value![i8, i16, i32, i64, i128, isize];
 
-// wrap_number![BigInt, BigUint, BigDecimal];
-// wrap_number![f32, f64];
-//
-//
-// impl From<Integer> for Value {
-//     fn from(v: Integer) -> Self {
-//         Self::Integer(Box::new(v))
-//     }
-// }
+impl Display for Integer {
+    fn fmt(&self, f: &mut Formatter) -> fmt::Result {
+        write!(f, "{}", self.value)?;
+        match &self.handler {
+            None => (),
+            Some(s) => write!(f, "{}", s)?,
+        }
+        Ok(())
+    }
+}
+
+impl Deref for Integer {
+    type Target = BigInt;
+
+    fn deref(&self) -> &Self::Target {
+        &self.value
+    }
+}
+
+impl Integer {
+    pub fn set_handler(&mut self, handler: impl Into<String>) {
+        self.handler = Some(handler.into())
+    }
+    pub fn get_handler(&self) -> Option<String> {
+        self.handler.to_owned()
+    }
+}
