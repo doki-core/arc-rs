@@ -3,7 +3,7 @@ mod literal;
 mod range;
 
 pub use crate::ast::range::TextRange;
-use crate::value::{Text, TextDelimiter};
+use crate::value::{Decimal, Integer, Text, TextDelimiter};
 use std::fmt::{self, Debug, Formatter};
 
 // use bigdecimal::BigDecimal;
@@ -33,8 +33,8 @@ pub enum ASTKind {
     Null,
     Boolean(bool),
     String(Box<Text>),
-    Number(Box<String>),
-
+    Integer(Box<Integer>),
+    Decimal(Box<Decimal>),
     Namespace(Vec<AST>),
     Dict(Vec<AST>),
     List(Vec<AST>),
@@ -170,15 +170,11 @@ impl AST {
     // pub fn string_escaped(value: String, r: TextRange) -> Self {
     //     Self { kind: ASTKind::EscapedText(value), range: box_range(r) }
     // }
-    pub fn integer(value: &str, base: u32) -> Self {
+    pub fn number(value: &str) -> Self {
         unimplemented!()
         // let n = BigInt::parse_bytes(value.as_bytes(), base).unwrap_or_default();
         // Self { kind: ASTKind::Number(Box::new(Number::from(n))), range: None, additional: None }
     }
-    // pub fn decimal(value: &str, base: u32, r: TextRange) -> Self {
-    //     let n = BigDecimal::parse_bytes(value.as_bytes(), base).unwrap_or_default();
-    //     Self { kind: ASTKind::Decimal(Box::new(n)), range: box_range(r) }
-    // }
     pub fn namespace(value: Vec<AST>) -> Self {
         Self { kind: ASTKind::Namespace(value), range: None, additional: None }
     }

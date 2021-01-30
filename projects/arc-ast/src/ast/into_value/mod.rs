@@ -1,9 +1,9 @@
 use crate::{
     ast::{ASTKind, AST},
-    value::{Dict, List},
+    value::{Dict, Integer, List},
     Value,
 };
-use crate::value::Integer;
+use std::ops::Neg;
 
 impl From<AST> for Value {
     fn from(ast: AST) -> Self {
@@ -112,7 +112,7 @@ impl Scope {
                 for item in ns {
                     match item.kind {
                         ASTKind::String(v) => out.push(Value::from(*v)),
-                        ASTKind::Number(v) => out.push(Value::from(*v)),
+                        ASTKind::Integer(v) => out.push(Value::from(*v)),
                         _ => unreachable!(),
                     }
                 }
@@ -140,7 +140,16 @@ impl Value {
                 *self = List::empty();
                 self.ensure_index(index)
             }
-            Value::List(list) => list.ensure_index(index.into()),
+            Value::List(list) => match index.get_index() {
+                Some(i_index) => {
+                    let u_index = match i_index >= 0 {
+                        true => i_index as usize,
+                        false => list.length() - i_index.neg() as usize,
+                    };
+                    list.ensure_index(u_index)
+                }
+                None => unreachable!(),
+            },
             _ => unimplemented!("{:?}", self),
         }
     }

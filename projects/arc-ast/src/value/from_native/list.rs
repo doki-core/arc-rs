@@ -82,7 +82,14 @@ impl List {
     }
 
     pub fn length(&self) -> usize {
-        self.value.len()
+        // match self.value.last_key_value() {
+        //     Some((n, _)) => {*n},
+        //     None => {0}
+        // }
+        match self.value.keys().rev().next() {
+            Some(n) => *n,
+            None => 0,
+        }
     }
 
     pub fn as_vec(&self) -> Vec<Value> {

@@ -57,6 +57,7 @@ impl Value {
             Value::Null => vec![],
             Value::Boolean(_) => vec![self.to_owned()],
             Value::Integer(_) => vec![self.to_owned()],
+            Value::Decimal(_) => vec![self.to_owned()],
             Value::String(_) => vec![self.to_owned()],
             Value::List(v) => v.as_vec(),
             Value::Dict(v) => v.as_vec(),
@@ -68,6 +69,7 @@ impl Value {
             Value::Null => vec![],
             Value::Boolean(v) => vec![format!("{}", v)],
             Value::Integer(v) => vec![format!("{}", v)],
+            Value::Decimal(v) => vec![format!("{}", v)],
             Value::String(v) => vec![format!("{:?}", v)],
             Value::List(v) => {
                 let mut vec = Vec::with_capacity(v.length());

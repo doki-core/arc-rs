@@ -4,10 +4,8 @@ mod from_native;
 mod into_ast;
 mod into_native;
 
-pub use crate::value::from_native::{Dict, List, Text, TextDelimiter};
+pub use crate::value::from_native::{decimal::Decimal, integer::Integer, Dict, List, Text, TextDelimiter};
 use std::fmt::{self, Debug, Display, Formatter};
-pub use crate::value::from_native::integer::Integer;
-pub use crate::value::from_native::decimal::Decimal;
 
 #[derive(Clone, Eq, PartialEq)]
 pub enum Value {

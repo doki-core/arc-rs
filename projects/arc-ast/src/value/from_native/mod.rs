@@ -1,24 +1,24 @@
-pub mod dict;
-pub mod list;
-pub mod integer;
 pub mod decimal;
+pub mod dict;
+pub mod integer;
+pub mod list;
 pub mod string;
 
+pub use decimal::Decimal;
 pub use dict::Dict;
+pub use integer::Integer;
 pub use list::List;
 pub use string::{Text, TextDelimiter};
-pub use integer::Integer;
-pub use decimal::Decimal;
 
-use std::convert::TryFrom;
-use std::ops::Deref;
-use num::{BigInt,BigUint};
-use bigdecimal::BigDecimal;
 use crate::Value;
+use bigdecimal::BigDecimal;
 use indexmap::IndexMap;
+use num::{BigInt, BigUint};
 use std::{
     collections::{BTreeMap, BTreeSet, HashMap, HashSet, LinkedList, VecDeque},
+    convert::TryFrom,
     fmt::{self, Debug, Display, Formatter},
+    ops::Deref,
     str::FromStr,
 };
 
@@ -57,3 +57,4 @@ where
         }
     }
 }
+
