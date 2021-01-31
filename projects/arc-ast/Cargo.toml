@@ -28,6 +28,6 @@ serde-hjson = { version = "0.9", optional = true }
 default = ["convert"]
 
 convert = ["json", "toml", "yaml"]
-json = ["serde_json"]
+json = ["serde_json", "serde_json/preserve_order"]
 yaml = ["yaml-rust"]
 hjson = ["serde-hjson"]

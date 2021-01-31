@@ -1,32 +1,12 @@
-pub mod decimal;
-pub mod dict;
-pub mod integer;
-pub mod list;
-pub mod string;
+mod from_tuples;
+mod parse;
 
-pub use decimal::Decimal;
-pub use dict::Dict;
-pub use integer::Integer;
-pub use list::List;
-pub use string::{Text, TextDelimiter};
+pub use parse::parse_number;
 
 use crate::Value;
 use bigdecimal::BigDecimal;
-use indexmap::IndexMap;
-use num::{BigInt, BigUint};
-use std::{
-    collections::{BTreeMap, BTreeSet, HashMap, HashSet, LinkedList, VecDeque},
-    convert::TryFrom,
-    fmt::{self, Debug, Display, Formatter},
-    ops::Deref,
-    str::FromStr,
-};
-
-impl From<()> for Value {
-    fn from(_: ()) -> Self {
-        Self::List(Box::new(List::default()))
-    }
-}
+use num::{BigInt, Num};
+use std::str::FromStr;
 
 impl From<bool> for Value {
     fn from(v: bool) -> Self {
@@ -46,15 +26,14 @@ where
     }
 }
 
-impl<T, E> From<Result<T, E>> for Value
+impl<O, E> From<Result<O, E>> for Value
 where
-    T: Into<Value>,
+    O: Into<Value>,
 {
-    fn from(value: Result<T, E>) -> Self {
+    fn from(value: Result<O, E>) -> Self {
         match value {
             Ok(value) => value.into(),
             Err(_) => Value::Null,
         }
     }
 }
-

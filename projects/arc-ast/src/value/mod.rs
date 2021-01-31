@@ -1,11 +1,31 @@
 mod access;
 mod check;
+mod decimal;
+mod dict;
 mod from_native;
+mod integer;
 mod into_ast;
 mod into_native;
+mod list;
+mod string;
 
-pub use crate::value::from_native::{decimal::Decimal, integer::Integer, Dict, List, Text, TextDelimiter};
-use std::fmt::{self, Debug, Display, Formatter};
+pub use decimal::Decimal;
+pub use dict::Dict;
+pub use from_native::parse_number;
+pub use integer::Integer;
+pub use list::List;
+pub use string::{Text, TextDelimiter};
+
+use bigdecimal::BigDecimal;
+use indexmap::IndexMap;
+use num::{BigInt, BigUint};
+use std::{
+    collections::{BTreeMap, BTreeSet, HashMap, HashSet, LinkedList, VecDeque},
+    convert::TryFrom,
+    fmt::{self, Debug, Display, Formatter},
+    ops::Deref,
+    str::FromStr,
+};
 
 #[derive(Clone, Eq, PartialEq)]
 pub enum Value {
