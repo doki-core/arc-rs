@@ -1,13 +1,20 @@
 use super::*;
 
-#[test]
-fn empty() {
-    let ast = parse_text(include_str!("empty.arc")).unwrap();
-    assert_eq!(include_str!("empty.out.arc"), format!("{:#?}", Value::from(ast)))
+macro_rules! run_test {
+    ($($F:ident), +,) => {
+        $(run_test![$F, stringify!($F)];)+
+    };
+    ($function_name:ident, $file_name:expr) => {
+    #[test]
+    fn $function_name() {
+        let ast = parse_text(include_str!(concat!($file_name, ".arc"))).unwrap();
+        assert_eq!(include_str!(concat!($file_name, ".out.arc")), format!("{:#?}", Value::from(ast)))
+    }
+    };
 }
 
-#[test]
-fn basic() {
-    let ast = parse_text(include_str!("basic.arc")).unwrap();
-    assert_eq!(include_str!("basic.out.arc"), format!("{:#?}", Value::from(ast)))
-}
+run_test![
+    empty,
+    basic,
+    scope,
+];
