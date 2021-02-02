@@ -3,8 +3,10 @@ mod literal;
 mod range;
 
 pub use crate::ast::range::TextRange;
-use crate::value::{Decimal, Integer, Text, TextDelimiter};
+use crate::value::{Decimal, Integer, Text, TextDelimiter, parse_number};
+use num::{BigInt, Num};
 use std::fmt::{self, Debug, Formatter};
+use crate::Value;
 
 // use bigdecimal::BigDecimal;
 // use num::BigInt;
@@ -170,10 +172,17 @@ impl AST {
     // pub fn string_escaped(value: String, r: TextRange) -> Self {
     //     Self { kind: ASTKind::EscapedText(value), range: box_range(r) }
     // }
+    pub fn integer(value: &str) -> Self {
+        let n = BigInt::from_str_radix(value, 10).unwrap_or_default();
+        Self { kind: ASTKind::Integer(Box::new(Integer::from(n))), range: None, additional: None }
+    }
     pub fn number(value: &str) -> Self {
-        unimplemented!()
-        // let n = BigInt::parse_bytes(value.as_bytes(), base).unwrap_or_default();
-        // Self { kind: ASTKind::Number(Box::new(Number::from(n))), range: None, additional: None }
+        let kind = match parse_number(value) {
+            Some(Value::Integer(n)) => ASTKind::Integer(n),
+            Some(Value::Decimal(n)) => ASTKind::Decimal(n),
+            _ => ASTKind::Null
+        };
+        Self { kind, range: None, additional: None }
     }
     pub fn namespace(value: Vec<AST>) -> Self {
         Self { kind: ASTKind::Namespace(value), range: None, additional: None }
@@ -190,20 +199,23 @@ impl AST {
 }
 
 impl Text {
-    pub fn string_escaped(value: String, handler: impl Into<String>, delimiter: usize) -> Self {
+    pub fn string_escaped(value: impl Into<String>, handler: impl Into<String>, delimiter: usize) -> Self {
         let handler = handler.into();
         let handler = match handler.len() {
             0 => None,
             _ => Some(handler),
         };
-        Text { handler, delimiter: TextDelimiter::Quotation(delimiter), value }
+        Text { handler, delimiter: TextDelimiter::Quotation(delimiter), value:value.into() }
     }
-    pub fn string_literal(value: String, handler: impl Into<String>, delimiter: usize) -> Self {
+    pub fn string_literal(value: impl Into<String>, handler: impl Into<String>, delimiter: usize) -> Self {
         let handler = handler.into();
         let handler = match handler.len() {
             0 => None,
             _ => Some(handler),
         };
-        Text { handler, delimiter: TextDelimiter::Apostrophe(delimiter), value }
+        Text { handler, delimiter: TextDelimiter::Apostrophe(delimiter), value:value.into() }
+    }
+    pub fn string_bare(value: impl Into<String>) -> Self {
+        Text { handler:None, delimiter: TextDelimiter::Bare, value:value.into() }
     }
 }

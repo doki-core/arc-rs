@@ -35,6 +35,7 @@ impl Scope {
         match ast {
             ASTKind::Program(v) | ASTKind::Dict(v) => v.into_iter().for_each(|item| self.visit_ast(item.kind)),
             ASTKind::String(v) => self.top = Value::from(*v),
+            ASTKind::Integer(v) => self.top = Value::from(*v),
             _ => unimplemented!("ASTKind::{:?}", ast),
         }
         self.top.to_owned()
@@ -63,6 +64,8 @@ impl Scope {
                 self.get_pointer();
             }
             ASTKind::Boolean(v) => *self.get_pointer() = Value::from(v),
+            ASTKind::Integer(v) => *self.get_pointer() = Value::from(*v),
+            ASTKind::Decimal(v) => *self.get_pointer() = Value::from(*v),
             ASTKind::String(v) => *self.get_pointer() = Value::from(*v),
             _ => unimplemented!("ASTKind::{:?}", ast),
         }

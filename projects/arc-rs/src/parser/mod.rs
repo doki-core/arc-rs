@@ -1,10 +1,10 @@
 mod config;
 pub use crate::parser::config::ParserConfig;
-use crate::{
-    utils::{parse_number, BigInt},
-    Result,
+use crate::Result;
+use arc_ast::{
+    value::{parse_number, Text},
+    TextRange, AST,
 };
-use arc_ast::{value::Text, TextRange, AST};
 use arc_pest::{ArcParser, Pair, Pairs, Parser, Rule, Span};
 
 macro_rules! debug_cases {
@@ -114,6 +114,7 @@ impl ParserConfig {
                 Rule::Set => continue,
                 Rule::namespace => key = self.parse_namespace(pair),
                 Rule::data => value = self.parse_data(pair),
+                Rule::RestLineText=>value = self.parse_string_bare(pair),
                 _ => debug_cases!(pair),
             };
         }
@@ -162,7 +163,7 @@ impl ParserConfig {
                     symbols.push(key)
                 }
                 Rule::SignedNumber => {
-                    let index = AST::integer(pair.as_str(), 10);
+                    let index = AST::integer(pair.as_str());
                     symbols.push(index)
                 }
                 _ => debug_cases!(pair),
@@ -230,14 +231,25 @@ impl ParserConfig {
         out.set_range(r);
         return out;
     }
+    fn parse_string_bare(&self, pairs: Pair<Rule>) -> AST {
+        let r = self.get_position(pairs.as_span());
+        let text = Text::string_bare(pairs.as_str());
+        let mut out = AST::string(text);
+        out.set_range(r);
+        return out;
+    }
     fn parse_string_inner(&self, pairs: Pair<Rule>) -> Text {
         let mut is_literal = false;
         let mut text = String::with_capacity(pairs.as_str().len());
         let mut delimiter = 0;
         for pair in pairs.into_inner() {
             match pair.as_rule() {
+                Rule::S1 => {
+                    delimiter += 1;
+                    is_literal=true
+                },
                 Rule::S2 => delimiter += 1,
-                Rule::NS2 => text.push_str(pair.as_str()),
+                Rule::NS1|Rule::NS2 => text.push_str(pair.as_str()),
                 _ => debug_cases!(pair),
             };
         }
@@ -249,10 +261,9 @@ impl ParserConfig {
     fn parse_number(&self, pairs: Pair<Rule>) -> AST {
         let r = self.get_position(pairs.as_span());
         let mut items = pairs.into_inner();
-        let num = parse_number(items.next().unwrap().as_str()).unwrap_or_default();
-        unimplemented!();
-        //out.set_range(r);
-        //return out
+        let mut out = AST::number(items.next().unwrap().as_str());
+        out.set_range(r);
+        return out;
     }
     fn parse_special(&self, pairs: Pair<Rule>) -> AST {
         let r = self.get_position(pairs.as_span());

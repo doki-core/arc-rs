@@ -9,3 +9,8 @@ indent_size = 4
 [*.toml]
 indent_style = space
 indent_size = 4
+
+[*.arc]
+end_of_line = lf
+indent_style = space
+indent_size = 2

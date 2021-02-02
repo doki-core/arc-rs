@@ -1,13 +1,13 @@
 use super::*;
 
 #[test]
-fn test() {
-    let ast = parse("tests/easy_structure/empty.arc").unwrap();
-    println!("{:#?}", Value::from(ast))
+fn empty() {
+    let ast = parse_text(include_str!("empty.arc")).unwrap();
+    assert_eq!(include_str!("empty.out.arc"), format!("{:#?}", Value::from(ast)))
 }
 
 #[test]
 fn basic() {
-    let ast = parse("tests/easy_structure/basic.arc").unwrap();
-    println!("{:#?}", Value::from(ast))
+    let ast = parse_text(include_str!("basic.arc")).unwrap();
+    assert_eq!(include_str!("basic.out.arc"), format!("{:#?}", Value::from(ast)))
 }
