@@ -17,4 +17,5 @@ run_test![
     empty,
     basic,
     scope,
+    cite,
 ];

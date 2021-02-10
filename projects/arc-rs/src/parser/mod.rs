@@ -6,6 +6,7 @@ use arc_ast::{
     TextRange, AST,
 };
 use arc_pest::{ArcParser, Pair, Pairs, Parser, Rule, Span};
+use arc_ast::ast::ASTKind;
 
 macro_rules! debug_cases {
     ($i:ident) => {{
@@ -23,6 +24,7 @@ impl ParserConfig {
     }
     fn parse_program(&self, pairs: Pairs<Rule>) -> AST {
         let mut codes = vec![];
+        let mut additional = None;
         for pair in pairs {
             match pair.as_rule() {
                 Rule::EOI => continue,
@@ -31,10 +33,16 @@ impl ParserConfig {
                 }
                 Rule::data => return self.parse_data(pair),
                 Rule::dict_pair => codes.push(self.parse_dict_pair(pair)),
+                Rule::dict_head=> codes.push(self.parse_dict_head(pair)),
+                Rule::COMMENT=>additional = Some(pair.as_str().to_string()),
                 _ => debug_cases!(pair),
             };
         }
-        AST::program(codes)
+        AST {
+            kind: ASTKind::Program(codes),
+            range: None,
+            additional,
+        }
     }
     fn parse_statement(&self, pairs: Pair<Rule>) -> AST {
         let r = self.get_position(pairs.as_span());
@@ -90,6 +98,23 @@ impl ParserConfig {
         let mut out = AST::list(codes);
         out.set_range(r);
         return out;
+    }
+    fn parse_dict_head(&self, pairs: Pair<Rule>) -> AST {
+        let r = self.get_position(pairs.as_span());
+        let mut depth = 0;
+        let mut path = AST::default();
+        for pair in pairs.into_inner() {
+            match pair.as_rule() {
+                Rule::Dot=> { depth+=1 },
+                Rule::namespace=> path = self.parse_namespace(pair),
+                _ => debug_cases!(pair),
+            };
+        }
+        AST {
+            kind: ASTKind::DictScope(depth, Box::new(path)),
+            range: r.boxed(),
+            additional: None
+        }
     }
     fn parse_dict_literal(&self, pairs: Pair<Rule>) -> AST {
         let r = self.get_position(pairs.as_span());

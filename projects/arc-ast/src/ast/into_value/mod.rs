@@ -43,6 +43,18 @@ impl Scope {
 
     pub fn visit_ast(&mut self, ast: ASTKind) {
         match ast {
+            ASTKind::ListScope(depth, path) | ASTKind::DictScope(depth, path) => {
+                // println!("{} vs {}", depth,self.pin_path.len());
+                match depth >= self.pin_path.len()  {
+                    true => {
+                        self.push_pin(path.kind)
+                    }
+                    false => {
+                        self.pin_path.truncate(depth);
+                        self.push_pin(path.kind)
+                    }
+                }
+            }
             ASTKind::List(v) => {
                 for (index, item) in v.into_iter().enumerate() {
                     self.push_index(index);
@@ -63,10 +75,10 @@ impl Scope {
             ASTKind::Null => {
                 self.get_pointer();
             }
-            ASTKind::Boolean(v) => *self.get_pointer() = Value::from(v),
-            ASTKind::Integer(v) => *self.get_pointer() = Value::from(*v),
-            ASTKind::Decimal(v) => *self.get_pointer() = Value::from(*v),
-            ASTKind::String(v) => *self.get_pointer() = Value::from(*v),
+            ASTKind::Boolean(v) => *self.get_pointer() = Value::Boolean(v),
+            ASTKind::Integer(v) => *self.get_pointer() = Value::Integer(v),
+            ASTKind::Decimal(v) => *self.get_pointer() = Value::Decimal(v),
+            ASTKind::String(v) => *self.get_pointer() = Value::String(v),
             _ => unimplemented!("ASTKind::{:?}", ast),
         }
     }
@@ -85,9 +97,9 @@ impl Scope {
         return pointer;
     }
 
-    fn new_pin(&mut self, namespace: ASTKind) {
+    fn push_pin(&mut self, namespace: ASTKind) {
         let namespace = self.extract_namespace(namespace);
-        self.key_path.push(namespace)
+        self.pin_path.push(namespace)
     }
 
     fn push_key(&mut self, namespace: ASTKind) {

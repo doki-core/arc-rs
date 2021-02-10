@@ -22,23 +22,23 @@ import_statement =  {Import ~ String ~ "as" ~ SYMBOL}
 extend_statement =  {"@extend" ~ String}
 Import           = @{"@import"|"@import!"}
 /*====================================================================================================================*/
-dict_scope   = {dict_head ~ (SEPARATOR? ~ dict_pair)*}
-dict_head    = {"{" ~ Dot* ~ namespace ~ "}"}
-dict_pair    = {namespace ~ Set ~ (data|RestLineText)}
-dict_literal = {
+dict_scope   = _{dict_head ~ (SEPARATOR? ~ dict_pair)*}
+dict_head    =  {"{" ~ Dot* ~ namespace ~ "}"}
+dict_pair    =  {namespace ~ Set ~ (data|RestLineText)}
+dict_literal =  {
     SYMBOL? ~  "{" ~ "}"
   | SYMBOL? ~ "{" ~ (SEPARATOR? ~ dict_pair)+ ~ SEPARATOR? ~ "}"
 }
 RestLineText = @{(!(NEWLINE|"]"|"}") ~ ANY)+}
 Set          = @{"="|":"}
 /*====================================================================================================================*/
-list_scope   = {list_head ~ (SEPARATOR? ~ list_pair)*}
-list_head    = {"[" ~ Dot* ~ namespace ~ "]"}
-list_pair    = {
+list_scope   = _{list_head ~ (SEPARATOR? ~ list_pair)*}
+list_head    =  {"[" ~ Dot* ~ namespace ~ "]"}
+list_pair    =  {
     Insert ~ dict_pair+
   | Append ~ (data|InlineString)+
 }
-list_literal = {
+list_literal =  {
     SYMBOL? ~ "[" ~ "]"
   | SYMBOL? ~ "[" ~ (SEPARATOR? ~ (data|InlineString))+ ~ SEPARATOR? ~ "]"
 }

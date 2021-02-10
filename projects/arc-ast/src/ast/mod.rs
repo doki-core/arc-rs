@@ -13,9 +13,9 @@ use crate::Value;
 
 #[derive(Clone, Eq, PartialEq)]
 pub struct AST {
-    pub(crate) kind: ASTKind,
-    range: Option<TextRange>,
-    additional: Option<String>,
+    pub  kind: ASTKind,
+    pub range: Option<TextRange>,
+    pub additional: Option<String>,
 }
 
 #[derive(Debug, Clone, Eq, PartialEq)]
@@ -30,9 +30,17 @@ pub enum ASTKind {
     /// Whitespace, Newline, Comment
     Span(String),
     ///
+    /// `[list.scope]`
+    ListScope(usize, Box<AST>),
+    /// `{dict.scope}`
+    DictScope(usize, Box<AST>),
+    ///
     Pair(Box<AST>, Box<AST>),
-
+    ///
+    /// `null`
     Null,
+    ///
+    /// `true` | `false`
     Boolean(bool),
     String(Box<Text>),
     Integer(Box<Integer>),
