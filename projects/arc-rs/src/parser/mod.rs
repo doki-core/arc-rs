@@ -2,11 +2,11 @@ mod config;
 pub use crate::parser::config::ParserConfig;
 use crate::Result;
 use arc_ast::{
+    ast::ASTKind,
     value::{parse_number, Text},
     TextRange, AST,
 };
 use arc_pest::{ArcParser, Pair, Pairs, Parser, Rule, Span};
-use arc_ast::ast::ASTKind;
 
 macro_rules! debug_cases {
     ($i:ident) => {{
@@ -33,16 +33,12 @@ impl ParserConfig {
                 }
                 Rule::data => return self.parse_data(pair),
                 Rule::dict_pair => codes.push(self.parse_dict_pair(pair)),
-                Rule::dict_head=> codes.push(self.parse_dict_head(pair)),
-                Rule::COMMENT=>additional = Some(pair.as_str().to_string()),
+                Rule::dict_head => codes.push(self.parse_dict_head(pair)),
+                Rule::COMMENT => additional = Some(pair.as_str().to_string()),
                 _ => debug_cases!(pair),
             };
         }
-        AST {
-            kind: ASTKind::Program(codes),
-            range: None,
-            additional,
-        }
+        AST { kind: ASTKind::Program(codes), range: None, additional }
     }
     fn parse_statement(&self, pairs: Pair<Rule>) -> AST {
         let r = self.get_position(pairs.as_span());
@@ -78,8 +74,8 @@ impl ParserConfig {
             Rule::dict_literal => self.parse_dict_literal(pair),
             Rule::String => self.parse_string(pair),
             Rule::Special => self.parse_special(pair),
-            // Rule::list => self.parse_list(pair),
             Rule::Number => self.parse_number(pair),
+            Rule::Cite => self.parse_cite(pair),
             // Rule::Symbol => self.parse_namespace(pair),
             // Rule::SpecialValue => self.parse_special(pair),
             _ => debug_cases!(pair),
@@ -105,16 +101,12 @@ impl ParserConfig {
         let mut path = AST::default();
         for pair in pairs.into_inner() {
             match pair.as_rule() {
-                Rule::Dot=> { depth+=1 },
-                Rule::namespace=> path = self.parse_namespace(pair),
+                Rule::Dot => depth += 1,
+                Rule::namespace => path = self.parse_namespace(pair),
                 _ => debug_cases!(pair),
             };
         }
-        AST {
-            kind: ASTKind::DictScope(depth, Box::new(path)),
-            range: r.boxed(),
-            additional: None
-        }
+        AST { kind: ASTKind::DictScope(depth, Box::new(path)), range: r.boxed(), additional: None }
     }
     fn parse_dict_literal(&self, pairs: Pair<Rule>) -> AST {
         let r = self.get_position(pairs.as_span());
@@ -139,7 +131,7 @@ impl ParserConfig {
                 Rule::Set => continue,
                 Rule::namespace => key = self.parse_namespace(pair),
                 Rule::data => value = self.parse_data(pair),
-                Rule::RestLineText=>value = self.parse_string_bare(pair),
+                Rule::RestLineText => value = self.parse_string_bare(pair),
                 _ => debug_cases!(pair),
             };
         }
@@ -271,10 +263,10 @@ impl ParserConfig {
             match pair.as_rule() {
                 Rule::S1 => {
                     delimiter += 1;
-                    is_literal=true
-                },
+                    is_literal = true
+                }
                 Rule::S2 => delimiter += 1,
-                Rule::NS1|Rule::NS2 => text.push_str(pair.as_str()),
+                Rule::NS1 | Rule::NS2 => text.push_str(pair.as_str()),
                 _ => debug_cases!(pair),
             };
         }
@@ -282,6 +274,11 @@ impl ParserConfig {
             true => Text::string_literal(text, "", delimiter / 2),
             false => Text::string_escaped(text, "", delimiter / 2),
         }
+    }
+    fn parse_cite(&self, pairs: Pair<Rule>) -> AST {
+        let r = self.get_position(pairs.as_span());
+        let item = pairs.into_inner().next().unwrap();
+        AST { kind: ASTKind::Cite(Box::new(self.parse_namespace(item))), range: r.boxed(), additional: None }
     }
     fn parse_number(&self, pairs: Pair<Rule>) -> AST {
         let r = self.get_position(pairs.as_span());

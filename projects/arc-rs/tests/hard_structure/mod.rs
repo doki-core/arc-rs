@@ -13,8 +13,4 @@ macro_rules! run_test {
     };
 }
 
-run_test![
-    nested_key,
-    negative_key,
-    scope_inherit,
-];
+run_test![nested_key, negative_key, scope_inherit,];

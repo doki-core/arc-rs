@@ -3,17 +3,19 @@ mod literal;
 mod range;
 
 pub use crate::ast::range::TextRange;
-use crate::value::{Decimal, Integer, Text, TextDelimiter, parse_number};
+use crate::{
+    value::{parse_number, Decimal, Integer, Text, TextDelimiter},
+    Value,
+};
 use num::{BigInt, Num};
 use std::fmt::{self, Debug, Formatter};
-use crate::Value;
 
 // use bigdecimal::BigDecimal;
 // use num::BigInt;
 
 #[derive(Clone, Eq, PartialEq)]
 pub struct AST {
-    pub  kind: ASTKind,
+    pub kind: ASTKind,
     pub range: Option<TextRange>,
     pub additional: Option<String>,
 }
@@ -29,23 +31,21 @@ pub enum ASTKind {
     Sequence(Vec<AST>),
     /// Whitespace, Newline, Comment
     Span(String),
-    ///
     /// `[list.scope]`
     ListScope(usize, Box<AST>),
     /// `{dict.scope}`
     DictScope(usize, Box<AST>),
     ///
     Pair(Box<AST>, Box<AST>),
-    ///
     /// `null`
     Null,
-    ///
     /// `true` | `false`
     Boolean(bool),
     String(Box<Text>),
+    Namespace(Vec<AST>),
     Integer(Box<Integer>),
     Decimal(Box<Decimal>),
-    Namespace(Vec<AST>),
+    Cite(Box<AST>),
     Dict(Vec<AST>),
     List(Vec<AST>),
 }
@@ -188,7 +188,7 @@ impl AST {
         let kind = match parse_number(value) {
             Some(Value::Integer(n)) => ASTKind::Integer(n),
             Some(Value::Decimal(n)) => ASTKind::Decimal(n),
-            _ => ASTKind::Null
+            _ => ASTKind::Null,
         };
         Self { kind, range: None, additional: None }
     }
@@ -213,7 +213,7 @@ impl Text {
             0 => None,
             _ => Some(handler),
         };
-        Text { handler, delimiter: TextDelimiter::Quotation(delimiter), value:value.into() }
+        Text { handler, delimiter: TextDelimiter::Quotation(delimiter), value: value.into() }
     }
     pub fn string_literal(value: impl Into<String>, handler: impl Into<String>, delimiter: usize) -> Self {
         let handler = handler.into();
@@ -221,9 +221,9 @@ impl Text {
             0 => None,
             _ => Some(handler),
         };
-        Text { handler, delimiter: TextDelimiter::Apostrophe(delimiter), value:value.into() }
+        Text { handler, delimiter: TextDelimiter::Apostrophe(delimiter), value: value.into() }
     }
     pub fn string_bare(value: impl Into<String>) -> Self {
-        Text { handler:None, delimiter: TextDelimiter::Bare, value:value.into() }
+        Text { handler: None, delimiter: TextDelimiter::Bare, value: value.into() }
     }
 }

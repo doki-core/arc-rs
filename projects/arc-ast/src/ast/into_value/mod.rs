@@ -45,15 +45,14 @@ impl Scope {
         match ast {
             ASTKind::ListScope(depth, path) | ASTKind::DictScope(depth, path) => {
                 // println!("{} vs {}", depth,self.pin_path.len());
-                match depth >= self.pin_path.len()  {
-                    true => {
-                        self.push_pin(path.kind)
-                    }
+                match depth >= self.pin_path.len() {
+                    true => self.push_pin(path.kind),
                     false => {
                         self.pin_path.truncate(depth);
                         self.push_pin(path.kind)
                     }
                 }
+                self.get_pointer();
             }
             ASTKind::List(v) => {
                 for (index, item) in v.into_iter().enumerate() {
@@ -74,6 +73,10 @@ impl Scope {
             }
             ASTKind::Null => {
                 self.get_pointer();
+            }
+            ASTKind::Cite(v) => {
+                let cite = self.extract_namespace(v.kind);
+                *self.get_pointer() = self.top.get_value(&cite).clone();
             }
             ASTKind::Boolean(v) => *self.get_pointer() = Value::Boolean(v),
             ASTKind::Integer(v) => *self.get_pointer() = Value::Integer(v),
@@ -139,6 +142,10 @@ impl Scope {
 }
 
 impl Value {
+    pub fn get_value(&self, path: &[Value]) -> &Value {
+        unimplemented!()
+    }
+
     pub fn ensure_key(&mut self, key: String) -> &'_ mut Value {
         match self {
             Value::Null => {

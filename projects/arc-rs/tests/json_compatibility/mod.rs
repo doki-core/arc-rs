@@ -13,9 +13,4 @@ macro_rules! run_test {
     };
 }
 
-run_test![
-    number,
-    string,
-    object,
-    package,
-];
+run_test![number, string, object, package,];
