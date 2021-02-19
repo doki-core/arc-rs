@@ -1,3 +1,6 @@
+use std::error::Error;
+use std::fmt::{self, Display, Formatter, Debug};
+
 #[derive(Clone, Debug, PartialEq)]
 pub enum ArcError {
     IOError(String),
@@ -7,6 +10,14 @@ pub enum ArcError {
 pub type Result<T> = std::result::Result<T, ArcError>;
 type PestError = arc_pest::Error<arc_pest::Rule>;
 type IOError = std::io::Error;
+
+impl Display for ArcError {
+    fn fmt(&self, f: &mut Formatter) -> fmt::Result {
+        Debug::fmt(self, f)
+    }
+}
+
+impl Error for ArcError {}
 
 impl From<PestError> for ArcError {
     fn from(e: PestError) -> Self {

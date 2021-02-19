@@ -1,5 +1,6 @@
 use super::*;
 use indexmap::map::Entry;
+use std::ops::AddAssign;
 
 #[derive(Clone, Eq, PartialEq)]
 pub struct Dict {
@@ -69,6 +70,26 @@ impl From<Dict> for Value {
         Value::Dict(Box::new(v))
     }
 }
+
+impl AddAssign for Dict {
+    fn add_assign(&mut self, rhs: Self) {
+        for (key, value) in rhs.iter() {
+            let mergeable = match self.get(&key) {
+                None => false,
+                Some(s) => value.is_dict() && s.is_dict(),
+            };
+            match mergeable {
+                true => {
+                    self.get_mut(&key).map(|e| e.merge(value.clone()));
+                }
+                false => {
+                    self.insert(key.to_string(), value.clone());
+                }
+            }
+        }
+    }
+}
+
 
 impl Dict {
     pub fn empty() -> Value {

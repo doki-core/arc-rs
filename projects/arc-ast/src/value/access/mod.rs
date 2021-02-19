@@ -7,22 +7,11 @@ impl Value {
             return *self = incoming;
         }
         match (self, incoming) {
-            // FIXME: remove ref in rhs
-            (Value::Dict(lhs), Value::Dict(ref rhs)) => {
-                for (key, value) in rhs.iter() {
-                    let mergeable = match lhs.get(&key) {
-                        None => false,
-                        Some(s) => value.is_dict() && s.is_dict(),
-                    };
-                    match mergeable {
-                        true => {
-                            lhs.get_mut(&key).map(|e| e.merge(value.clone()));
-                        }
-                        false => {
-                            lhs.insert(key.to_string(), value.clone());
-                        }
-                    }
-                }
+            (Value::List(lhs), Value::List(rhs)) => {
+                **lhs += *rhs
+            }
+            (Value::Dict(lhs), Value::Dict(rhs)) => {
+                **lhs += *rhs
             }
             _ => unreachable!(),
         }

@@ -1,6 +1,6 @@
 [package]
 name = "arc_number"
-version = "0.3.2"
+version = "0.4.0"
 authors = ["192607617@qq.com"]
 edition = "2018"
 description = "..."

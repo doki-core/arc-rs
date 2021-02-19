@@ -1,12 +1,12 @@
 [package]
 name = "arc-rs"
-version = "0.2.0"
+version = "0.3.2"
 authors = ["192607617@qq.com"]
 edition = "2018"
 description = "..."
-repository = "https://github.com/Moe-Net/arc-rs"
+repository = "https://github.com/doki-land/arc-rs"
 license = "MPL-2.0"
 
 [dependencies]
-arc-pest = {version = "0.2", path = "../arc-pest"}
+arc-pest = {version = "0.3", path = "../arc-pest"}
 arc_ast = {version = "0.3", path = "../arc-ast"}

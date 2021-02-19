@@ -1,5 +1,6 @@
 use super::*;
 use std::collections::btree_map::Entry;
+use std::ops::AddAssign;
 
 #[derive(Clone, Eq, PartialEq)]
 pub struct List {
@@ -66,6 +67,14 @@ native2value![Vec<V>, VecDeque<V>, LinkedList<V>, HashSet<V>, BTreeSet<V>];
 impl From<List> for Value {
     fn from(v: List) -> Self {
         Value::List(Box::new(v))
+    }
+}
+
+impl AddAssign<List> for List {
+    fn add_assign(&mut self, rhs: List) {
+        for (k,v) in rhs.value {
+            self.value.insert(k, v);
+        }
     }
 }
 

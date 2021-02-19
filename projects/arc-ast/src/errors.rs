@@ -1,14 +1,26 @@
+use std::error::Error;
+use std::fmt::{self, Display, Formatter, Debug};
+
+pub type Result<T> = std::result::Result<T, RuntimeError>;
+
 #[derive(Debug, Clone)]
 pub enum RuntimeError {
     IOError(String),
     LexerError(String),
 }
 
-pub type Result<T> = std::result::Result<T, RuntimeError>;
 type IOError = std::io::Error;
 type JsonError = serde_json::Error;
 type TomlError = toml::de::Error;
 type YamlError = yaml_rust::ScanError;
+
+impl Display for RuntimeError {
+    fn fmt(&self, f: &mut Formatter) -> fmt::Result {
+        Debug::fmt(self, f)
+    }
+}
+
+impl Error for RuntimeError {}
 
 impl From<IOError> for RuntimeError {
     fn from(e: IOError) -> Self {

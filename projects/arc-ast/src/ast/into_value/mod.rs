@@ -143,7 +143,30 @@ impl Scope {
 
 impl Value {
     pub fn get_value(&self, path: &[Value]) -> &Value {
-        unimplemented!()
+        let mut out = self;
+        for item in path {
+            match item {
+                Value::Integer(key) => {
+                    match self {
+                        Value::List(lhs) => {
+                            lhs.get(key)
+                        },
+                        _ => return &Value::Null
+                    }
+
+                }
+                Value::String(index) => {
+                    match self {
+                        Value::List(lhs) => {
+                            lhs.get(index)
+                        },
+                        _ => return &Value::Null
+                    }
+                }
+                _ => unreachable!()
+            }
+        }
+        return out
     }
 
     pub fn ensure_key(&mut self, key: String) -> &'_ mut Value {
@@ -178,12 +201,20 @@ impl Value {
 }
 
 impl Dict {
+    pub fn get_key(&self, key: String)-> &Value {
+        self.entry(key).or_default()
+    }
+
     pub fn ensure_key(&mut self, key: String) -> &'_ mut Value {
         self.entry(key).or_default()
     }
 }
 
 impl List {
+    pub fn get_index(&self, index: usize) -> &Value {
+
+    }
+
     pub fn ensure_index(&mut self, index: usize) -> &'_ mut Value {
         self.entry(index).or_default()
     }

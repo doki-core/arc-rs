@@ -1,11 +1,11 @@
 [package]
 name = "arc_ast"
-version = "0.3.1"
+version = "0.3.3"
 authors = ["Aster <galaster@foxmail.com>"]
 description = "Arc Readable Configuration Parser via Pest"
 license = "MPL-2.0"
-readme = "README.md"
-repository = "https://github.com/Moe-Net/arc-rs"
+readme = "../../Readme.md"
+repository = "https://github.com/doki-land/arc-rs"
 exclude = ["/tests/*"]
 edition = "2018"
 
