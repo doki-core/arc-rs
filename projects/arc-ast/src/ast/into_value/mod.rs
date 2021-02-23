@@ -149,7 +149,10 @@ impl Value {
                 Value::Integer(key) => {
                     match self {
                         Value::List(lhs) => {
-                            lhs.get(key)
+                            out = match lhs.get_index(key.as_ref()) {
+                                None => {&Value::Null}
+                                Some(v) => {v}
+                            }
                         },
                         _ => return &Value::Null
                     }
@@ -157,8 +160,11 @@ impl Value {
                 }
                 Value::String(index) => {
                     match self {
-                        Value::List(lhs) => {
-                            lhs.get(index)
+                        Value::Dict(lhs) => {
+                            out = match lhs.get_key(index.as_ref()) {
+                                Some(v) => {v},
+                                None => {&Value::Null}
+                            }
                         },
                         _ => return &Value::Null
                     }
@@ -200,22 +206,5 @@ impl Value {
     }
 }
 
-impl Dict {
-    pub fn get_key(&self, key: String)-> &Value {
-        self.entry(key).or_default()
-    }
 
-    pub fn ensure_key(&mut self, key: String) -> &'_ mut Value {
-        self.entry(key).or_default()
-    }
-}
 
-impl List {
-    pub fn get_index(&self, index: usize) -> &Value {
-
-    }
-
-    pub fn ensure_index(&mut self, index: usize) -> &'_ mut Value {
-        self.entry(index).or_default()
-    }
-}

@@ -90,6 +90,19 @@ impl AddAssign for Dict {
     }
 }
 
+impl Dict {
+    pub fn get_handler(&self) -> Option<String> {
+        self.handler.to_owned()
+    }
+
+    pub fn get_key(&self, key: &Text) -> Option<&Value> {
+        self.get(&key.value)
+    }
+
+    pub fn ensure_key(&mut self, key: String) -> &'_ mut Value {
+        self.entry(key).or_default()
+    }
+}
 
 impl Dict {
     pub fn empty() -> Value {
@@ -104,9 +117,7 @@ impl Dict {
         self.value.iter()
     }
 
-    pub fn get_handler(&self) -> Option<String> {
-        self.handler.to_owned()
-    }
+
     pub fn get(&self, key: &str) -> Option<&Value> {
         self.value.get(key)
     }

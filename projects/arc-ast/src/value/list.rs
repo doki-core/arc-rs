@@ -1,6 +1,6 @@
 use super::*;
 use std::collections::btree_map::Entry;
-use std::ops::AddAssign;
+use std::ops::{AddAssign, Neg};
 
 #[derive(Clone, Eq, PartialEq)]
 pub struct List {
@@ -85,6 +85,30 @@ impl AddAssign<List> for List {
 //     }
 // }
 
+
+impl List {
+    pub fn get_handler(&self) -> Option<String> {
+        self.handler.to_owned()
+    }
+    pub fn get_index(&self, index: &Integer) -> Option<&Value> {
+        match index.get_index() {
+            Some(i_index) => {
+                let u_index = match i_index >= 0 {
+                    true => i_index as usize,
+                    false => 1 + self.length() - i_index.neg() as usize,
+                };
+                self.value.get(&u_index)
+            }
+            None => None,
+        }
+    }
+
+    pub fn ensure_index(&mut self, index: usize) -> &'_ mut Value {
+        self.entry(index).or_default()
+    }
+}
+
+
 impl List {
     pub fn empty() -> Value {
         Value::from(List::default())
@@ -109,9 +133,7 @@ impl List {
         self.value.entry(index)
     }
 
-    pub fn get_handler(&self) -> Option<String> {
-        self.handler.to_owned()
-    }
+
     pub fn get(&self, index: &str) -> Option<&Value> {
         let i = match isize::from_str(index) {
             Ok(o) => o,

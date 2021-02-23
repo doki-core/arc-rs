@@ -10,13 +10,13 @@ use crate::{
 use num::{BigInt, Num};
 use std::fmt::{self, Debug, Formatter};
 
-// use bigdecimal::BigDecimal;
-// use num::BigInt;
-
 #[derive(Clone, Eq, PartialEq)]
 pub struct AST {
+    /// AST data
     pub kind: ASTKind,
+    /// 1-indexed start to end position
     pub range: Option<TextRange>,
+    /// Whitespace, Newline, Comment
     pub additional: Option<String>,
 }
 
@@ -29,7 +29,7 @@ pub enum ASTKind {
     Program(Vec<AST>),
     /// Flattened structure
     Sequence(Vec<AST>),
-    /// Whitespace, Newline, Comment
+    /// Plain Text, NewLines
     Span(String),
     /// `[list.scope]`
     ListScope(usize, Box<AST>),
@@ -41,12 +41,22 @@ pub enum ASTKind {
     Null,
     /// `true` | `false`
     Boolean(bool),
+    ///
     String(Box<Text>),
+    ///
     Namespace(Vec<AST>),
+    ///
+    ///
     Integer(Box<Integer>),
+    ///
+    ///
     Decimal(Box<Decimal>),
+    ///
+    ///
     Cite(Box<AST>),
+    ///
     Dict(Vec<AST>),
+    ///
     List(Vec<AST>),
 }
 
