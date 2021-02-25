@@ -1,6 +1,8 @@
 use super::*;
-use std::collections::btree_map::Entry;
-use std::ops::{AddAssign, Neg};
+use std::{
+    collections::btree_map::Entry,
+    ops::{AddAssign, Neg},
+};
 
 #[derive(Clone, Eq, PartialEq)]
 pub struct List {
@@ -72,7 +74,7 @@ impl From<List> for Value {
 
 impl AddAssign<List> for List {
     fn add_assign(&mut self, rhs: List) {
-        for (k,v) in rhs.value {
+        for (k, v) in rhs.value {
             self.value.insert(k, v);
         }
     }
@@ -84,7 +86,6 @@ impl AddAssign<List> for List {
 //         self.value.index(n)
 //     }
 // }
-
 
 impl List {
     pub fn get_handler(&self) -> Option<String> {
@@ -103,11 +104,19 @@ impl List {
         }
     }
 
-    pub fn ensure_index(&mut self, index: usize) -> &'_ mut Value {
-        self.entry(index).or_default()
+    pub fn ensure_index(&mut self, index: Integer) -> &'_ mut Value {
+        match index.get_index() {
+            Some(i_index) => {
+                let u_index = match i_index >= 0 {
+                    true => i_index as usize,
+                    false => 1 + self.length() - i_index.neg() as usize,
+                };
+                self.entry(u_index).or_default()
+            }
+            None => unreachable!(),
+        }
     }
 }
-
 
 impl List {
     pub fn empty() -> Value {
@@ -133,7 +142,6 @@ impl List {
         self.value.entry(index)
     }
 
-
     pub fn get(&self, index: &str) -> Option<&Value> {
         let i = match isize::from_str(index) {
             Ok(o) => o,
@@ -147,8 +155,5 @@ impl List {
 
     pub fn extend(&mut self, item: impl Into<List>) {
         self.value.extend(item.into().value)
-    }
-    pub fn extend_one(&mut self, item: impl Into<Value>) {
-        unimplemented!()
     }
 }

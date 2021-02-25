@@ -46,12 +46,9 @@ pub enum ASTKind {
     ///
     Namespace(Vec<AST>),
     ///
-    ///
     Integer(Box<Integer>),
     ///
-    ///
     Decimal(Box<Decimal>),
-    ///
     ///
     Cite(Box<AST>),
     ///

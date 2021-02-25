@@ -7,12 +7,8 @@ impl Value {
             return *self = incoming;
         }
         match (self, incoming) {
-            (Value::List(lhs), Value::List(rhs)) => {
-                **lhs += *rhs
-            }
-            (Value::Dict(lhs), Value::Dict(rhs)) => {
-                **lhs += *rhs
-            }
+            (Value::List(lhs), Value::List(rhs)) => **lhs += *rhs,
+            (Value::Dict(lhs), Value::Dict(rhs)) => **lhs += *rhs,
             _ => unreachable!(),
         }
     }

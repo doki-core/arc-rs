@@ -91,16 +91,21 @@ impl AddAssign for Dict {
 }
 
 impl Dict {
+    pub fn get(&self, key: &str) -> Option<&Value> {
+        self.value.get(key)
+    }
+    pub fn get_mut(&mut self, key: &str) -> Option<&mut Value> {
+        self.value.get_mut(key)
+    }
+    pub fn get_key(&self, key: &Text) -> Option<&Value> {
+        self.value.get(&key.value)
+    }
     pub fn get_handler(&self) -> Option<String> {
         self.handler.to_owned()
     }
 
-    pub fn get_key(&self, key: &Text) -> Option<&Value> {
-        self.get(&key.value)
-    }
-
-    pub fn ensure_key(&mut self, key: String) -> &'_ mut Value {
-        self.entry(key).or_default()
+    pub fn ensure_key(&mut self, key: Text) -> &'_ mut Value {
+        self.entry(key.value).or_default()
     }
 }
 
@@ -118,12 +123,7 @@ impl Dict {
     }
 
 
-    pub fn get(&self, key: &str) -> Option<&Value> {
-        self.value.get(key)
-    }
-    pub fn get_mut(&mut self, key: &str) -> Option<&mut Value> {
-        self.value.get_mut(key)
-    }
+
     pub fn insert(&mut self, key: String, value: Value) -> Option<Value> {
         self.value.insert(key, value)
     }
@@ -136,17 +136,3 @@ impl Dict {
         self.value.entry(key)
     }
 }
-
-// impl Deref for Dict {
-//     type Target = IndexMap<String, Value>;
-//
-//     fn deref(&self) -> &Self::Target {
-//         &self.value
-//     }
-// }
-//
-// impl DerefMut for Dict {
-//     fn deref_mut(&mut self) -> &mut Self::Target {
-//         &mut self.value
-//     }
-// }

@@ -1,5 +1,7 @@
-use std::error::Error;
-use std::fmt::{self, Display, Formatter, Debug};
+use std::{
+    error::Error,
+    fmt::{self, Debug, Display, Formatter},
+};
 
 #[derive(Clone, Debug, PartialEq)]
 pub enum ArcError {

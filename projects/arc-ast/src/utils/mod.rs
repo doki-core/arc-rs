@@ -10,3 +10,6 @@ pub use wrap_parser::parse_json;
 pub use wrap_parser::parse_toml;
 #[cfg(feature = "yaml")]
 pub use wrap_parser::parse_yaml;
+
+
+pub const BUILD_EMPTY_SCOPE: bool = false;

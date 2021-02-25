@@ -18,9 +18,8 @@ EmptyLine  = @{WHITESPACE* ~ NEWLINE}
 /*====================================================================================================================*/
 //!#C678DD: Import
 // include_statement = {"@include" ~ "(" ~ StringNormal ~ ("," ~ SYMBOL) ~ ")"}
-import_statement =  {Import ~ String ~ "as" ~ SYMBOL}
-extend_statement =  {"@extend" ~ String}
-Import           = @{"@import"|"@import!"}
+import_statement =  {"#import" ~ String ~ "as" ~ SYMBOL}
+extend_statement =  {"#extend" ~ String}
 /*====================================================================================================================*/
 dict_scope   = _{dict_head ~ (SEPARATOR? ~ dict_pair)*}
 dict_head    =  {"{" ~ Dot* ~ namespace ~ "}"}
@@ -48,12 +47,14 @@ Insert       = @{"^"}
 Append       = @{">"}
 /*====================================================================================================================*/
 data = {
-    Number|Special|Cite|String
+    Special|Cite|Byte|Number
+  | String
   | dict_literal|list_literal
 }
 /*====================================================================================================================*/
 ///#D19A66
 Special = @{"true"|"false"|"null"}
+Byte    = @{"0" ~ ASCII_ALPHA ~ (ASCII_ALPHANUMERIC|"_"|"-")}
 /*====================================================================================================================*/
 ///#56B6C2
 Cite = ${"$" ~ namespace}
@@ -103,8 +104,7 @@ Dot       = @{"."}
 ///Gray
 COMMENT          =  {MultiLineComment|LineComment}
 WHITESPACE       = _{NEWLINE|SPACE_SEPARATOR|"\t"}
-LineComment      = ${DEPRECATED ~ (!NEWLINE ~ ANY)*}
+LineComment      = ${"//" ~ (!NEWLINE ~ ANY)*}
 MultiLineComment = ${"/*" ~ (MultiLineComment | !"*/" ~ ANY)* ~ "*/"}
 
 SEPARATOR  = @{","|";"}
-DEPRECATED = @{"//"|"#"}

@@ -3,7 +3,9 @@ use crate::{
     value::{Dict, Integer, List},
     Value,
 };
-use std::ops::Neg;
+use crate::value::Text;
+use crate::utils::BUILD_EMPTY_SCOPE;
+
 
 impl From<AST> for Value {
     fn from(ast: AST) -> Self {
@@ -52,7 +54,9 @@ impl Scope {
                         self.push_pin(path.kind)
                     }
                 }
-                self.get_pointer();
+                if BUILD_EMPTY_SCOPE {
+                    self.get_pointer();
+                }
             }
             ASTKind::List(v) => {
                 for (index, item) in v.into_iter().enumerate() {
@@ -90,9 +94,9 @@ impl Scope {
         let mut pointer = &mut self.top;
         for path in self.pin_path.iter().flatten().chain(self.key_path.iter().flatten()) {
             match path {
-                Value::String(key) => pointer = pointer.ensure_key(key.as_str().to_string()),
+                Value::String(key) => pointer = pointer.ensure_key(key.as_ref().to_owned()),
                 Value::Integer(index) => {
-                    pointer = pointer.ensure_index(index);
+                    pointer = pointer.ensure_index(index.as_ref().to_owned());
                 }
                 _ => unreachable!(),
             }
@@ -147,35 +151,30 @@ impl Value {
         for item in path {
             match item {
                 Value::Integer(key) => {
-                    match self {
-                        Value::List(lhs) => {
-                            out = match lhs.get_index(key.as_ref()) {
-                                None => {&Value::Null}
-                                Some(v) => {v}
-                            }
-                        },
-                        _ => return &Value::Null
+                    if let Value::List(lhs) = out {
+                        if let Some(v) = lhs.get_index(key.as_ref()) {
+                            out = v;
+                            continue;
+                        }
                     }
-
+                    return &Value::Null;
                 }
                 Value::String(index) => {
-                    match self {
-                        Value::Dict(lhs) => {
-                            out = match lhs.get_key(index.as_ref()) {
-                                Some(v) => {v},
-                                None => {&Value::Null}
-                            }
-                        },
-                        _ => return &Value::Null
+                    if let Value::Dict(lhs) = out {
+                        if let Some(v) = lhs.get_key(index.as_ref()) {
+                            out = v;
+                            continue;
+                        }
                     }
+                    return &Value::Null;
                 }
-                _ => unreachable!()
+                _ => unreachable!(),
             }
         }
-        return out
+        return out;
     }
 
-    pub fn ensure_key(&mut self, key: String) -> &'_ mut Value {
+    pub fn ensure_key(&mut self, key: Text) -> &'_ mut Value {
         match self {
             Value::Null => {
                 *self = Dict::empty();
@@ -185,26 +184,14 @@ impl Value {
             _ => unimplemented!("{:?}", self),
         }
     }
-    pub fn ensure_index(&mut self, index: &Integer) -> &'_ mut Value {
+    pub fn ensure_index(&mut self, index: Integer) -> &'_ mut Value {
         match self {
             Value::Null => {
                 *self = List::empty();
                 self.ensure_index(index)
             }
-            Value::List(list) => match index.get_index() {
-                Some(i_index) => {
-                    let u_index = match i_index >= 0 {
-                        true => i_index as usize,
-                        false => list.length() - i_index.neg() as usize,
-                    };
-                    list.ensure_index(u_index)
-                }
-                None => unreachable!(),
-            },
+            Value::List(list) => list.ensure_index(index),
             _ => unimplemented!("{:?}", self),
         }
     }
 }
-
-
-
