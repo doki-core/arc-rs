@@ -18,8 +18,8 @@ EmptyLine  = @{WHITESPACE* ~ NEWLINE}
 /*====================================================================================================================*/
 //!#C678DD: Import
 // include_statement = {"@include" ~ "(" ~ StringNormal ~ ("," ~ SYMBOL) ~ ")"}
-import_statement =  {"#import" ~ String ~ "as" ~ SYMBOL}
-extend_statement =  {"#extend" ~ String}
+import_statement =  {"#import" ~ SYMBOL ~ StringNormal ~ "as" ~ namespace}
+extend_statement =  {"#extend" ~ SYMBOL? ~ StringNormal}
 /*====================================================================================================================*/
 dict_scope   = _{dict_head ~ (SEPARATOR? ~ dict_pair)*}
 dict_head    =  {"{" ~ Dot* ~ namespace ~ "}"}

@@ -9,7 +9,6 @@ pub enum Rule {
     EmptyLine,
     import_statement,
     extend_statement,
-    Import,
     dict_scope,
     dict_head,
     dict_pair,
@@ -25,6 +24,7 @@ pub enum Rule {
     Append,
     data,
     Special,
+    Byte,
     Cite,
     Number,
     SignedNumber,
@@ -50,7 +50,6 @@ pub enum Rule {
     LineComment,
     MultiLineComment,
     SEPARATOR,
-    DEPRECATED,
 }
 #[allow(clippy::all)]
 impl ::pest::Parser<Rule> for ArcParser {
@@ -89,17 +88,12 @@ impl ::pest::Parser<Rule> for ArcParser {
                 #[inline]
                 #[allow(non_snake_case, unused_variables)]
                 pub fn import_statement(state: Box<::pest::ParserState<Rule>>) -> ::pest::ParseResult<Box<::pest::ParserState<Rule>>> {
-                    state.rule(Rule::import_statement, |state| state.sequence(|state| self::Import(state).and_then(|state| super::hidden::skip(state)).and_then(|state| self::String(state)).and_then(|state| super::hidden::skip(state)).and_then(|state| state.match_string("as")).and_then(|state| super::hidden::skip(state)).and_then(|state| self::SYMBOL(state))))
+                    state.rule(Rule::import_statement, |state| state.sequence(|state| state.match_string("#import").and_then(|state| super::hidden::skip(state)).and_then(|state| self::SYMBOL(state)).and_then(|state| super::hidden::skip(state)).and_then(|state| self::StringNormal(state)).and_then(|state| super::hidden::skip(state)).and_then(|state| state.match_string("as")).and_then(|state| super::hidden::skip(state)).and_then(|state| self::namespace(state))))
                 }
                 #[inline]
                 #[allow(non_snake_case, unused_variables)]
                 pub fn extend_statement(state: Box<::pest::ParserState<Rule>>) -> ::pest::ParseResult<Box<::pest::ParserState<Rule>>> {
-                    state.rule(Rule::extend_statement, |state| state.sequence(|state| state.match_string("@extend").and_then(|state| super::hidden::skip(state)).and_then(|state| self::String(state))))
-                }
-                #[inline]
-                #[allow(non_snake_case, unused_variables)]
-                pub fn Import(state: Box<::pest::ParserState<Rule>>) -> ::pest::ParseResult<Box<::pest::ParserState<Rule>>> {
-                    state.rule(Rule::Import, |state| state.atomic(::pest::Atomicity::Atomic, |state| state.match_string("@import").or_else(|state| state.match_string("@import!"))))
+                    state.rule(Rule::extend_statement, |state| state.sequence(|state| state.match_string("#extend").and_then(|state| super::hidden::skip(state)).and_then(|state| state.optional(|state| self::SYMBOL(state))).and_then(|state| super::hidden::skip(state)).and_then(|state| self::StringNormal(state))))
                 }
                 #[inline]
                 #[allow(non_snake_case, unused_variables)]
@@ -169,12 +163,17 @@ impl ::pest::Parser<Rule> for ArcParser {
                 #[inline]
                 #[allow(non_snake_case, unused_variables)]
                 pub fn data(state: Box<::pest::ParserState<Rule>>) -> ::pest::ParseResult<Box<::pest::ParserState<Rule>>> {
-                    state.rule(Rule::data, |state| self::Number(state).or_else(|state| self::Special(state)).or_else(|state| state.restore_on_err(|state| self::Cite(state))).or_else(|state| state.restore_on_err(|state| self::String(state))).or_else(|state| state.restore_on_err(|state| self::dict_literal(state))).or_else(|state| state.restore_on_err(|state| self::list_literal(state))))
+                    state.rule(Rule::data, |state| self::Special(state).or_else(|state| state.restore_on_err(|state| self::Cite(state))).or_else(|state| self::Byte(state)).or_else(|state| self::Number(state)).or_else(|state| state.restore_on_err(|state| self::String(state))).or_else(|state| state.restore_on_err(|state| self::dict_literal(state))).or_else(|state| state.restore_on_err(|state| self::list_literal(state))))
                 }
                 #[inline]
                 #[allow(non_snake_case, unused_variables)]
                 pub fn Special(state: Box<::pest::ParserState<Rule>>) -> ::pest::ParseResult<Box<::pest::ParserState<Rule>>> {
                     state.rule(Rule::Special, |state| state.atomic(::pest::Atomicity::Atomic, |state| state.match_string("true").or_else(|state| state.match_string("false")).or_else(|state| state.match_string("null"))))
+                }
+                #[inline]
+                #[allow(non_snake_case, unused_variables)]
+                pub fn Byte(state: Box<::pest::ParserState<Rule>>) -> ::pest::ParseResult<Box<::pest::ParserState<Rule>>> {
+                    state.rule(Rule::Byte, |state| state.atomic(::pest::Atomicity::Atomic, |state| state.sequence(|state| state.match_string("0").and_then(|state| self::ASCII_ALPHA(state)).and_then(|state| self::ASCII_ALPHANUMERIC(state).or_else(|state| state.match_string("_")).or_else(|state| state.match_string("-"))))))
                 }
                 #[inline]
                 #[allow(non_snake_case, unused_variables)]
@@ -289,7 +288,7 @@ impl ::pest::Parser<Rule> for ArcParser {
                 #[inline]
                 #[allow(non_snake_case, unused_variables)]
                 pub fn LineComment(state: Box<::pest::ParserState<Rule>>) -> ::pest::ParseResult<Box<::pest::ParserState<Rule>>> {
-                    state.atomic(::pest::Atomicity::CompoundAtomic, |state| state.rule(Rule::LineComment, |state| state.sequence(|state| self::DEPRECATED(state).and_then(|state| state.repeat(|state| state.sequence(|state| state.lookahead(false, |state| self::NEWLINE(state)).and_then(|state| self::ANY(state))))))))
+                    state.atomic(::pest::Atomicity::CompoundAtomic, |state| state.rule(Rule::LineComment, |state| state.sequence(|state| state.match_string("//").and_then(|state| state.repeat(|state| state.sequence(|state| state.lookahead(false, |state| self::NEWLINE(state)).and_then(|state| self::ANY(state))))))))
                 }
                 #[inline]
                 #[allow(non_snake_case, unused_variables)]
@@ -300,11 +299,6 @@ impl ::pest::Parser<Rule> for ArcParser {
                 #[allow(non_snake_case, unused_variables)]
                 pub fn SEPARATOR(state: Box<::pest::ParserState<Rule>>) -> ::pest::ParseResult<Box<::pest::ParserState<Rule>>> {
                     state.rule(Rule::SEPARATOR, |state| state.atomic(::pest::Atomicity::Atomic, |state| state.match_string(",").or_else(|state| state.match_string(";"))))
-                }
-                #[inline]
-                #[allow(non_snake_case, unused_variables)]
-                pub fn DEPRECATED(state: Box<::pest::ParserState<Rule>>) -> ::pest::ParseResult<Box<::pest::ParserState<Rule>>> {
-                    state.rule(Rule::DEPRECATED, |state| state.atomic(::pest::Atomicity::Atomic, |state| state.match_string("//").or_else(|state| state.match_string("#"))))
                 }
                 #[inline]
                 #[allow(dead_code, non_snake_case, unused_variables)]
@@ -343,6 +337,16 @@ impl ::pest::Parser<Rule> for ArcParser {
                 }
                 #[inline]
                 #[allow(dead_code, non_snake_case, unused_variables)]
+                pub fn ASCII_ALPHA(state: Box<::pest::ParserState<Rule>>) -> ::pest::ParseResult<Box<::pest::ParserState<Rule>>> {
+                    state.match_range('a'..'z').or_else(|state| state.match_range('A'..'Z'))
+                }
+                #[inline]
+                #[allow(dead_code, non_snake_case, unused_variables)]
+                pub fn ASCII_ALPHANUMERIC(state: Box<::pest::ParserState<Rule>>) -> ::pest::ParseResult<Box<::pest::ParserState<Rule>>> {
+                    state.match_range('a'..'z').or_else(|state| state.match_range('A'..'Z')).or_else(|state| state.match_range('0'..'9'))
+                }
+                #[inline]
+                #[allow(dead_code, non_snake_case, unused_variables)]
                 pub fn NEWLINE(state: Box<::pest::ParserState<Rule>>) -> ::pest::ParseResult<Box<::pest::ParserState<Rule>>> {
                     state.match_string("\n").or_else(|state| state.match_string("\r\n")).or_else(|state| state.match_string("\r"))
                 }
@@ -371,7 +375,6 @@ impl ::pest::Parser<Rule> for ArcParser {
             Rule::EmptyLine => rules::EmptyLine(state),
             Rule::import_statement => rules::import_statement(state),
             Rule::extend_statement => rules::extend_statement(state),
-            Rule::Import => rules::Import(state),
             Rule::dict_scope => rules::dict_scope(state),
             Rule::dict_head => rules::dict_head(state),
             Rule::dict_pair => rules::dict_pair(state),
@@ -387,6 +390,7 @@ impl ::pest::Parser<Rule> for ArcParser {
             Rule::Append => rules::Append(state),
             Rule::data => rules::data(state),
             Rule::Special => rules::Special(state),
+            Rule::Byte => rules::Byte(state),
             Rule::Cite => rules::Cite(state),
             Rule::Number => rules::Number(state),
             Rule::SignedNumber => rules::SignedNumber(state),
@@ -412,7 +416,6 @@ impl ::pest::Parser<Rule> for ArcParser {
             Rule::LineComment => rules::LineComment(state),
             Rule::MultiLineComment => rules::MultiLineComment(state),
             Rule::SEPARATOR => rules::SEPARATOR(state),
-            Rule::DEPRECATED => rules::DEPRECATED(state),
             Rule::EOI => rules::EOI(state),
         })
     }
