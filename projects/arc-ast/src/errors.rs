@@ -5,10 +5,11 @@ use std::{
 
 pub type Result<T> = std::result::Result<T, RuntimeError>;
 
-#[derive(Debug, Clone)]
+#[derive(Debug)]
 pub enum RuntimeError {
     IOError(String),
     LexerError(String),
+    OtherError(Box<dyn Error>)
 }
 
 type IOError = std::io::Error;

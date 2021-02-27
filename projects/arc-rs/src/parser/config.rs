@@ -1,12 +1,14 @@
 use super::*;
+use std::path::PathBuf;
 
 pub struct ParserConfig {
     pub tab_size: usize,
+    pub file_path: Option<PathBuf>
 }
 
 impl Default for ParserConfig {
     fn default() -> Self {
-        Self { tab_size: 4 }
+        Self { tab_size: 4, file_path: None }
     }
 }
 

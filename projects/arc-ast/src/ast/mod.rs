@@ -1,6 +1,7 @@
 mod into_value;
 mod literal;
 mod range;
+mod statements;
 
 pub use crate::ast::range::TextRange;
 use crate::{
@@ -9,6 +10,7 @@ use crate::{
 };
 use num::{BigInt, Num};
 use std::fmt::{self, Debug, Formatter};
+pub use statements::{ExtendFormat,ExtendStatement};
 
 #[derive(Clone, Eq, PartialEq)]
 pub struct AST {
@@ -31,6 +33,7 @@ pub enum ASTKind {
     Sequence(Vec<AST>),
     /// Plain Text, NewLines
     Span(String),
+    ExtendStatement(Box<ExtendStatement>),
     /// `[list.scope]`
     ListScope(usize, Box<AST>),
     /// `{dict.scope}`
