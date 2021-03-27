@@ -1,7 +1,6 @@
 [workspace]
 
 default-members = [
-    "projects/arc-rs",
     "projects/arc-ast",
     "projects/arc-pest",
     "projects/arc-fmt",

@@ -1,6 +1,6 @@
 [package]
-name = "arc_ast"
-version = "0.4.1"
+name = "arc-rs"
+version = "0.5.0"
 authors = ["Aster <galaster@foxmail.com>"]
 description = "Arc Readable Configuration"
 license = "MPL-2.0"
@@ -22,7 +22,7 @@ toml = { version = "0.5", optional = true }
 yaml-rust = { version = "0.4", optional = true }
 # serde_yaml = "*"
 serde-hjson = { version = "0.9", optional = true }
-
+arc-pest = {version = "0.4", path = "../arc-pest"}
 
 [features]
 default = ["convert"]
