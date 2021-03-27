@@ -1,20 +1,19 @@
-use arc_ast::{Result, Value};
+use arc_rs::{Result, Value};
 
-use arc_ast::utils::parse_toml;
+use arc_rs::utils::parse_toml;
 use std::fs::{self, read_to_string};
 
-fn test_toml(name: &str) -> Result<()> {
-    let input = format!("tests/convert_toml/{}.toml", name);
-    let output = format!("tests/convert_toml/out/{}.arc", name);
-    let out = parse_toml(&read_to_string(input)?)?;
-    fs::write(output, format!("{:#?}", Value::from(out)))?;
-    Ok(())
+macro_rules! run_test {
+    ($($F:ident), +,) => {
+        $(run_test![$F, stringify!($F)];)+
+    };
+    ($function_name:ident, $file_name:expr) => {
+    #[test]
+    fn $function_name() {
+        let ast = parse_toml(include_str!(concat!($file_name, ".toml"))).unwrap();
+        assert_eq!(include_str!(concat!($file_name, ".out.arc")), format!("{:#?}", Value::from(ast)))
+    }
+    };
 }
 
-#[test]
-fn test_hard() -> Result<()> {
-    test_toml("example")?;
-    test_toml("hard")?;
-    test_toml("hard_unicode")?;
-    Ok(())
-}
+run_test![example, hard, hard_unicode,];

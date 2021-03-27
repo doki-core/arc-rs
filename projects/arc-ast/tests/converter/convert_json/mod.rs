@@ -1,4 +1,4 @@
-use arc_ast::utils::parse_json;
+use arc_rs::utils::parse_json;
 
 #[test]
 fn json() {

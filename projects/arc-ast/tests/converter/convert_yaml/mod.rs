@@ -1,36 +1,23 @@
-use arc_ast::{utils::parse_yaml, Result};
+use arc_rs::{utils::parse_yaml, Value , Result};
 use std::fs::{self, read_to_string};
 
-fn test_yaml(name: &str) -> Result<()> {
-    let input = format!("tests/convert_yaml/{}.yaml", name);
-    let output = format!("tests/convert_yaml/out/{}.arc", name);
-    let out = parse_yaml(&read_to_string(input)?)?;
-    fs::write(output, format!("{:#?}", out))?;
-    Ok(())
+
+macro_rules! run_test {
+    ($($F:ident), +,) => {
+        $(run_test![$F, stringify!($F)];)+
+    };
+    ($function_name:ident, $file_name:expr) => {
+    #[test]
+    fn $function_name() {
+        let ast = parse_yaml(include_str!(concat!($file_name, ".yaml"))).unwrap();
+        assert_eq!(include_str!(concat!($file_name, ".out.arc")), format!("{:#?}", Value::from(ast)))
+    }
+    };
 }
 
-#[test]
-fn test_easy() -> Result<()> {
-    test_yaml("easy_1")?;
-    test_yaml("easy_2")?;
-    test_yaml("easy_3")?;
-    test_yaml("easy_4")?;
-    test_yaml("easy_5")?;
-    Ok(())
-}
-
-#[test]
-fn test_normal() -> Result<()> {
-    // test_yaml("normal_1")?;
-    test_yaml("normal_2")?;
-    test_yaml("normal_3")?;
-    test_yaml("normal_4")?;
-    test_yaml("normal_5")?;
-    Ok(())
-}
-
-#[test]
-fn test_hard() -> Result<()> {
-    test_yaml("hard_1")?;
-    Ok(())
-}
+run_test![
+    easy_1, easy_2, easy_3, easy_4, easy_5,
+    // normal_1,
+    normal_2, normal_3, normal_4, normal_5,
+    hard_1,
+];
