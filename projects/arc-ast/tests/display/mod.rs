@@ -1,5 +1,4 @@
-use super::*;
-use arc_ast::{dict, value::Text, AST};
+use arc_rs::{dict, value::Text, Value, AST};
 
 #[test]
 fn test() {
@@ -10,7 +9,6 @@ fn test() {
     println!("{:?}", dict! {"a": "1"});
 }
 
-//
 // #[test]
 // fn test() {
 //     println!("Null:    {}", Arc::new());

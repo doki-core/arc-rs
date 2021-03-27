@@ -1,13 +1,11 @@
 mod config;
-pub use crate::parser::config::ParserConfig;
-use crate::{Result, RuntimeError};
-use arc_ast::{
-    ast::ASTKind,
-    value::{Text},
-    TextRange, AST,
+pub use self::config::ParserConfig;
+use crate::{
+    ast::{ASTKind, ExtendStatement},
+    value::Text,
+    Result, RuntimeError, TextRange, AST,
 };
 use arc_pest::{ArcParser, Pair, Pairs, Parser, Rule, Span};
-use crate::ast::ExtendStatement;
 
 macro_rules! debug_cases {
     ($i:ident) => {{
@@ -23,7 +21,7 @@ impl ParserConfig {
         let input = input.replace("\r\n", "\n").replace("\\\n", "").replace("\t", &" ".repeat(self.tab_size));
         match ArcParser::parse(Rule::program, &input) {
             Ok(o) => Ok(self.parse_program(o)),
-            Err(e) => Err(RuntimeError::OtherError(box e))
+            Err(e) => Err(RuntimeError::OtherError(box e)),
         }
     }
     fn parse_program(&self, pairs: Pairs<Rule>) -> AST {
@@ -39,7 +37,7 @@ impl ParserConfig {
                 Rule::dict_pair => codes.push(self.parse_dict_pair(pair)),
                 Rule::dict_head => codes.push(self.parse_dict_head(pair)),
                 Rule::COMMENT => additional = Some(pair.as_str().to_string()),
-                Rule::extend_statement=> codes.push(self.parse_extend(pair)),
+                Rule::extend_statement => codes.push(self.parse_extend(pair)),
                 _ => debug_cases!(pair),
             };
         }
@@ -48,16 +46,16 @@ impl ParserConfig {
     fn parse_extend(&self, pairs: Pair<Rule>) -> AST {
         let r = self.get_position(pairs.as_span());
         let mut path = String::new();
-        let mut format= String::new();
+        let mut format = String::new();
         for pair in pairs.into_inner() {
-             match pair.as_rule() {
-                Rule::SYMBOL=> format = pair.as_str().to_string(),
-                Rule::StringNormal=> path = self.parse_string_inner(pair).as_str().to_string(),
+            match pair.as_rule() {
+                Rule::SYMBOL => format = pair.as_str().to_string(),
+                Rule::StringNormal => path = self.parse_string_inner(pair).as_str().to_string(),
                 _ => debug_cases!(pair),
             };
         }
         let ext = ExtendStatement::new(format, path, self.file_path.to_owned());
-        AST { kind: ASTKind::ExtendStatement(ext), range: r.boxed(), additional:None }
+        AST { kind: ASTKind::ExtendStatement(ext), range: r.boxed(), additional: None }
     }
     // fn parse_block(&self, pairs: Pair<Rule>) -> AST {
     //     let pair = pairs.into_inner().nth(0).unwrap();
@@ -89,7 +87,7 @@ impl ParserConfig {
         for pair in pairs.into_inner() {
             match pair.as_rule() {
                 Rule::SEPARATOR => continue,
-                Rule::InlineString=>codes.push( self.parse_string_bare(pair)),
+                Rule::InlineString => codes.push(self.parse_string_bare(pair)),
                 Rule::data => codes.push(self.parse_data(pair)),
                 _ => debug_cases!(pair),
             };
@@ -142,7 +140,6 @@ impl ParserConfig {
         out.set_range(r);
         return out;
     }
-    //
     // fn parse_list(&self, pairs: Pair<Rule>) -> AST {
     //     let r = self.get_position(pairs.as_span());
     //     let mut terms = vec![];
@@ -193,7 +190,6 @@ impl ParserConfig {
         out.set_range(r);
         return out;
     }
-    //
     // fn parse_string(&self, pairs: Pair<Rule>) -> AST {
     //     let r = self.get_position(pairs.as_span());
     //     let mut is_pure_string = true;

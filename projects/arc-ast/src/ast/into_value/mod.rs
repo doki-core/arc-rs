@@ -1,11 +1,9 @@
 use crate::{
     ast::{ASTKind, AST},
-    value::{Dict, Integer, List},
+    utils::BUILD_EMPTY_SCOPE,
+    value::{Dict, Integer, List, Text},
     Value,
 };
-use crate::value::Text;
-use crate::utils::BUILD_EMPTY_SCOPE;
-
 
 impl From<AST> for Value {
     fn from(ast: AST) -> Self {

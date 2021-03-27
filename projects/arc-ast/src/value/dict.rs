@@ -122,8 +122,6 @@ impl Dict {
         self.value.iter()
     }
 
-
-
     pub fn insert(&mut self, key: String, value: Value) -> Option<Value> {
         self.value.insert(key, value)
     }

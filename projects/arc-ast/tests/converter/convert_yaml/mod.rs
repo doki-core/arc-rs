@@ -1,6 +1,4 @@
-use arc_rs::{utils::parse_yaml, Value , Result};
-use std::fs::{self, read_to_string};
-
+use super::*;
 
 macro_rules! run_test {
     ($($F:ident), +,) => {
@@ -16,8 +14,6 @@ macro_rules! run_test {
 }
 
 run_test![
-    easy_1, easy_2, easy_3, easy_4, easy_5,
-    // normal_1,
-    normal_2, normal_3, normal_4, normal_5,
-    hard_1,
+    easy_1, easy_2, easy_3, easy_4, easy_5, // normal_1,
+    normal_2, normal_3, normal_4, normal_5, hard_1,
 ];

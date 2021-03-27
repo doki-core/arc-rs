@@ -1,4 +1,4 @@
-use crate::{Result, Value};
+use crate::{ParserConfig, Result, Value};
 
 #[cfg(feature = "json")]
 pub fn parse_json(json: &str) -> Result<Value> {
@@ -20,4 +20,9 @@ pub fn parse_yaml(yaml: &str) -> Result<Value> {
         _ => Value::from(out),
     };
     Ok(value)
+}
+
+pub fn parse_arc(arc: &str) -> Result<Value> {
+    let cfg = ParserConfig::default();
+    cfg.parse(arc).map(|e| Value::from(e))
 }

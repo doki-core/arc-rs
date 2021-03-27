@@ -3,7 +3,7 @@ use std::path::PathBuf;
 
 pub struct ParserConfig {
     pub tab_size: usize,
-    pub file_path: Option<PathBuf>
+    pub file_path: Option<PathBuf>,
 }
 
 impl Default for ParserConfig {

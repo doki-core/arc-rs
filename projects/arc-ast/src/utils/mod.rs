@@ -5,14 +5,15 @@ pub use bigdecimal::BigDecimal;
 pub use indexmap::IndexMap;
 pub use num::{BigInt, BigUint};
 
+use crate::ast::ExtendFormat;
+
+pub use wrap_parser::parse_arc;
 #[cfg(feature = "json")]
 pub use wrap_parser::parse_json;
 #[cfg(feature = "toml")]
 pub use wrap_parser::parse_toml;
 #[cfg(feature = "yaml")]
 pub use wrap_parser::parse_yaml;
-use crate::ast::ExtendFormat;
-
 
 pub const BUILD_EMPTY_SCOPE: bool = false;
 

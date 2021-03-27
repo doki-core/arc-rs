@@ -9,7 +9,7 @@ pub type Result<T> = std::result::Result<T, RuntimeError>;
 pub enum RuntimeError {
     IOError(String),
     LexerError(String),
-    OtherError(Box<dyn Error>)
+    OtherError(Box<dyn Error>),
 }
 
 type IOError = std::io::Error;

@@ -9,8 +9,8 @@ use crate::{
     Value,
 };
 use num::{BigInt, Num};
+pub use statements::{ExtendFormat, ExtendStatement};
 use std::fmt::{self, Debug, Formatter};
-pub use statements::{ExtendFormat,ExtendStatement};
 
 #[derive(Clone, Eq, PartialEq)]
 pub struct AST {
