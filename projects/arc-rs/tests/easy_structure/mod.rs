@@ -13,4 +13,4 @@ macro_rules! run_test {
     };
 }
 
-run_test![empty, basic, scope, cite,];
+run_test![empty, basic, scope, number, cite,];

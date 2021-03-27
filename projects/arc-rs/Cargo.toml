@@ -1,6 +1,6 @@
 [package]
 name = "arc-rs"
-version = "0.4.1"
+version = "0.4.2"
 authors = ["192607617@qq.com"]
 edition = "2018"
 description = "Arc Readable Configuration"

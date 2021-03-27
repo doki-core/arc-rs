@@ -1,4 +1,3 @@
-#![feature(move_ref_pattern)]
 #![feature(box_syntax)]
 
 pub mod ast;

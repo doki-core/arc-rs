@@ -9,7 +9,7 @@ mod display;
 mod easy_structure;
 mod hard_structure;
 mod json_compatibility;
-mod real_structure;
+mod real_file;
 
 fn parse(file: impl AsRef<Path>) -> Result<AST> {
     let parser = ParserConfig::default();
