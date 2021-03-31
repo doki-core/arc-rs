@@ -1,3 +1,5 @@
+
+/// list![1, 2, 3]
 #[macro_export]
 macro_rules! list {
     [] => ($crate::value::List::empty());
@@ -9,6 +11,9 @@ macro_rules! list {
     })
 }
 
+/// dict! {
+///     a: null
+/// }
 #[macro_export]
 macro_rules! dict {
     {} => ($crate::value::Dict::empty());

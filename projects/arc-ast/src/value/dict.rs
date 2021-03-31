@@ -113,6 +113,9 @@ impl Dict {
     pub fn empty() -> Value {
         Value::from(Dict::default())
     }
+    pub fn is_empty(&self) -> bool {
+        self.value.is_empty()
+    }
 
     pub fn length(&self) -> usize {
         self.value.len()

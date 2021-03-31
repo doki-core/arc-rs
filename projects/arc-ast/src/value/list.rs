@@ -122,6 +122,9 @@ impl List {
     pub fn empty() -> Value {
         Value::from(List::default())
     }
+    pub fn is_empty(&self) -> bool {
+        self.value.is_empty()
+    }
 
     pub fn length(&self) -> usize {
         // match self.value.last_key_value() {

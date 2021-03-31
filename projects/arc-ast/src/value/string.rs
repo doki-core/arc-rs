@@ -114,3 +114,9 @@ impl Text {
         self.value.as_str()
     }
 }
+
+impl Text {
+    pub fn is_empty(&self) -> bool {
+        self.value.is_empty()
+    }
+}

@@ -3,70 +3,43 @@ use num::Zero;
 
 impl Value {
     pub fn is_null(&self) -> bool {
-        match self {
-            Value::Null => true,
-            _ => false,
-        }
+        matches!(self, Value::Null)
     }
     pub fn is_bool(&self) -> bool {
-        match self {
-            Value::Boolean(_) => true,
-            _ => false,
-        }
+        matches!(self, Value::Boolean(_))
     }
     pub fn is_true(&self) -> bool {
-        match self {
-            Value::Boolean(true) => true,
-            _ => false,
-        }
+        matches!(self, Value::Boolean(true))
     }
     pub fn is_false(&self) -> bool {
-        match self {
-            Value::Boolean(false) => true,
-            _ => false,
-        }
+        matches!(self, Value::Boolean(false))
     }
     pub fn is_list(&self) -> bool {
-        match self {
-            Value::List(_) => true,
-            _ => false,
-        }
+        matches!(self, Value::List(_))
     }
     pub fn is_dict(&self) -> bool {
-        match self {
-            Value::Dict(_) => true,
-            _ => false,
-        }
+        matches!(self, Value::Dict(_))
     }
     pub fn is_string(&self) -> bool {
-        match self {
-            Value::String(_) => true,
-            _ => false,
-        }
-    }
-    pub fn is_empty(&self) -> bool {
-        match self {
-            Value::Dict(_) => true,
-            Value::List(_) => true,
-            Value::String(_) => true,
-            _ => false,
-        }
+        matches!(self, Value::String(_))
     }
     pub fn is_number(&self) -> bool {
-        match self {
-            Value::Integer(_) => true,
-            _ => false,
-        }
+        matches!(self, Value::Integer(_)|Value::Decimal(_))
     }
     pub fn is_integer(&self) -> bool {
-        match self {
-            Value::Integer(_) => true,
-            _ => false,
-        }
+        matches!(self, Value::Integer(_))
     }
     pub fn is_decimal(&self) -> bool {
+        matches!(self, Value::Decimal(_))
+    }
+}
+
+impl Value {
+    pub fn is_empty(&self) -> bool {
         match self {
-            Value::Decimal(_) => true,
+            Value::Dict(v) => v.is_empty(),
+            Value::List(v) => v.is_empty(),
+            Value::String(v) => v.is_empty(),
             _ => false,
         }
     }
@@ -89,7 +62,7 @@ impl Value {
     }
     pub fn get_handler(&self) -> Option<String> {
         match self {
-            Value::Null | Value::Boolean(_) => None,
+            Value::Null | Value::Boolean(_)|Value::Raw(_) => None,
             Value::Integer(v) => v.get_handler(),
             Value::Decimal(v) => v.get_handler(),
             Value::String(v) => v.get_handler(),

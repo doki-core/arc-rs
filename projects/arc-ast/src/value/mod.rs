@@ -1,3 +1,5 @@
+//! value types
+
 mod access;
 mod check;
 mod decimal;
@@ -7,6 +9,7 @@ mod integer;
 mod into_ast;
 mod into_native;
 mod list;
+mod bytes;
 mod string;
 
 pub use decimal::Decimal;
@@ -27,15 +30,52 @@ use std::{
     str::FromStr,
 };
 
+/// All possible data types
 #[derive(Clone, Eq, PartialEq)]
 pub enum Value {
+    ///
+    /// ```note
+    /// null
+    /// ```
     Null,
+    ///
+    /// ```note
+    /// true | false
+    /// ```
     Boolean(bool),
+    ///
+    /// ```note
+    /// 0
+    /// 123
+    /// ```
     Integer(Box<Integer>),
+    ///
+    /// ```note
+    /// 0.0
+    /// 0.123
+    /// ```
     Decimal(Box<Decimal>),
+    ///
+    /// ```note
+    /// "s"
+    /// ```
     String(Box<Text>),
+    ///
+    /// ```note
+    /// [ ]
+    /// [null, ture, false]
+    /// ```
     List(Box<List>),
+    ///
+    /// ```note
+    /// {}
+    /// {a: null}
+    /// ```
     Dict(Box<Dict>),
+    /// ## Raw Data
+    /// For FFI data exchange
+    /// This type cannot be input.
+    Raw(Box<[u8]>),
 }
 
 impl Default for Value {
@@ -54,6 +94,7 @@ impl Debug for Value {
             Value::String(v) => Display::fmt(v, f),
             Value::List(v) => Debug::fmt(v, f),
             Value::Dict(v) => Debug::fmt(v, f),
+            Value::Raw(v) => Debug::fmt(v, f),
         }
     }
 }

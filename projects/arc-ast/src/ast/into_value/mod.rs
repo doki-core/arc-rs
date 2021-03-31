@@ -144,6 +144,7 @@ impl Scope {
 }
 
 impl Value {
+    /// missing
     pub fn get_value(&self, path: &[Value]) -> &Value {
         let mut out = self;
         for item in path {
@@ -172,6 +173,7 @@ impl Value {
         return out;
     }
 
+    /// missing
     pub fn ensure_key(&mut self, key: Text) -> &'_ mut Value {
         match self {
             Value::Null => {
@@ -182,6 +184,8 @@ impl Value {
             _ => unimplemented!("{:?}", self),
         }
     }
+
+    /// missing
     pub fn ensure_index(&mut self, index: Integer) -> &'_ mut Value {
         match self {
             Value::Null => {

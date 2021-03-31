@@ -3,12 +3,17 @@ use std::{
     fmt::{self, Debug, Display, Formatter},
 };
 
-pub type Result<T> = std::result::Result<T, RuntimeError>;
+/// result type
+pub type Result<T> = std::result::Result<T, ReadableConfigError>;
 
+/// error type
 #[derive(Debug)]
-pub enum RuntimeError {
+pub enum ReadableConfigError {
+    /// missing
     IOError(String),
+    /// missing
     LexerError(String),
+    /// missing
     OtherError(Box<dyn Error>),
 }
 
@@ -17,33 +22,33 @@ type JsonError = serde_json::Error;
 type TomlError = toml::de::Error;
 type YamlError = yaml_rust::ScanError;
 
-impl Display for RuntimeError {
+impl Error for ReadableConfigError {}
+
+impl Display for ReadableConfigError {
     fn fmt(&self, f: &mut Formatter) -> fmt::Result {
         Debug::fmt(self, f)
     }
 }
 
-impl Error for RuntimeError {}
-
-impl From<IOError> for RuntimeError {
+impl From<IOError> for ReadableConfigError {
     fn from(e: IOError) -> Self {
         Self::IOError(format!("{}", e))
     }
 }
 
-impl From<TomlError> for RuntimeError {
+impl From<TomlError> for ReadableConfigError {
     fn from(e: TomlError) -> Self {
         Self::LexerError(format!("{}", e))
     }
 }
 
-impl From<JsonError> for RuntimeError {
+impl From<JsonError> for ReadableConfigError {
     fn from(e: JsonError) -> Self {
         Self::LexerError(format!("{}", e))
     }
 }
 
-impl From<YamlError> for RuntimeError {
+impl From<YamlError> for ReadableConfigError {
     fn from(e: YamlError) -> Self {
         Self::LexerError(format!("{}", e))
     }

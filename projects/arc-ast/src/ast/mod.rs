@@ -12,6 +12,7 @@ use num::{BigInt, Num};
 pub use statements::{ExtendFormat, ExtendStatement};
 use std::fmt::{self, Debug, Formatter};
 
+/// AST tree for arc
 #[derive(Clone, Eq, PartialEq)]
 pub struct AST {
     /// AST data
@@ -22,6 +23,7 @@ pub struct AST {
     pub additional: Option<String>,
 }
 
+/// missing
 #[derive(Debug, Clone, Eq, PartialEq)]
 pub enum ASTKind {
     /// Placeholder
