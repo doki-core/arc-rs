@@ -1,6 +1,7 @@
 mod into_value;
 mod literal;
 mod statements;
+mod display;
 
 use crate::{
     value::{parse_number, Decimal, Integer, Text, TextDelimiter},
@@ -8,7 +9,6 @@ use crate::{
 };
 use num::{BigInt, Num};
 pub use statements::{ExtendFormat, ExtendStatement};
-use std::fmt::{self, Debug, Formatter};
 use lsp_types::Range;
 
 /// AST tree for arc
@@ -61,21 +61,6 @@ pub enum ASTKind {
     List(Vec<AST>),
 }
 
-impl Debug for AST {
-    fn fmt(&self, f: &mut Formatter) -> fmt::Result {
-        match self {
-            AST { kind, range, additional } => {
-                let mut builder = f.debug_struct("AST");
-                builder.field("kind", kind);
-                builder.field("range", range);
-                if let Some(s) = additional {
-                    builder.field("additional", s);
-                }
-                builder.finish()
-            }
-        }
-    }
-}
 
 impl Default for AST {
     fn default() -> Self {

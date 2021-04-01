@@ -5,7 +5,7 @@ use crate::{
     value::Text,
     Result, ReadableConfigError, AST,
 };
-use arc_pest::{ArcParser, Pair, Pairs, Parser, Rule, Span};
+use arc_pest::{ArcParser, Pair, Pairs, Parser, Rule};
 
 macro_rules! debug_cases {
     ($i:ident) => {{
@@ -19,7 +19,7 @@ macro_rules! debug_cases {
 impl ParserConfig {
     ///
     pub fn parse(&self, input: &str) -> Result<AST> {
-        let input = input.replace("\r\n", "\n").replace("\\\n", "").replace("\t", &" ".repeat(self.tab_size));
+        // let input = input.replace("\r\n", "\n").replace("\\\n", "").replace("\t", &" ".repeat(self.tab_size));
         match ArcParser::parse(Rule::program, &input) {
             Ok(o) => Ok(self.parse_program(o)),
             Err(e) => Err(ReadableConfigError::custom(e)),
@@ -35,17 +35,18 @@ impl ParserConfig {
                     codes.push(self.parse_extend(pair));
                 }
                 Rule::data => return self.parse_data(pair),
-                Rule::dict_pair => codes.push(self.parse_dict_pair(pair)),
                 Rule::dict_head => codes.push(self.parse_dict_head(pair)),
+                Rule::dict_pair => codes.push(self.parse_dict_pair(pair)),
+                Rule::list_head=> codes.push(self.parse_list_head(pair)),
                 Rule::COMMENT => additional = Some(pair.as_str().to_string()),
                 Rule::extend_statement => codes.push(self.parse_extend(pair)),
                 _ => debug_cases!(pair),
             };
         }
-        AST { kind: ASTKind::Program(codes), range: Default::default(), additional }
+        AST { kind: ASTKind::program(codes), range: Default::default(), additional }
     }
     fn parse_extend(&self, pairs: Pair<Rule>) -> AST {
-        let r = self.get_position(pairs.as_span());
+        let r = self.get_position(&pairs);
         let mut path = String::new();
         let mut format = String::new();
         for pair in pairs.into_inner() {
@@ -82,8 +83,21 @@ impl ParserConfig {
             _ => debug_cases!(pair),
         }
     }
+    fn parse_list_head(&self, pairs: Pair<Rule>) -> AST {
+        let r = self.get_position(&pairs);
+        let mut depth = 0;
+        let mut path = AST::default();
+        for pair in pairs.into_inner() {
+            match pair.as_rule() {
+                Rule::Dot => depth += 1,
+                Rule::namespace => path = self.parse_namespace(pair),
+                _ => debug_cases!(pair),
+            };
+        }
+        AST { kind: ASTKind::ListScope(depth, Box::new(path)), range: r, additional: None }
+    }
     fn parse_list_literal(&self, pairs: Pair<Rule>) -> AST {
-        let r = self.get_position(pairs.as_span());
+        let r = self.get_position(&pairs);
         let mut codes = vec![];
         for pair in pairs.into_inner() {
             match pair.as_rule() {
@@ -100,7 +114,7 @@ impl ParserConfig {
         }
     }
     fn parse_dict_head(&self, pairs: Pair<Rule>) -> AST {
-        let r = self.get_position(pairs.as_span());
+        let r = self.get_position(&pairs);
         let mut depth = 0;
         let mut path = AST::default();
         for pair in pairs.into_inner() {
@@ -113,7 +127,7 @@ impl ParserConfig {
         AST { kind: ASTKind::DictScope(depth, Box::new(path)), range: r, additional: None }
     }
     fn parse_dict_literal(&self, pairs: Pair<Rule>) -> AST {
-        let r = self.get_position(pairs.as_span());
+        let r = self.get_position(&pairs);
         let mut codes = vec![];
         for pair in pairs.into_inner() {
             match pair.as_rule() {
@@ -129,7 +143,7 @@ impl ParserConfig {
         }
     }
     fn parse_dict_pair(&self, pairs: Pair<Rule>) -> AST {
-        let r = self.get_position(pairs.as_span());
+        let r = self.get_position(&pairs);
         let mut key = AST::default();
         let mut value = AST::default();
         for pair in pairs.into_inner() {
@@ -148,7 +162,7 @@ impl ParserConfig {
         }
     }
     // fn parse_list(&self, pairs: Pair<Rule>) -> AST {
-    //     let r = self.get_position(pairs.as_span());
+    //     let r = self.get_position(&pairs);
     //     let mut terms = vec![];
     //     for pair in pairs.into_inner() {
     //         match pair.as_rule() {
@@ -173,7 +187,7 @@ impl ParserConfig {
     //     (key, value)
     // }
     fn parse_namespace(&self, pairs: Pair<Rule>) -> AST {
-        let r = self.get_position(pairs.as_span());
+        let r = self.get_position(&pairs);
         let mut symbols: Vec<AST> = vec![];
         for pair in pairs.into_inner() {
             match pair.as_rule() {
@@ -200,7 +214,7 @@ impl ParserConfig {
         }
     }
     // fn parse_string(&self, pairs: Pair<Rule>) -> AST {
-    //     let r = self.get_position(pairs.as_span());
+    //     let r = self.get_position(&pairs);
     //     let mut is_pure_string = true;
     //     let mut block = vec![];
     //     let mut _marks = 0;
@@ -244,7 +258,7 @@ impl ParserConfig {
     // }
     //
     fn parse_string(&self, pairs: Pair<Rule>) -> AST {
-        let r = self.get_position(pairs.as_span());
+        let r = self.get_position(&pairs);
         let mut text = Text::default();
         for pair in pairs.into_inner() {
             match pair.as_rule() {
@@ -259,7 +273,7 @@ impl ParserConfig {
         }
     }
     fn parse_string_bare(&self, pairs: Pair<Rule>) -> AST {
-        let r = self.get_position(pairs.as_span());
+        let r = self.get_position(&pairs);
         let text = Text::string_bare(pairs.as_str());
         AST {
             kind: ASTKind::string(text),
@@ -288,12 +302,12 @@ impl ParserConfig {
         }
     }
     fn parse_cite(&self, pairs: Pair<Rule>) -> AST {
-        let r = self.get_position(pairs.as_span());
+        let r = self.get_position(&pairs);
         let item = pairs.into_inner().next().unwrap();
         AST { kind: ASTKind::Cite(Box::new(self.parse_namespace(item))), range: r, additional: None }
     }
     fn parse_number(&self, pairs: Pair<Rule>) -> AST {
-        let r = self.get_position(pairs.as_span());
+        let r = self.get_position(&pairs);
         let mut items = pairs.into_inner();
         AST {
             kind: ASTKind::number(items.next().unwrap().as_str()),
@@ -302,7 +316,7 @@ impl ParserConfig {
         }
     }
     fn parse_special(&self, pairs: Pair<Rule>) -> AST {
-        let r = self.get_position(pairs.as_span());
+        let r = self.get_position(&pairs);
         let out = match pairs.as_str() {
             "true" => ASTKind::boolean(true),
             "false" => ASTKind::boolean(false),

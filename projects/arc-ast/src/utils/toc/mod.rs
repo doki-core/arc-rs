@@ -57,11 +57,11 @@ impl AST {
                             if 1 + level > max_depth {
                                 continue;
                             }
-                            let parent = root.last_at_level(*level);
+                            let parent = root.last_at_level(1 + level - 1);
                             let new = TOC {
                                 level: 1 + level,
-                                kind: SymbolKind::File,
-                                name: join_ast_list(children),
+                                kind: SymbolKind::Class,
+                                name: children.to_string(),
                                 range: term.range,
                                 children: vec![],
                             };
@@ -71,11 +71,11 @@ impl AST {
                             if 1 + level > max_depth {
                                 continue;
                             }
-                            let parent = root.last_at_level(*level);
+                            let parent = root.last_at_level(1 + level - 1);
                             let new = TOC {
                                 level: 1 + level,
-                                kind: SymbolKind::File,
-                                name: join_ast_list(children),
+                                kind: SymbolKind::Variable,
+                                name: children.to_string(),
                                 range: term.range,
                                 children: vec![],
                             };
@@ -98,22 +98,29 @@ impl TOC {
 }
 
 
-pub fn join_ast_list(list: &AST) -> String {
-    let mut out = String::new();
-    match &list.kind {
-        ASTKind::Namespace(name) => {
-            for i in name {
-                out.push_str(&format!("{:?}", i.kind))
-            }
-        }
-        _ => ()
-    }
-    return out;
-}
+// pub fn join_ast_list(list: &AST) -> String {
+//     let mut out = String::new();
+//     match &list.kind {
+//         ASTKind::Namespace(name) => {
+//             for i in name {
+//                 out.push_str(&format!("{:?}", i.kind))
+//             }
+//         }
+//         _ => ()
+//     }
+//     return out;
+// }
 
 #[test]
 fn test() {
     let cfg = ParserConfig::default();
-   let toc =  cfg.parse("{x}").unwrap().toc(9);
+   let toc =  cfg.parse(r#"
+{x}
+
+
+
+
+[c]
+"#).unwrap().toc(9);
     println!("{:#?}", toc)
 }

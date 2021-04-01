@@ -3,8 +3,8 @@ use super::*;
 ///
 #[derive(Debug, Clone, Eq, PartialEq)]
 pub struct Integer {
-    handler: Option<String>,
-    value: BigInt,
+   pub handler: Option<String>,
+    pub value: BigInt,
 }
 
 macro_rules! native2integer {

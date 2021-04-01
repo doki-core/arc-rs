@@ -10,11 +10,11 @@ pub fn server_commands() -> ExecuteCommandOptions {
 
 static SERVER_COMMANDS: SyncLazy<HashSet<&'static str>> = SyncLazy::new(|| {
     let mut s = HashSet::new();
-    s.insert("notedown.inner.read-clipboard");
-    s.insert("notedown.inner.get-web-view");
-    s.insert("notedown.inner.post-math-svg");
-    s.insert("notedown.rawPaste");
-    s.insert("notedown.image.save2local");
+    s.insert("arc.inner.convert.json");
+    s.insert("arc.inner.get-web-view");
+    s.insert("arc.inner.post-math-svg");
+    s.insert("arc.rawPaste");
+    s.insert("arc.image.save2local");
     return s;
 });
 

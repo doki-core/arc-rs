@@ -1,12 +1,8 @@
 mod command;
-mod open_close;
-mod self_close;
 mod structural;
 
 use crate::{completion::structural::complete_table, io::FILE_STORAGE};
 use command::build_command;
-use open_close::build_open_close;
-use self_close::build_self_close;
 use serde::{Deserialize, Serialize};
 use std::{collections::VecDeque, lazy::SyncLazy};
 use tower_lsp::lsp_types::{
@@ -18,7 +14,7 @@ use tower_lsp::lsp_types::{
 use unicode_xid::UnicodeXID;
 
 pub static COMPLETION_OPTIONS: SyncLazy<CompletionOptions> = SyncLazy::new(|| {
-    let completion_trigger = vec!['.', '\\', '[', '<'];
+    let completion_trigger = vec!['#', '.'];
     CompletionOptions {
         resolve_provider: Some(false),
         trigger_characters: Some(completion_trigger.iter().map(ToString::to_string).collect()),
@@ -39,11 +35,7 @@ pub async fn completion_provider(p: CompletionParams) -> Option<CompletionRespon
 
 fn completion_provider_static(c: Option<char>) -> Option<CompletionResponse> {
     match c {
-        Some('<') => {
-            let items = COMPLETE_COMPONENTS.to_owned();
-            Some(CompletionResponse::Array(items))
-        }
-        Some('\\') => {
+        Some('#') => {
             let mut items = vec![];
             items.extend(COMPLETE_COMMANDS.to_owned());
             items.extend(complete_table());
@@ -66,7 +58,7 @@ fn get_completion_word(text: String, tp: Position) -> String {
 }
 
 fn get_word(line: &str, index: usize) -> String {
-    // FIXME: panic when dis-sync!!!
+    // FIXME: panic when mis-sync!!!
     let num = index.min(line.len());
     let (f, e) = (&line[..num], &line[num..]);
     let mut v = VecDeque::new();
@@ -128,16 +120,6 @@ fn load_md_doc(input: &str) -> Vec<DocumentString> {
 pub static COMPLETE_COMMANDS: SyncLazy<Vec<CompletionItem>> = SyncLazy::new(|| {
     let parsed = load_md_doc(include_str!("command.md"));
     parsed.iter().map(|doc| build_command(&doc.cmd, &doc.short, &doc.long)).collect()
-});
-
-pub static COMPLETE_COMPONENTS: SyncLazy<Vec<CompletionItem>> = SyncLazy::new(|| {
-    let open_close = load_md_doc(include_str!("open_close.md"));
-    let self_close = load_md_doc(include_str!("self_close.md"));
-    open_close
-        .iter()
-        .map(|doc| build_open_close(&doc.cmd, &doc.short, &doc.long))
-        .chain(self_close.iter().map(|doc| build_self_close(&doc.cmd, &doc.short, &doc.long)))
-        .collect()
 });
 
 #[allow(dead_code)]

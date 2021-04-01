@@ -18,18 +18,18 @@ impl Default for ParserConfig {
 
 impl ParserConfig {
     ///
-    pub fn get_position(&self, s: Span) -> Range {
-        let us = s.start_pos().line_col();
-        let es = s.end_pos().line_col();
+    pub fn get_position(&self, s: &Pair<Rule>) -> Range {
+        let us = s.as_span().start_pos().line_col();
+        let es = s.as_span().end_pos().line_col();
         Range {
             // index: s.start_pos().pos() as u64,
             start: Position {
-                line: us.0 as u64,
-                character: us.1 as u64,
+                line: us.0 as u64 -1,
+                character: us.1 as u64 -1,
             },
             end: Position {
-                line: es.0 as u64,
-                character: es.1 as u64,
+                line: es.0 as u64 -1,
+                character: es.1 as u64-1,
             },
         }
     }

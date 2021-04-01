@@ -30,7 +30,7 @@ struct Backend {
 impl LanguageServer for Backend {
     async fn initialize(&self, _: InitializeParams) -> Result<InitializeResult> {
         let server_info = ServerInfo {
-            name: format!("Notedown LSP"),
+            name: format!("Arc Config LSP"),
             // should read from cargo.toml
             version: Some(format!("V{}", env!("CARGO_PKG_VERSION"))),
         };
