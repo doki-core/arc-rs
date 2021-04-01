@@ -32,7 +32,7 @@ impl Value {
     }
     ///
     pub fn is_number(&self) -> bool {
-        matches!(self, Value::Integer(_)|Value::Decimal(_))
+        matches!(self, Value::Integer(_) | Value::Decimal(_))
     }
     ///
     pub fn is_integer(&self) -> bool {
@@ -75,7 +75,7 @@ impl Value {
     ///
     pub fn get_handler(&self) -> Option<String> {
         match self {
-            Value::Null | Value::Boolean(_)|Value::Raw(_) => None,
+            Value::Null | Value::Boolean(_) | Value::Raw(_) => None,
             Value::Integer(v) => v.get_handler(),
             Value::Decimal(v) => v.get_handler(),
             Value::String(v) => v.get_handler(),

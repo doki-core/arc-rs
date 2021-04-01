@@ -47,7 +47,7 @@ impl Value {
             Value::String(_) => vec![self.to_owned()],
             Value::List(v) => v.as_vec(),
             Value::Dict(v) => v.as_vec(),
-            Value::Raw(v) => {v.to_vec().into_iter().map(|e|Value::from(e)).collect()}
+            Value::Raw(v) => v.to_vec().into_iter().map(|e| Value::from(e)).collect(),
         }
     }
     ///

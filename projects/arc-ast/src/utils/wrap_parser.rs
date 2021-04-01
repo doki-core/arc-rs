@@ -14,8 +14,6 @@ pub fn parse_toml(toml: &str) -> Result<Value> {
     Ok(data?.into())
 }
 
-
-
 ///
 #[cfg(feature = "yaml")]
 pub fn parse_yaml(yaml: &str) -> Result<Value> {

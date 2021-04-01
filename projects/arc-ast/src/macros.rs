@@ -1,4 +1,3 @@
-
 /// list![1, 2, 3]
 #[macro_export]
 macro_rules! list {

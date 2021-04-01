@@ -18,8 +18,6 @@ pub use wrap_parser::parse_toml;
 #[cfg(feature = "yaml")]
 pub use wrap_parser::parse_yaml;
 
-
-
 ///
 pub fn parse_format(extension: &str) -> ExtendFormat {
     match extension.to_ascii_lowercase().as_str() {

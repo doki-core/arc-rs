@@ -1,6 +1,7 @@
 //! value types
 
 mod access;
+mod bytes;
 mod check;
 mod decimal;
 mod dict;
@@ -9,7 +10,6 @@ mod integer;
 mod into_ast;
 mod into_native;
 mod list;
-mod bytes;
 mod string;
 
 pub use decimal::Decimal;
@@ -33,40 +33,33 @@ use std::{
 /// All possible data types
 #[derive(Clone, Eq, PartialEq)]
 pub enum Value {
-    ///
     /// ```note
     /// null
     /// ```
     Null,
-    ///
     /// ```note
     /// true | false
     /// ```
     Boolean(bool),
-    ///
     /// ```note
     /// 0
     /// 123
     /// ```
     Integer(Box<Integer>),
-    ///
     /// ```note
     /// 0.0
     /// 0.123
     /// ```
     Decimal(Box<Decimal>),
-    ///
     /// ```note
     /// "s"
     /// ```
     String(Box<Text>),
-    ///
     /// ```note
     /// [ ]
     /// [null, ture, false]
     /// ```
     List(Box<List>),
-    ///
     /// ```note
     /// {}
     /// {a: null}

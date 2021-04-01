@@ -1,6 +1,5 @@
-use crate::{Range, AST};
-use crate::ast::ASTKind;
-use lsp_types::{DocumentSymbol, SymbolKind, CodeLens, Command};
+use crate::{ast::ASTKind, Range, AST};
+use lsp_types::{CodeLens, Command, DocumentSymbol, SymbolKind};
 
 #[derive(Debug)]
 pub struct TOC {
@@ -13,16 +12,9 @@ pub struct TOC {
 
 impl Default for TOC {
     fn default() -> Self {
-        Self {
-            level: 0,
-            name: String::from("ROOT"),
-            kind: SymbolKind::File,
-            range: Default::default(),
-            children: vec![],
-        }
+        Self { level: 0, name: String::from("ROOT"), kind: SymbolKind::File, range: Default::default(), children: vec![] }
     }
 }
-
 
 // impl From<TOC> for DocumentSymbol {
 //     fn from(toc: TOC) -> Self {
@@ -44,7 +36,6 @@ impl Default for TOC {
 //     }
 // }
 
-
 impl AST {
     /// Table of contents
     pub fn toc(&self, max_depth: usize) -> TOC {
@@ -58,13 +49,7 @@ impl AST {
                                 continue;
                             }
                             let parent = root.last_at_level(1 + level - 1);
-                            let new = TOC {
-                                level: 1 + level,
-                                kind: SymbolKind::Class,
-                                name: children.to_string(),
-                                range: term.range,
-                                children: vec![],
-                            };
+                            let new = TOC { level: 1 + level, kind: SymbolKind::Class, name: children.to_string(), range: term.range, children: vec![] };
                             parent.children.push(new);
                         }
                         ASTKind::ListScope(level, children) => {
@@ -72,13 +57,7 @@ impl AST {
                                 continue;
                             }
                             let parent = root.last_at_level(1 + level - 1);
-                            let new = TOC {
-                                level: 1 + level,
-                                kind: SymbolKind::Variable,
-                                name: children.to_string(),
-                                range: term.range,
-                                children: vec![],
-                            };
+                            let new = TOC { level: 1 + level, kind: SymbolKind::Variable, name: children.to_string(), range: term.range, children: vec![] };
                             parent.children.push(new);
                         }
                         _ => (),
@@ -100,38 +79,22 @@ impl TOC {
         // let details = format!("H{}", self.children.len());
         let children = match self.children.len() {
             0 => None,
-            _ => Some(self.children.iter().map(|e|e.build_document()).collect()),
+            _ => Some(self.children.iter().map(|e| e.build_document()).collect()),
         };
         #[allow(deprecated)]
-        DocumentSymbol {
-            name: self.name.to_owned(),
-            detail: None,
-            kind: self.kind,
-            deprecated: None,
-            range: self.range,
-            selection_range: self.range,
-            children,
-        }
+        DocumentSymbol { name: self.name.to_owned(), detail: None, kind: self.kind, deprecated: None, range: self.range, selection_range: self.range, children }
     }
     fn push_code_lens(&self, heads: Vec<String>, lens: &mut Vec<CodeLens>) {
         match self.kind {
             SymbolKind::Class | SymbolKind::Variable => {
                 let heads: Vec<String> = vec![heads, vec![self.name.to_owned()]].concat();
-                let new = CodeLens {
-                    range: self.range,
-                    command: Some(Command {
-                        title: heads.join("."),
-                        command: "arc.extract.key".to_string(),
-                        arguments: None
-                    }),
-                    data: Some("code_lens".into()),
-                };
+                let new = CodeLens { range: self.range, command: Some(Command { title: heads.join("."), command: "arc.extract.key".to_string(), arguments: None }), data: Some("code_lens".into()) };
                 lens.push(new);
                 for item in &self.children {
                     item.push_code_lens(heads.clone(), lens)
                 }
             }
-            _ => ()
+            _ => (),
         }
     }
 
@@ -141,10 +104,9 @@ impl TOC {
         for item in &self.children {
             item.push_code_lens(vec![], lens)
         }
-        return lens.to_owned()
+        return lens.to_owned();
     }
 }
-
 
 // pub fn join_ast_list(list: &AST) -> String {
 //     let mut out = String::new();

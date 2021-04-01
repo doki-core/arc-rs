@@ -1,6 +1,5 @@
-use std::fmt::{self, Debug, Formatter, Display};
-use crate::AST;
-use crate::ast::ASTKind;
+use crate::{ast::ASTKind, AST};
+use std::fmt::{self, Debug, Display, Formatter};
 
 impl Debug for AST {
     fn fmt(&self, f: &mut Formatter) -> fmt::Result {
@@ -24,22 +23,17 @@ impl Display for AST {
             ASTKind::Namespace(names) => {
                 for (index, item) in names.iter().enumerate() {
                     match &item.kind {
-                        ASTKind::String(s) => {
-                            write!(f, "{}", s.value)?;
-
-                        }
-                        ASTKind::Integer(n) => {
-                            write!(f, "{}", n.value)?
-                        },
-                        _ => return Ok(())
+                        ASTKind::String(s) => write!(f, "{}", s.value)?,
+                        ASTKind::Integer(n) => write!(f, "{}", n.value)?,
+                        _ => return Ok(()),
                     }
-                    if index+1!=names.len() {
+                    if index + 1 != names.len() {
                         write!(f, ".")?
                     }
                 }
                 Ok(())
             }
-            _ => Debug::fmt(self, f)
+            _ => Debug::fmt(self, f),
         }
     }
 }

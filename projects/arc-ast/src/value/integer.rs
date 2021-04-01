@@ -3,7 +3,7 @@ use super::*;
 ///
 #[derive(Debug, Clone, Eq, PartialEq)]
 pub struct Integer {
-   pub handler: Option<String>,
+    pub handler: Option<String>,
     pub value: BigInt,
 }
 

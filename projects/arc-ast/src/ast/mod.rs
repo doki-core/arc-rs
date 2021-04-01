@@ -1,15 +1,15 @@
+mod display;
 mod into_value;
 mod literal;
 mod statements;
-mod display;
 
 use crate::{
     value::{parse_number, Decimal, Integer, Text, TextDelimiter},
     Value,
 };
+use lsp_types::Range;
 use num::{BigInt, Num};
 pub use statements::{ExtendFormat, ExtendStatement};
-use lsp_types::Range;
 
 /// AST tree for arc
 #[derive(Clone, Eq, PartialEq)]
@@ -41,6 +41,8 @@ pub enum ASTKind {
     DictScope(usize, Box<AST>),
     ///
     Pair(Box<AST>, Box<AST>),
+    ///
+    ListItems(Vec<AST>),
     /// `null`
     Null,
     /// `true` | `false`
@@ -60,7 +62,6 @@ pub enum ASTKind {
     ///
     List(Vec<AST>),
 }
-
 
 impl Default for AST {
     fn default() -> Self {
@@ -204,6 +205,10 @@ impl ASTKind {
     ///
     pub fn pair(lhs: AST, rhs: AST) -> Self {
         Self::Pair(Box::new(lhs), Box::new(rhs))
+    }
+    ///
+    pub fn list_pair(pairs: Vec<AST>) -> Self {
+        Self::ListItems(pairs)
     }
 }
 

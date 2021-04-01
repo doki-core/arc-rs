@@ -1,8 +1,7 @@
 use crate::{
     ast::{ASTKind, AST},
-    BUILD_EMPTY_SCOPE,
     value::{Dict, Integer, List, Text},
-    Value,
+    Value, BUILD_EMPTY_SCOPE,
 };
 
 impl From<AST> for Value {
@@ -61,6 +60,11 @@ impl Scope {
                     self.push_index(index);
                     self.visit_ast(item.kind);
                     self.pop_index();
+                }
+            }
+            ASTKind::ListItems(v) => {
+                for item in v {
+                    self.visit_ast(item.kind);
                 }
             }
             ASTKind::Dict(v) => {

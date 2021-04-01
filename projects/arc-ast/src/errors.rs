@@ -19,7 +19,6 @@ pub enum ReadableConfigError {
     CustomError(Box<dyn Error>),
 }
 
-
 type IOError = std::io::Error;
 type JsonError = serde_json::Error;
 type TomlError = toml::de::Error;

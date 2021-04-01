@@ -91,4 +91,3 @@ impl Register for FunctionRegistrar {
         self.functions.insert(name.to_string(), function);
     }
 }
-
