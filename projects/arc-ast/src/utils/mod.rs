@@ -1,5 +1,5 @@
 //! utils
-
+mod toc;
 
 #[allow(dead_code)]
 mod wrap_parser;
@@ -18,9 +18,9 @@ pub use wrap_parser::parse_toml;
 #[cfg(feature = "yaml")]
 pub use wrap_parser::parse_yaml;
 
-/// if ture, { } will be null
-pub const BUILD_EMPTY_SCOPE: bool = false;
 
+
+///
 pub fn parse_format(extension: &str) -> ExtendFormat {
     match extension.to_ascii_lowercase().as_str() {
         #[cfg(feature = "json")]

@@ -7,19 +7,15 @@ pub trait ToToc {
 
 impl ToToc for AST {
     fn to_toc(&self) -> DocumentSymbol {
-        // self.toc(9).to_toc()
-        #[allow(deprecated)]
-        DocumentSymbol {
-            name: "GGGGGGG".to_string(),
-            detail: None,
-            kind: SymbolKind::File,
-            deprecated: None,
-            range: Default::default(),
-            selection_range: Default::default(),
-            children: None
-        }
+        self.toc(9).to_toc()
     }
 }
+
+pub struct TOC {
+
+}
+
+
 
 //
 // impl ToToc for TOC {

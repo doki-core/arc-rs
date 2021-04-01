@@ -1,5 +1,6 @@
 use super::*;
 
+///
 #[derive(Debug, Clone, Eq, PartialEq)]
 pub struct Text {
     pub(crate) handler: Option<String>,

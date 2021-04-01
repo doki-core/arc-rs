@@ -1,5 +1,6 @@
 use super::*;
 use std::path::PathBuf;
+use lsp_types::{Range, Position};
 
 ///
 pub struct ParserConfig {
@@ -17,13 +18,19 @@ impl Default for ParserConfig {
 
 impl ParserConfig {
     ///
-    pub fn get_position(&self, s: Span) -> TextRange {
+    pub fn get_position(&self, s: Span) -> Range {
         let us = s.start_pos().line_col();
         let es = s.end_pos().line_col();
-        TextRange {
+        Range {
             // index: s.start_pos().pos() as u64,
-            start: (us.0 as u64, us.1 as u64),
-            end: (es.0 as u64, es.1 as u64),
+            start: Position {
+                line: us.0 as u64,
+                character: us.1 as u64,
+            },
+            end: Position {
+                line: es.0 as u64,
+                character: es.1 as u64,
+            },
         }
     }
 }

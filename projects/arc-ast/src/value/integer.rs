@@ -1,5 +1,6 @@
 use super::*;
 
+///
 #[derive(Debug, Clone, Eq, PartialEq)]
 pub struct Integer {
     handler: Option<String>,

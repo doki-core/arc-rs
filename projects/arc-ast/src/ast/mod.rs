@@ -1,9 +1,7 @@
 mod into_value;
 mod literal;
-mod range;
 mod statements;
 
-pub use crate::ast::range::TextRange;
 use crate::{
     value::{parse_number, Decimal, Integer, Text, TextDelimiter},
     Value,
@@ -11,6 +9,7 @@ use crate::{
 use num::{BigInt, Num};
 pub use statements::{ExtendFormat, ExtendStatement};
 use std::fmt::{self, Debug, Formatter};
+use lsp_types::Range;
 
 /// AST tree for arc
 #[derive(Clone, Eq, PartialEq)]
@@ -18,7 +17,7 @@ pub struct AST {
     /// AST data
     pub kind: ASTKind,
     /// 1-indexed start to end position
-    pub range: TextRange,
+    pub range: Range,
     /// Whitespace, Newline, Comment
     pub additional: Option<String>,
 }
@@ -103,10 +102,6 @@ impl AST {
     ///
     pub fn set_additional(&mut self, info: impl Into<String>) {
         self.additional = Some(info.into())
-    }
-    ///
-    pub fn set_range(&mut self, range: TextRange) {
-        self.range = range
     }
 }
 

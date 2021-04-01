@@ -1,6 +1,6 @@
 use crate::{
     ast::{ASTKind, AST},
-    utils::BUILD_EMPTY_SCOPE,
+    BUILD_EMPTY_SCOPE,
     value::{Dict, Integer, List, Text},
     Value,
 };

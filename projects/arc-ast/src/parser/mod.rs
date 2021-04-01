@@ -3,7 +3,7 @@ pub use self::config::ParserConfig;
 use crate::{
     ast::{ASTKind, ExtendStatement},
     value::Text,
-    Result, ReadableConfigError, TextRange, AST,
+    Result, ReadableConfigError, AST,
 };
 use arc_pest::{ArcParser, Pair, Pairs, Parser, Rule, Span};
 
@@ -17,6 +17,7 @@ macro_rules! debug_cases {
 }
 
 impl ParserConfig {
+    ///
     pub fn parse(&self, input: &str) -> Result<AST> {
         let input = input.replace("\r\n", "\n").replace("\\\n", "").replace("\t", &" ".repeat(self.tab_size));
         match ArcParser::parse(Rule::program, &input) {
@@ -302,7 +303,7 @@ impl ParserConfig {
     }
     fn parse_special(&self, pairs: Pair<Rule>) -> AST {
         let r = self.get_position(pairs.as_span());
-        let mut out = match pairs.as_str() {
+        let out = match pairs.as_str() {
             "true" => ASTKind::boolean(true),
             "false" => ASTKind::boolean(false),
             _ => ASTKind::null(),

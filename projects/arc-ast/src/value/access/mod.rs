@@ -12,7 +12,7 @@ impl Value {
             _ => unreachable!(),
         }
     }
-
+    ///
     pub fn pointer(&self, path: &str) -> Option<&Value> {
         if path.is_empty() {
             return Some(self);
@@ -30,13 +30,14 @@ impl Value {
         }
         Some(target)
     }
+    ///
     pub fn pointer_mut(&mut self, path: &str) -> Option<&mut Value> {
         if path.is_empty() {
             return Some(self);
         }
         unimplemented!()
     }
-
+    ///
     pub fn as_vec(&self) -> Vec<Value> {
         match self {
             Value::Null => vec![],
@@ -49,7 +50,7 @@ impl Value {
             Value::Raw(v) => {v.to_vec().into_iter().map(|e|Value::from(e)).collect()}
         }
     }
-
+    ///
     pub fn as_string_vec(&self) -> Vec<String> {
         match self {
             Value::Null => vec![],
