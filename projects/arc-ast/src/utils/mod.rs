@@ -18,6 +18,7 @@ pub use wrap_parser::parse_toml;
 #[cfg(feature = "yaml")]
 pub use wrap_parser::parse_yaml;
 
+/// if ture, { } will be null
 pub const BUILD_EMPTY_SCOPE: bool = false;
 
 pub fn parse_format(extension: &str) -> ExtendFormat {

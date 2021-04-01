@@ -28,8 +28,10 @@ lsp-types = {version = "0.82", optional = true}
 
 [features]
 default = ["convert", "lsp"]
-lsp = ["lsp-types"]
+
 convert = ["json", "toml", "yaml"]
 json = ["serde_json", "serde_json/preserve_order"]
 yaml = ["yaml-rust"]
 hjson = ["serde-hjson"]
+
+lsp = ["lsp-types"]

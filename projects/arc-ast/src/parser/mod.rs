@@ -41,7 +41,7 @@ impl ParserConfig {
                 _ => debug_cases!(pair),
             };
         }
-        AST { kind: ASTKind::Program(codes), range: None, additional }
+        AST { kind: ASTKind::Program(codes), range: Default::default(), additional }
     }
     fn parse_extend(&self, pairs: Pair<Rule>) -> AST {
         let r = self.get_position(pairs.as_span());
@@ -55,7 +55,7 @@ impl ParserConfig {
             };
         }
         let ext = ExtendStatement::new(format, path, self.file_path.to_owned());
-        AST { kind: ASTKind::ExtendStatement(ext), range: r.boxed(), additional: None }
+        AST { kind: ASTKind::ExtendStatement(ext), range: r,  additional: None }
     }
     // fn parse_block(&self, pairs: Pair<Rule>) -> AST {
     //     let pair = pairs.into_inner().nth(0).unwrap();
@@ -92,9 +92,11 @@ impl ParserConfig {
                 _ => debug_cases!(pair),
             };
         }
-        let mut out = AST::list(codes);
-        out.set_range(r);
-        return out;
+        AST {
+            kind: ASTKind::list(codes),
+            range: r,
+            additional: None
+        }
     }
     fn parse_dict_head(&self, pairs: Pair<Rule>) -> AST {
         let r = self.get_position(pairs.as_span());
@@ -107,7 +109,7 @@ impl ParserConfig {
                 _ => debug_cases!(pair),
             };
         }
-        AST { kind: ASTKind::DictScope(depth, Box::new(path)), range: r.boxed(), additional: None }
+        AST { kind: ASTKind::DictScope(depth, Box::new(path)), range: r, additional: None }
     }
     fn parse_dict_literal(&self, pairs: Pair<Rule>) -> AST {
         let r = self.get_position(pairs.as_span());
@@ -119,9 +121,11 @@ impl ParserConfig {
                 _ => debug_cases!(pair),
             };
         }
-        let mut out = AST::dict(codes);
-        out.set_range(r);
-        return out;
+        AST {
+            kind: ASTKind::dict(codes),
+            range: r,
+            additional: None
+        }
     }
     fn parse_dict_pair(&self, pairs: Pair<Rule>) -> AST {
         let r = self.get_position(pairs.as_span());
@@ -136,9 +140,11 @@ impl ParserConfig {
                 _ => debug_cases!(pair),
             };
         }
-        let mut out = AST::pair(key, value);
-        out.set_range(r);
-        return out;
+        AST {
+            kind: ASTKind::pair(key, value),
+            range: r,
+            additional: None
+        }
     }
     // fn parse_list(&self, pairs: Pair<Rule>) -> AST {
     //     let r = self.get_position(pairs.as_span());
@@ -172,23 +178,25 @@ impl ParserConfig {
             match pair.as_rule() {
                 Rule::Dot => continue,
                 Rule::StringNormal => {
-                    let key = AST::string(self.parse_string_inner(pair));
-                    symbols.push(key)
+                    let key = ASTKind::string(self.parse_string_inner(pair));
+                    symbols.push(AST::from(key))
                 }
                 Rule::SYMBOL => {
-                    let key = AST::string(Text::from(pair.as_str()));
-                    symbols.push(key)
+                    let key = ASTKind::string(Text::from(pair.as_str()));
+                    symbols.push(AST::from(key))
                 }
                 Rule::SignedNumber => {
-                    let index = AST::integer(pair.as_str());
-                    symbols.push(index)
+                    let index = ASTKind::integer(pair.as_str());
+                    symbols.push(AST::from(index))
                 }
                 _ => debug_cases!(pair),
             };
+        };
+        AST {
+            kind: ASTKind::namespace(symbols),
+            range: r,
+            additional: None
         }
-        let mut out = AST::namespace(symbols);
-        out.set_range(r);
-        return out;
     }
     // fn parse_string(&self, pairs: Pair<Rule>) -> AST {
     //     let r = self.get_position(pairs.as_span());
@@ -243,16 +251,20 @@ impl ParserConfig {
                 _ => debug_cases!(pair),
             };
         }
-        let mut out = AST::string(text);
-        out.set_range(r);
-        return out;
+        AST {
+            kind: ASTKind::string(text),
+            range: r,
+            additional: None
+        }
     }
     fn parse_string_bare(&self, pairs: Pair<Rule>) -> AST {
         let r = self.get_position(pairs.as_span());
         let text = Text::string_bare(pairs.as_str());
-        let mut out = AST::string(text);
-        out.set_range(r);
-        return out;
+        AST {
+            kind: ASTKind::string(text),
+            range: r,
+            additional: None
+        }
     }
     fn parse_string_inner(&self, pairs: Pair<Rule>) -> Text {
         let mut is_literal = false;
@@ -277,23 +289,28 @@ impl ParserConfig {
     fn parse_cite(&self, pairs: Pair<Rule>) -> AST {
         let r = self.get_position(pairs.as_span());
         let item = pairs.into_inner().next().unwrap();
-        AST { kind: ASTKind::Cite(Box::new(self.parse_namespace(item))), range: r.boxed(), additional: None }
+        AST { kind: ASTKind::Cite(Box::new(self.parse_namespace(item))), range: r, additional: None }
     }
     fn parse_number(&self, pairs: Pair<Rule>) -> AST {
         let r = self.get_position(pairs.as_span());
         let mut items = pairs.into_inner();
-        let mut out = AST::number(items.next().unwrap().as_str());
-        out.set_range(r);
-        return out;
+        AST {
+            kind: ASTKind::number(items.next().unwrap().as_str()),
+            range: r,
+            additional: None
+        }
     }
     fn parse_special(&self, pairs: Pair<Rule>) -> AST {
         let r = self.get_position(pairs.as_span());
         let mut out = match pairs.as_str() {
-            "true" => AST::boolean(true),
-            "false" => AST::boolean(false),
-            _ => AST::null(),
+            "true" => ASTKind::boolean(true),
+            "false" => ASTKind::boolean(false),
+            _ => ASTKind::null(),
         };
-        out.set_range(r);
-        return out;
+        AST {
+            kind: out,
+            range: r,
+            additional: None
+        }
     }
 }

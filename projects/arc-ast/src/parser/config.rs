@@ -1,8 +1,11 @@
 use super::*;
 use std::path::PathBuf;
 
+///
 pub struct ParserConfig {
+    ///
     pub tab_size: usize,
+    ///
     pub file_path: Option<PathBuf>,
 }
 
@@ -13,6 +16,7 @@ impl Default for ParserConfig {
 }
 
 impl ParserConfig {
+    ///
     pub fn get_position(&self, s: Span) -> TextRange {
         let us = s.start_pos().line_col();
         let es = s.end_pos().line_col();

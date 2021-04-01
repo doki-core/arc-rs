@@ -18,7 +18,7 @@ pub struct AST {
     /// AST data
     pub kind: ASTKind,
     /// 1-indexed start to end position
-    pub range: Option<TextRange>,
+    pub range: TextRange,
     /// Whitespace, Newline, Comment
     pub additional: Option<String>,
 }
@@ -68,9 +68,7 @@ impl Debug for AST {
             AST { kind, range, additional } => {
                 let mut builder = f.debug_struct("AST");
                 builder.field("kind", kind);
-                if let Some(s) = range {
-                    builder.field("range", s);
-                }
+                builder.field("range", range);
                 if let Some(s) = additional {
                     builder.field("additional", s);
                 }
@@ -88,7 +86,7 @@ impl Default for AST {
 
 impl From<ASTKind> for AST {
     fn from(kind: ASTKind) -> Self {
-        Self { kind, range: None, additional: None }
+        Self { kind, range: Default::default(), additional: None }
     }
 }
 
@@ -102,20 +100,24 @@ impl From<ASTKind> for AST {
 // }
 
 impl AST {
+    ///
     pub fn set_additional(&mut self, info: impl Into<String>) {
         self.additional = Some(info.into())
     }
+    ///
     pub fn set_range(&mut self, range: TextRange) {
-        self.range = Some(range)
+        self.range = range
     }
 }
 
-impl AST {
+impl ASTKind {
+    ///
     pub fn program(children: Vec<AST>) -> Self {
-        Self { kind: ASTKind::Program(children), range: None, additional: None }
+        Self::Program(children)
     }
+    ///
     pub fn block(children: Vec<AST>) -> Self {
-        Self { kind: ASTKind::Sequence(children), range: None, additional: None }
+        Self::Sequence(children)
     }
     // pub fn statement(children: Vec<AST>, r: TextRange) -> Self {
     //     Self { kind: ASTKind::Statement(children), range: box_range(r) }
@@ -179,46 +181,54 @@ impl AST {
     //     Self { kind: ASTKind::Template(Box::new(value)), range: box_range(r) }
     // }
     //
+    ///
     pub fn null() -> Self {
-        Self { kind: ASTKind::Null, range: None, additional: None }
+        Self::Null
     }
-
+    ///
     pub fn boolean(value: bool) -> Self {
-        Self { kind: ASTKind::Boolean(value), range: None, additional: None }
+        Self::Boolean(value)
     }
+    ///
     pub fn string(value: Text) -> Self {
-        Self { kind: ASTKind::String(Box::new(value)), range: None, additional: None }
+        Self::String(Box::new(value))
     }
     // pub fn string_escaped(value: String, r: TextRange) -> Self {
     //     Self { kind: ASTKind::EscapedText(value), range: box_range(r) }
     // }
+    ///
     pub fn integer(value: &str) -> Self {
         let n = BigInt::from_str_radix(value, 10).unwrap_or_default();
-        Self { kind: ASTKind::Integer(Box::new(Integer::from(n))), range: None, additional: None }
+        Self::Integer(Box::new(Integer::from(n)))
     }
+    ///
     pub fn number(value: &str) -> Self {
-        let kind = match parse_number(value) {
-            Some(Value::Integer(n)) => ASTKind::Integer(n),
-            Some(Value::Decimal(n)) => ASTKind::Decimal(n),
+        match parse_number(value) {
+            Some(Value::Integer(n)) => Self::Integer(n),
+            Some(Value::Decimal(n)) => Self::Decimal(n),
             _ => ASTKind::Null,
-        };
-        Self { kind, range: None, additional: None }
+        }
     }
+    ///
     pub fn namespace(value: Vec<AST>) -> Self {
-        Self { kind: ASTKind::Namespace(value), range: None, additional: None }
+        Self::Namespace(value)
     }
+    ///
     pub fn list(value: Vec<AST>) -> Self {
-        Self { kind: ASTKind::List(value), range: None, additional: None }
+        Self::List(value)
     }
+    ///
     pub fn dict(pairs: Vec<AST>) -> Self {
-        Self { kind: ASTKind::Dict(pairs), range: None, additional: None }
+        Self::Dict(pairs)
     }
+    ///
     pub fn pair(lhs: AST, rhs: AST) -> Self {
-        Self { kind: ASTKind::Pair(Box::new(lhs), Box::new(rhs)), range: None, additional: None }
+        Self::Pair(Box::new(lhs), Box::new(rhs))
     }
 }
 
 impl Text {
+    ///
     pub fn string_escaped(value: impl Into<String>, handler: impl Into<String>, delimiter: usize) -> Self {
         let handler = handler.into();
         let handler = match handler.len() {
@@ -227,6 +237,7 @@ impl Text {
         };
         Text { handler, delimiter: TextDelimiter::Quotation(delimiter), value: value.into() }
     }
+    ///
     pub fn string_literal(value: impl Into<String>, handler: impl Into<String>, delimiter: usize) -> Self {
         let handler = handler.into();
         let handler = match handler.len() {
@@ -235,6 +246,7 @@ impl Text {
         };
         Text { handler, delimiter: TextDelimiter::Apostrophe(delimiter), value: value.into() }
     }
+    ///
     pub fn string_bare(value: impl Into<String>) -> Self {
         Text { handler: None, delimiter: TextDelimiter::Bare, value: value.into() }
     }
