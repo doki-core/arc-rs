@@ -14,8 +14,11 @@ pub enum ReadableConfigError {
     /// missing
     LexerError(String),
     /// missing
-    OtherError(Box<dyn Error>),
+    OtherError(String),
+    /// missing
+    CustomError(Box<dyn Error>),
 }
+
 
 type IOError = std::io::Error;
 type JsonError = serde_json::Error;
@@ -23,6 +26,18 @@ type TomlError = toml::de::Error;
 type YamlError = yaml_rust::ScanError;
 
 impl Error for ReadableConfigError {}
+
+// impl<S: ToString> From<S> for ReadableConfigError {
+//     fn from(other: S) -> Self {
+//         Self::OtherError(other.to_string())
+//     }
+// }
+//
+// impl<S: Error> From<S> for ReadableConfigError {
+//     fn from(other: S) -> Self {
+//         Self::CustomError(Box::new(other))
+//     }
+// }
 
 impl Display for ReadableConfigError {
     fn fmt(&self, f: &mut Formatter) -> fmt::Result {
@@ -51,5 +66,16 @@ impl From<JsonError> for ReadableConfigError {
 impl From<YamlError> for ReadableConfigError {
     fn from(e: YamlError) -> Self {
         Self::LexerError(format!("{}", e))
+    }
+}
+
+impl ReadableConfigError {
+    /// custom error
+    pub fn custom(e: impl Error + 'static) -> Self {
+        Self::CustomError(Box::new(e))
+    }
+    /// other error
+    pub fn other(msg: impl ToString) -> Self {
+        Self::OtherError(msg.to_string())
     }
 }

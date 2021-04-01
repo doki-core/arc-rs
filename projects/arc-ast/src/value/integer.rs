@@ -66,15 +66,19 @@ impl From<Integer> for Value {
 }
 
 impl Integer {
+    ///
     pub fn set_handler(&mut self, handler: impl Into<String>) {
         self.handler = Some(handler.into())
     }
+    ///
     pub fn get_handler(&self) -> Option<String> {
         self.handler.to_owned()
     }
+    ///
     pub fn get_value(&self) -> BigInt {
         self.value.to_owned()
     }
+    ///
     pub fn get_index(&self) -> Option<isize> {
         isize::try_from(&self.value).ok()
     }

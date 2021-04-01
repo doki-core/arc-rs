@@ -88,9 +88,11 @@ impl AddAssign<List> for List {
 // }
 
 impl List {
+    ///
     pub fn get_handler(&self) -> Option<String> {
         self.handler.to_owned()
     }
+    ///
     pub fn get_index(&self, index: &Integer) -> Option<&Value> {
         match index.get_index() {
             Some(i_index) => {
@@ -103,7 +105,7 @@ impl List {
             None => None,
         }
     }
-
+    ///
     pub fn ensure_index(&mut self, index: Integer) -> &'_ mut Value {
         match index.get_index() {
             Some(i_index) => {
@@ -119,13 +121,15 @@ impl List {
 }
 
 impl List {
+    ///
     pub fn empty() -> Value {
         Value::from(List::default())
     }
+    ///
     pub fn is_empty(&self) -> bool {
         self.value.is_empty()
     }
-
+    ///
     pub fn length(&self) -> usize {
         // match self.value.last_key_value() {
         //     Some((n, _)) => {*n},
@@ -136,15 +140,15 @@ impl List {
             None => 0,
         }
     }
-
+    ///
     pub fn as_vec(&self) -> Vec<Value> {
         self.value.values().cloned().collect()
     }
-
+    ///
     pub fn entry(&mut self, index: usize) -> Entry<'_, usize, Value> {
         self.value.entry(index)
     }
-
+    ///
     pub fn get(&self, index: &str) -> Option<&Value> {
         let i = match isize::from_str(index) {
             Ok(o) => o,
@@ -155,7 +159,7 @@ impl List {
             false => self.value.get(&((self.value.len() as isize + i) as usize)),
         }
     }
-
+    ///
     pub fn extend(&mut self, item: impl Into<List>) {
         self.value.extend(item.into().value)
     }

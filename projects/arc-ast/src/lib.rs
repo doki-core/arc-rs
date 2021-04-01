@@ -1,4 +1,3 @@
-#![feature(box_syntax)]
 #![warn(missing_docs)]
 
 //! missing
@@ -12,7 +11,6 @@ pub mod utils;
 pub mod value;
 mod convert;
 mod errors;
-mod function;
 #[macro_use]
 mod macros;
 

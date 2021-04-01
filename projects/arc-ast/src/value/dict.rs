@@ -2,6 +2,9 @@ use super::*;
 use indexmap::map::Entry;
 use std::ops::AddAssign;
 
+/// ```note
+/// { }
+/// ```
 #[derive(Clone, Eq, PartialEq)]
 pub struct Dict {
     handler: Option<String>,
@@ -91,48 +94,54 @@ impl AddAssign for Dict {
 }
 
 impl Dict {
+    ///
     pub fn get(&self, key: &str) -> Option<&Value> {
         self.value.get(key)
     }
+    ///
     pub fn get_mut(&mut self, key: &str) -> Option<&mut Value> {
         self.value.get_mut(key)
     }
+    ///
     pub fn get_key(&self, key: &Text) -> Option<&Value> {
         self.value.get(&key.value)
     }
+    ///
     pub fn get_handler(&self) -> Option<String> {
         self.handler.to_owned()
     }
-
+    ///
     pub fn ensure_key(&mut self, key: Text) -> &'_ mut Value {
         self.entry(key.value).or_default()
     }
 }
 
 impl Dict {
+    ///
     pub fn empty() -> Value {
         Value::from(Dict::default())
     }
+    ///
     pub fn is_empty(&self) -> bool {
         self.value.is_empty()
     }
-
+    ///
     pub fn length(&self) -> usize {
         self.value.len()
     }
-
+    ///
     pub fn iter(&self) -> indexmap::map::Iter<String, Value> {
         self.value.iter()
     }
-
+    ///
     pub fn insert(&mut self, key: String, value: Value) -> Option<Value> {
         self.value.insert(key, value)
     }
-
+    ///
     pub fn as_vec(&self) -> Vec<Value> {
         self.value.values().cloned().collect()
     }
-
+    ///
     pub fn entry(&mut self, key: String) -> Entry<String, Value> {
         self.value.entry(key)
     }

@@ -22,11 +22,13 @@ toml = { version = "0.5", optional = true }
 yaml-rust = { version = "0.4", optional = true }
 # serde_yaml = "*"
 serde-hjson = { version = "0.9", optional = true }
+
 arc-pest = {version = "0.4", path = "../arc-pest"}
+lsp-types = {version = "0.82", optional = true}
 
 [features]
-default = ["convert"]
-
+default = ["convert", "lsp"]
+lsp = ["lsp-types"]
 convert = ["json", "toml", "yaml"]
 json = ["serde_json", "serde_json/preserve_order"]
 yaml = ["yaml-rust"]

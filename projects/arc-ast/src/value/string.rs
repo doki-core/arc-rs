@@ -104,18 +104,22 @@ impl From<Text> for Value {
 }
 
 impl Text {
+    /// Set handler
     pub fn set_handler(&mut self, handler: impl Into<String>) {
         self.handler = Some(handler.into())
     }
+    /// Get handler
     pub fn get_handler(&self) -> Option<String> {
         self.handler.to_owned()
     }
+    /// Get the &str
     pub fn as_str(&self) -> &str {
         self.value.as_str()
     }
 }
 
 impl Text {
+    /// Check if string is empty
     pub fn is_empty(&self) -> bool {
         self.value.is_empty()
     }

@@ -9,6 +9,6 @@
         "fix": "cargo fix --allow-dirty",
         "reset": "git reset Head~ --soft",
         "pub": "cargo-publish-all --yes --allow-dirty --no-verify1 --verbose",
-        "lsp":  "cargo install --path projects/notedown-lsp --debug",
+        "lsp":  "cargo install --path projects/arc-lsp --debug"
     }
 }

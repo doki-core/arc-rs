@@ -10,7 +10,7 @@ license = "MPL-2.0"
 edition = "2018"
 
 [dependencies]
-arc-rs = "0.5.1"
+arc-rs = { version = "0.5", path = "../arc-ast"}
 async-trait = "0.1"
 futures = { version = "0.3", features = ["compat"] }
 # jsonrpc-core = "14.0"

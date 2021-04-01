@@ -21,7 +21,7 @@ impl ParserConfig {
         let input = input.replace("\r\n", "\n").replace("\\\n", "").replace("\t", &" ".repeat(self.tab_size));
         match ArcParser::parse(Rule::program, &input) {
             Ok(o) => Ok(self.parse_program(o)),
-            Err(e) => Err(ReadableConfigError::OtherError(box e)),
+            Err(e) => Err(ReadableConfigError::custom(e)),
         }
     }
     fn parse_program(&self, pairs: Pairs<Rule>) -> AST {

@@ -1,5 +1,8 @@
 use super::*;
 
+/// ```note
+/// 0.0
+/// ```
 #[derive(Debug, Clone, Eq, PartialEq)]
 pub struct Decimal {
     handler: Option<String>,
@@ -74,9 +77,11 @@ impl From<Decimal> for Value {
 }
 
 impl Decimal {
+    ///
     pub fn set_handler(&mut self, handler: impl Into<String>) {
         self.handler = Some(handler.into())
     }
+    ///
     pub fn get_handler(&self) -> Option<String> {
         self.handler.to_owned()
     }
