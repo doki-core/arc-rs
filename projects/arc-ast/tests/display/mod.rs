@@ -1,11 +1,11 @@
-use arc_rs::{dict, value::Text, Value, AST};
+use arc_rs::{dict, value::Text, Value, ASTKind};
 
 #[test]
 fn test() {
     println!("{}", Text::from("x"));
     println!("{:?}", Value::from(Text::from("x")));
-    println!("{:?}", AST::string(Text::from("x")));
-    println!("{:?}", Value::from(AST::string(Text::from("x"))));
+    println!("{:?}", ASTKind::string(Text::from("x")));
+    println!("{:?}", Value::from(ASTKind::string(Text::from("x"))));
     println!("{:?}", dict! {"a": "1"});
 }
 

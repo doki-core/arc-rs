@@ -1,6 +1,6 @@
-use crate::{Range, AST, ParserConfig};
+use crate::{Range, AST};
 use crate::ast::ASTKind;
-use lsp_types::{DocumentSymbol, SymbolKind};
+use lsp_types::{DocumentSymbol, SymbolKind, CodeLens, Command};
 
 #[derive(Debug)]
 pub struct TOC {
@@ -24,25 +24,25 @@ impl Default for TOC {
 }
 
 
-impl From<TOC> for DocumentSymbol {
-    fn from(toc: TOC) -> Self {
-        let details = format!("H{}", toc.children.len());
-        let children = match toc.children.len() {
-            0 => None,
-            _ => Some(toc.children.into_iter().map(From::from).collect()),
-        };
-        #[allow(deprecated)]
-        DocumentSymbol {
-            name: toc.name,
-            detail: Some(details),
-            kind: toc.kind,
-            deprecated: None,
-            range: toc.range,
-            selection_range: toc.range,
-            children,
-        }
-    }
-}
+// impl From<TOC> for DocumentSymbol {
+//     fn from(toc: TOC) -> Self {
+//         let details = format!("H{}", toc.children.len());
+//         let children = match toc.children.len() {
+//             0 => None,
+//             _ => Some(toc.children.into_iter().map(From::from).collect()),
+//         };
+//         #[allow(deprecated)]
+//         DocumentSymbol {
+//             name: toc.name,
+//             detail: Some(details),
+//             kind: toc.kind,
+//             deprecated: None,
+//             range: toc.range,
+//             selection_range: toc.range,
+//             children,
+//         }
+//     }
+// }
 
 
 impl AST {
@@ -95,6 +95,54 @@ impl TOC {
     fn last_at_level(&mut self, depth: usize) -> &mut TOC {
         if depth == 0 || self.children.len() == 0 { self } else { self.children.last_mut().unwrap().last_at_level(depth - 1) }
     }
+    pub fn build_document(&self) -> DocumentSymbol {
+        // TODO: detail [+x items]
+        // let details = format!("H{}", self.children.len());
+        let children = match self.children.len() {
+            0 => None,
+            _ => Some(self.children.iter().map(|e|e.build_document()).collect()),
+        };
+        #[allow(deprecated)]
+        DocumentSymbol {
+            name: self.name.to_owned(),
+            detail: None,
+            kind: self.kind,
+            deprecated: None,
+            range: self.range,
+            selection_range: self.range,
+            children,
+        }
+    }
+    fn push_code_lens(&self, heads: Vec<String>, lens: &mut Vec<CodeLens>) {
+        match self.kind {
+            SymbolKind::Class | SymbolKind::Variable => {
+                let heads: Vec<String> = vec![heads, vec![self.name.to_owned()]].concat();
+                let new = CodeLens {
+                    range: self.range,
+                    command: Some(Command {
+                        title: heads.join("."),
+                        command: "arc.extract.key".to_string(),
+                        arguments: None
+                    }),
+                    data: Some("code_lens".into()),
+                };
+                lens.push(new);
+                for item in &self.children {
+                    item.push_code_lens(heads.clone(), lens)
+                }
+            }
+            _ => ()
+        }
+    }
+
+    pub fn build_code_lens(&self) -> Vec<CodeLens> {
+        // assert self if root!
+        let lens = &mut vec![];
+        for item in &self.children {
+            item.push_code_lens(vec![], lens)
+        }
+        return lens.to_owned()
+    }
 }
 
 
@@ -110,17 +158,3 @@ impl TOC {
 //     }
 //     return out;
 // }
-
-#[test]
-fn test() {
-    let cfg = ParserConfig::default();
-   let toc =  cfg.parse(r#"
-{x}
-
-
-
-
-[c]
-"#).unwrap().toc(9);
-    println!("{:#?}", toc)
-}

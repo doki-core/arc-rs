@@ -3,6 +3,7 @@
 mod converter;
 mod display;
 mod parser;
+mod lsp;
 
 #[test]
 fn ready() {

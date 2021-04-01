@@ -13,7 +13,7 @@ mod errors;
 #[macro_use]
 mod macros;
 
-pub use ast::{AST};
+pub use ast::{AST,ASTKind};
 pub use errors::{Result, ReadableConfigError};
 pub use parser::ParserConfig;
 pub use value::Value;

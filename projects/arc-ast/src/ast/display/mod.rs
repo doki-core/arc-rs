@@ -22,15 +22,19 @@ impl Display for AST {
     fn fmt(&self, f: &mut Formatter) -> fmt::Result {
         match &self.kind {
             ASTKind::Namespace(names) => {
-                for item in names {
+                for (index, item) in names.iter().enumerate() {
                     match &item.kind {
                         ASTKind::String(s) => {
-                            write!(f, "{}", s.value)?
+                            write!(f, "{}", s.value)?;
+
                         }
                         ASTKind::Integer(n) => {
                             write!(f, "{}", n.value)?
                         },
                         _ => return Ok(())
+                    }
+                    if index+1!=names.len() {
+                        write!(f, ".")?
                     }
                 }
                 Ok(())
