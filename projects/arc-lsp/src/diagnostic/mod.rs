@@ -1,6 +1,5 @@
 mod toc;
 
-pub use toc::ToToc;
 
 use crate::io::read_url;
 use tower_lsp::lsp_types::*;

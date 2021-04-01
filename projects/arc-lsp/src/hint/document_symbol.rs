@@ -1,5 +1,5 @@
-use crate::{diagnostic::ToToc, io::read_url};
-use tower_lsp::lsp_types::{DocumentSymbolParams, DocumentSymbolResponse};
+use crate::{ io::read_url};
+use tower_lsp::lsp_types::{DocumentSymbolParams, DocumentSymbolResponse, DocumentSymbol};
 use arc_rs::ParserConfig;
 
 #[allow(deprecated)]
@@ -10,7 +10,8 @@ pub fn document_symbol_provider(args: DocumentSymbolParams) -> Option<DocumentSy
         Err(_) => return None,
     };
 
-    let nested = match ast.to_toc().children {
+
+    let nested = match DocumentSymbol::from(ast.toc(9)).children {
         Some(v) => v,
         None => vec![],
     };

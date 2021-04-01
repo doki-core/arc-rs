@@ -24,7 +24,7 @@ yaml-rust = { version = "0.4", optional = true }
 serde-hjson = { version = "0.9", optional = true }
 
 arc-pest = {version = "0.4", path = "../arc-pest"}
-lsp-types = {version = "0.82", optional = true}
+lsp-types = {version = "0.81", optional = true}
 
 [features]
 default = ["convert", "lsp"]

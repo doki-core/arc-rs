@@ -1,28 +1,52 @@
-
-use crate::{Range, AST};
+use crate::{Range, AST, ParserConfig};
 use crate::ast::ASTKind;
+use lsp_types::{DocumentSymbol, SymbolKind};
 
 #[derive(Debug)]
 pub struct TOC {
     level: usize,
-    pub detail: String,
-    pub range: Range,
-    pub children: Vec<TOC>,
+    name: String,
+    kind: SymbolKind,
+    range: Range,
+    children: Vec<TOC>,
 }
 
 impl Default for TOC {
     fn default() -> Self {
-        Self { level: 0, detail: String::from("ROOT"), range: Default::default(), children: vec![] }
+        Self {
+            level: 0,
+            name: String::from("ROOT"),
+            kind: SymbolKind::File,
+            range: Default::default(),
+            children: vec![],
+        }
     }
 }
 
-impl TOC {
-    fn last_at_level(&mut self, depth: usize) -> &mut TOC {
-        if depth == 0 || self.children.len() == 0 { self } else { self.children.last_mut().unwrap().last_at_level(depth - 1) }
+
+impl From<TOC> for DocumentSymbol {
+    fn from(toc: TOC) -> Self {
+        let details = format!("H{}", toc.children.len());
+        let children = match toc.children.len() {
+            0 => None,
+            _ => Some(toc.children.into_iter().map(From::from).collect()),
+        };
+        #[allow(deprecated)]
+        DocumentSymbol {
+            name: toc.name,
+            detail: Some(details),
+            kind: toc.kind,
+            deprecated: None,
+            range: toc.range,
+            selection_range: toc.range,
+            children,
+        }
     }
 }
+
 
 impl AST {
+    /// Table of contents
     pub fn toc(&self, max_depth: usize) -> TOC {
         let mut root = TOC::default();
         match &self.kind {
@@ -30,35 +54,29 @@ impl AST {
                 for term in terms {
                     match &term.kind {
                         ASTKind::DictScope(level, children) => {
-                            if toc_ignore {
-                                toc_ignore = false;
+                            if 1 + level > max_depth {
                                 continue;
                             }
-                            if *level > max_depth {
-                                continue;
-                            }
-                            let parent = root.last_at_level(level - 1);
+                            let parent = root.last_at_level(*level);
                             let new = TOC {
-                                level: *level,
-                                detail: join_ast_list(children),
-                                range: *r,
+                                level: 1 + level,
+                                kind: SymbolKind::File,
+                                name: join_ast_list(children),
+                                range: term.range,
                                 children: vec![],
                             };
                             parent.children.push(new);
                         }
                         ASTKind::ListScope(level, children) => {
-                            if toc_ignore {
-                                toc_ignore = false;
+                            if 1 + level > max_depth {
                                 continue;
                             }
-                            if *level > max_depth {
-                                continue;
-                            }
-                            let parent = root.last_at_level(level - 1);
+                            let parent = root.last_at_level(*level);
                             let new = TOC {
-                                level: *level,
-                                detail: join_ast_list(children),
-                                range: *r,
+                                level: 1 + level,
+                                kind: SymbolKind::File,
+                                name: join_ast_list(children),
+                                range: term.range,
                                 children: vec![],
                             };
                             parent.children.push(new);
@@ -73,10 +91,29 @@ impl AST {
     }
 }
 
-pub fn join_ast_list(list: &[AST]) -> String {
+impl TOC {
+    fn last_at_level(&mut self, depth: usize) -> &mut TOC {
+        if depth == 0 || self.children.len() == 0 { self } else { self.children.last_mut().unwrap().last_at_level(depth - 1) }
+    }
+}
+
+
+pub fn join_ast_list(list: &AST) -> String {
     let mut out = String::new();
-    for i in list {
-        out.push_str(&i.to_string())
+    match &list.kind {
+        ASTKind::Namespace(name) => {
+            for i in name {
+                out.push_str(&format!("{:?}", i.kind))
+            }
+        }
+        _ => ()
     }
     return out;
+}
+
+#[test]
+fn test() {
+    let cfg = ParserConfig::default();
+   let toc =  cfg.parse("{x}").unwrap().toc(9);
+    println!("{:#?}", toc)
 }
