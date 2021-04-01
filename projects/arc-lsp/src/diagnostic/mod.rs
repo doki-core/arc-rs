@@ -1,7 +1,6 @@
-use tower_lsp::lsp_types::{Url, Diagnostic};
+use tower_lsp::lsp_types::{Diagnostic, Url};
 
 // use crate::io::read_url;
-
 
 pub fn diagnostics_provider(url: &Url) -> Vec<Diagnostic> {
     let _ = url;

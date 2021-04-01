@@ -1,12 +1,11 @@
-mod document_symbol;
 mod code_lens;
+mod document_symbol;
 
-pub use self::document_symbol::document_symbol_provider;
-pub use self::code_lens::code_lens_provider;
+pub use self::{code_lens::code_lens_provider, document_symbol::document_symbol_provider};
+use crate::io::read_url;
+use arc_rs::ParserConfig;
 use serde_json::Value;
 use tower_lsp::lsp_types::*;
-use arc_rs::ParserConfig;
-use crate::io::read_url;
 
 pub fn code_action_provider(p: CodeActionParams) -> Option<CodeActionResponse> {
     let _ = p;
@@ -24,10 +23,8 @@ pub fn hover_provider(p: HoverParams) -> Option<Hover> {
     //     }),
     //     range: None,
     // })
-    return None
+    return None;
 }
-
-
 
 fn extract_actions() -> Vec<CodeActionOrCommand> {
     vec![

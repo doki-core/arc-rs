@@ -1,4 +1,4 @@
-use arc_rs::{dict, value::Text, Value, ASTKind};
+use arc_rs::{dict, value::Text, ASTKind, Value};
 
 #[test]
 fn test() {

@@ -2,8 +2,8 @@
 
 mod converter;
 mod display;
-mod parser;
 mod lsp;
+mod parser;
 
 #[test]
 fn ready() {
