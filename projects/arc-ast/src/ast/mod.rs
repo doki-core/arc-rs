@@ -41,8 +41,6 @@ pub enum ASTKind {
     DictScope(usize, Box<AST>),
     ///
     Pair(Box<AST>, Box<AST>),
-    ///
-    ListItems(Vec<AST>),
     /// `null`
     Null,
     /// `true` | `false`
@@ -205,10 +203,6 @@ impl ASTKind {
     ///
     pub fn pair(lhs: AST, rhs: AST) -> Self {
         Self::Pair(Box::new(lhs), Box::new(rhs))
-    }
-    ///
-    pub fn list_pair(pairs: Vec<AST>) -> Self {
-        Self::ListItems(pairs)
     }
 }
 

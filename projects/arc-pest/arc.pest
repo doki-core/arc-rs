@@ -23,7 +23,7 @@ extend_statement =  {"#extend" ~ SYMBOL? ~ StringNormal}
 /*====================================================================================================================*/
 dict_scope   = _{dict_head ~ (SEPARATOR? ~ dict_pair)*}
 dict_head    =  {"{" ~ Dot* ~ namespace ~ "}"}
-dict_pair    =  {namespace ~ Set ~ (data|RestLineText)}
+dict_pair    = !{namespace ~ Set ~ (data|RestLineText)}
 dict_literal =  {
     SYMBOL? ~  "{" ~ "}"
   | SYMBOL? ~ "{" ~ (SEPARATOR? ~ dict_pair)+ ~ SEPARATOR? ~ "}"
@@ -33,20 +33,19 @@ Set          = @{"="|":"}
 /*====================================================================================================================*/
 list_scope   = _{list_head ~ (SEPARATOR? ~ list_pair)*}
 list_head    =  {"[" ~ Dot* ~ namespace ~ "]"}
-list_pair    =  {
-    Insert ~ dict_pair+
-  | Append ~ (data|InlineString)+
+list_pair    = {
+    Insert ~ (SEPARATOR? ~ namespace ~ Set ~ (data|InlineString))+ ~ SEPARATOR?
+  | Append ~ (data|InlineString) ~ (SEPARATOR? ~ (data|InlineString))* ~ SEPARATOR?
 }
 list_literal =  {
     SYMBOL? ~ "[" ~ "]"
-  | SYMBOL? ~ "[" ~ (SEPARATOR? ~ (data|InlineString))+ ~ SEPARATOR? ~ "]"
+  | SYMBOL? ~ "[" ~ (SEPARATOR? ~ (data|RestLineText))+ ~ SEPARATOR? ~ "]"
 }
-InlineString = @{(!(SEPARATOR|NEWLINE|"]"|"}") ~ ANY)+}
-
+InlineString = @{(!(NEWLINE|">"|"^") ~ ANY)+}
 Insert       = @{"^"}
 Append       = @{">"}
 /*====================================================================================================================*/
-data = {
+data = !{
     Special|Cite|Byte|Number
   | String
   | dict_literal|list_literal
@@ -69,7 +68,7 @@ Integer      = @{ASCII_DIGIT ~ ("_"? ~ ASCII_DIGIT)*}
 Exponent     = ${SignedNumber ~ ("e"|"E"|"**") ~ Sign? ~ ASCII_DIGIT+}
 Sign         = @{"+"|"-"}
 /*====================================================================================================================*/
-//!#3C963C: String|InlineString|RestLineText
+//!#3C963C: String|InlineString|InlineString2|RestLineText
 //!#98C379: StringQuotation|StringAccent
 //!#D19A66: StringApostrophe
 String       = !{SYMBOL? ~ (StringNormal|StringEmpty)}

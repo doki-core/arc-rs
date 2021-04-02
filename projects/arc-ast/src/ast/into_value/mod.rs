@@ -62,11 +62,6 @@ impl Scope {
                     self.pop_index();
                 }
             }
-            ASTKind::ListItems(v) => {
-                for item in v {
-                    self.visit_ast(item.kind);
-                }
-            }
             ASTKind::Dict(v) => {
                 for item in v {
                     self.visit_ast(item.kind);
