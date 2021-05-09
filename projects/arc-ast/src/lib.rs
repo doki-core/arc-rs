@@ -6,7 +6,7 @@ mod ast;
 mod convert;
 mod errors;
 mod parser;
-mod serde;
+pub mod serde;
 mod traits;
 pub mod utils;
 pub mod value;
