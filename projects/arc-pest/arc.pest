@@ -21,27 +21,27 @@ EmptyLine  = @{WHITESPACE* ~ NEWLINE}
 import_statement =  {"#import" ~ SYMBOL ~ StringNormal ~ "as" ~ namespace}
 extend_statement =  {"#extend" ~ SYMBOL? ~ StringNormal}
 /*====================================================================================================================*/
-dict_scope   = _{dict_head ~ (SEPARATOR? ~ dict_pair)*}
-dict_head    =  {"{" ~ Dot* ~ namespace ~ "}"}
+dict_scope   = _{dict_head ~ dict_pair*}
+dict_head    = !{"{" ~ Dot* ~ namespace ~ "}"}
 dict_pair    = !{namespace ~ Set ~ (data|RestLineText)}
 dict_literal =  {
     SYMBOL? ~  "{" ~ "}"
   | SYMBOL? ~ "{" ~ (SEPARATOR? ~ dict_pair)+ ~ SEPARATOR? ~ "}"
 }
-RestLineText = @{(!(NEWLINE|"]"|"}") ~ ANY)+}
 Set          = @{"="|":"}
 /*====================================================================================================================*/
-list_scope   = _{list_head ~ (SEPARATOR? ~ list_pair)*}
-list_head    =  {"[" ~ Dot* ~ namespace ~ "]"}
-list_pair    = {
-    Insert ~ (SEPARATOR? ~ namespace ~ Set ~ (data|InlineString))+ ~ SEPARATOR?
-  | Append ~ (data|InlineString) ~ (SEPARATOR? ~ (data|InlineString))* ~ SEPARATOR?
+list_scope   = _{list_head ~ list_pair*}
+list_head    = !{"[" ~ Dot* ~ namespace ~ "]"}
+list_pair    =  {
+    Insert ~ dict_pair+
+  | Append ~ WHITE_SPACE* ~ (!data ~ ListString|data)
 }
 list_literal =  {
     SYMBOL? ~ "[" ~ "]"
   | SYMBOL? ~ "[" ~ (SEPARATOR? ~ (data|RestLineText))+ ~ SEPARATOR? ~ "]"
 }
-InlineString = @{(!(NEWLINE|">"|"^") ~ ANY)+}
+RestLineText = @{(!(NEWLINE|"]"|"}") ~ ANY)+}
+ListString   = @{(!(">"|"^"|"["|"{") ~ ANY)+}
 Insert       = @{"^"}
 Append       = @{">"}
 /*====================================================================================================================*/

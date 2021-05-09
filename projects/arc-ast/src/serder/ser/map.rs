@@ -4,7 +4,7 @@ use super::*;
 pub struct MapBuffer<'s> {
     ptr: &'s mut ReadableConfigSerializer,
     name: Option<&'static str>,
-    buffer: BTreeMap<WolframValue, WolframValue>,
+    buffer: BTreeMap<AST, AST>,
 }
 
 // Some `Serialize` types are not able to hold a key and value in memory at the
@@ -15,7 +15,7 @@ pub struct MapBuffer<'s> {
 // `serialize_entry` method allows serializers to optimize for the case where
 // key and value are both available simultaneously. In JSON it doesn't make a
 // difference so the default behavior for `serialize_entry` is fine.
-impl<'a> ser::SerializeMap for &'a mut ReadableConfigSerializer {
+impl<'a> ser::SerializeMap for MapBuffer<'a> {
     type Ok = ();
     type Error = Error;
 
@@ -58,7 +58,7 @@ impl<'a> ser::SerializeMap for &'a mut ReadableConfigSerializer {
 // Structs are like maps in which the keys are constrained to be compile-time
 // constant strings.
 // Name[a -> b, c -> d]
-impl<'a> ser::SerializeStruct for &'a mut ReadableConfigSerializer {
+impl<'a> ser::SerializeStruct for MapBuffer<'a> {
     type Ok = ();
     type Error = Error;
 
@@ -80,7 +80,7 @@ impl<'a> ser::SerializeStruct for &'a mut ReadableConfigSerializer {
 
 // Similar to `SerializeTupleVariant`, here the `end` method is responsible for
 // closing both of the curly braces opened by `serialize_struct_variant`.
-impl<'a> ser::SerializeStructVariant for &'a mut ReadableConfigSerializer {
+impl<'a> ser::SerializeStructVariant for MapBuffer<'a> {
     type Ok = ();
     type Error = Error;
 

@@ -6,18 +6,20 @@ mod ast;
 mod convert;
 mod errors;
 mod parser;
-pub mod serde;
+mod serder;
 mod traits;
 pub mod utils;
 pub mod value;
 #[macro_use]
 mod macros;
 
-pub use ast::{ASTKind, AST};
-pub use errors::{ReadableConfigError, Result};
+pub use self::ast::{ASTKind, AST};
+pub use self::errors::{ReadableConfigError, Result};
 pub use lsp_types::Range;
-pub use parser::ParserConfig;
-pub use value::Value;
+pub use self::parser::ParserConfig;
+pub use self::value::Value;
+pub use serde;
+pub use self::serder::ReadableConfigSerializer;
 
 /// if ture, { } will be null
 pub const BUILD_EMPTY_SCOPE: bool = true;

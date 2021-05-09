@@ -1,10 +1,11 @@
 use super::*;
 use serde::ser::{SerializeSeq, SerializeTuple, SerializeTupleStruct, SerializeTupleVariant};
+use crate::ASTKind;
 
 pub struct ArrayBuffer<'s> {
     ptr: &'s mut ReadableConfigSerializer,
     name: Option<&'static str>,
-    buffer: Vec<WolframValue>,
+    buffer: Vec<AST>,
 }
 
 impl<'s> ArrayBuffer<'s> {
@@ -33,7 +34,7 @@ impl<'a> SerializeSeq for ArrayBuffer<'a> {
     }
 
     fn end(mut self) -> Result<()> {
-        Ok(self.ptr.this = self.buffer.to_wolfram())
+        Ok(self.ptr.this = ASTKind::list(self.buffer).into())
     }
 }
 
@@ -50,7 +51,7 @@ impl<'a> SerializeTuple for ArrayBuffer<'a> {
     }
 
     fn end(mut self) -> Result<()> {
-        Ok(self.ptr.this = self.buffer.to_wolfram())
+        Ok(self.ptr.this = ASTKind::list(self.buffer).into())
     }
 }
 
@@ -67,7 +68,7 @@ impl<'a> SerializeTupleStruct for ArrayBuffer<'a> {
     }
 
     fn end(mut self) -> Result<()> {
-        Ok(self.ptr.this = WolframValue::function(self.name.unwrap(), self.buffer))
+        Ok(self.ptr.this = ASTKind::list(self.buffer).into())
     }
 }
 
@@ -83,6 +84,6 @@ impl<'a> SerializeTupleVariant for ArrayBuffer<'a> {
     }
 
     fn end(mut self) -> Result<()> {
-        Ok(self.ptr.this = WolframValue::function(self.name.unwrap(), self.buffer))
+        Ok(self.ptr.this = ASTKind::list(self.buffer).into())
     }
 }

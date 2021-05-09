@@ -16,6 +16,8 @@ pub enum ReadableConfigError {
     /// missing
     OtherError(String),
     /// missing
+    SError(String),
+    /// missing
     CustomError(Box<dyn Error>),
 }
 
@@ -23,6 +25,13 @@ type IOError = std::io::Error;
 type JsonError = serde_json::Error;
 type TomlError = toml::de::Error;
 type YamlError = yaml_rust::ScanError;
+
+impl serde::ser::Error for ReadableConfigError {
+    fn custom<T>(msg: T) -> Self where
+        T: Display {
+        Self::SError(msg.to_string())
+    }
+}
 
 impl Error for ReadableConfigError {}
 

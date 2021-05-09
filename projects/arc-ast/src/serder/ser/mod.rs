@@ -5,7 +5,7 @@ use serde::{ser, Serialize, Serializer};
 pub use self::array::ArrayBuffer;
 pub use self::map::MapBuffer;
 
-use crate::{Result, ReadableConfigError as Error, AST};
+use crate::{Result, ReadableConfigError as Error, AST, ASTKind};
 use std::collections::BTreeMap;
 
 pub struct ReadableConfigSerializer {
@@ -29,10 +29,6 @@ impl<'a> Serializer for &'a mut ReadableConfigSerializer {
     type Ok = ();
     type Error = Error;
 
-    // Associated types for keeping track of additional state while serializing
-    // compound data structures like sequences and maps. In this case no
-    // additional state is required beyond what is already stored in the
-    // Serializer struct.
     type SerializeSeq = ArrayBuffer<'a>;
     type SerializeTuple = ArrayBuffer<'a>;
     type SerializeTupleStruct = ArrayBuffer<'a>;
@@ -116,7 +112,7 @@ impl<'a> Serializer for &'a mut ReadableConfigSerializer {
     /// In Serde, unit means an anonymous value containing no data.
     /// Nothing to output, aka Null in wolfram language
     fn serialize_unit(self) -> Result<()> {
-        Ok(self.this = WolframValue::symbol("Null"))
+        Ok(self.this = ASTKind::Null.into())
     }
 
     // Unit struct means a named value containing no data. Again, since there is
