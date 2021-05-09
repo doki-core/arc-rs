@@ -6,7 +6,8 @@ pub use self::array::ArrayBuffer;
 pub use self::map::MapBuffer;
 
 use crate::{Result, ReadableConfigError as Error, AST, ASTKind};
-use std::collections::BTreeMap;
+use crate::value::{Integer,Decimal,Text};
+
 
 pub struct ReadableConfigSerializer {
     this: AST,
@@ -19,7 +20,7 @@ impl Default for ReadableConfigSerializer {
 }
 
 impl ReadableConfigSerializer {
-    pub fn serialize(&mut self, v: impl Serializer) -> Result<AST> {
+    pub fn serialize(&mut self, v: impl Serialize) -> Result<AST> {
         v.serialize(self)?;
         Ok(self.this.to_owned())
     }
@@ -33,60 +34,60 @@ impl<'a> Serializer for &'a mut ReadableConfigSerializer {
     type SerializeTuple = ArrayBuffer<'a>;
     type SerializeTupleStruct = ArrayBuffer<'a>;
     type SerializeTupleVariant = ArrayBuffer<'a>;
-    type SerializeMap = Self;
-    type SerializeStruct = Self;
-    type SerializeStructVariant = Self;
+    type SerializeMap = MapBuffer<'a>;
+    type SerializeStruct = MapBuffer<'a>;
+    type SerializeStructVariant = MapBuffer<'a>;
 
     fn serialize_bool(self, v: bool) -> Result<()> {
-        Ok(self.this = v.into())
+        Ok(self.this = ASTKind::Boolean(v).into_node())
     }
 
     fn serialize_i8(self, v: i8) -> Result<()> {
-        Ok(self.this = v.into())
+        Ok(self.this = ASTKind::Integer(Box::new(Integer::from(v))).into_node())
     }
 
     fn serialize_i16(self, v: i16) -> Result<()> {
-        Ok(self.this = v.into())
+        Ok(self.this = ASTKind::Integer(Box::new(Integer::from(v))).into_node())
     }
 
     fn serialize_i32(self, v: i32) -> Result<()> {
-        Ok(self.this = v.into())
+        Ok(self.this = ASTKind::Integer(Box::new(Integer::from(v))).into_node())
     }
 
     fn serialize_i64(self, v: i64) -> Result<()> {
-        Ok(self.this = v.into())
+        Ok(self.this = ASTKind::Integer(Box::new(Integer::from(v))).into_node())
     }
 
     fn serialize_u8(self, v: u8) -> Result<()> {
-        Ok(self.this = v.into())
+        Ok(self.this = ASTKind::Integer(Box::new(Integer::from(v))).into_node())
     }
 
     fn serialize_u16(self, v: u16) -> Result<()> {
-        Ok(self.this = v.into())
+        Ok(self.this = ASTKind::Integer(Box::new(Integer::from(v))).into_node())
     }
 
     fn serialize_u32(self, v: u32) -> Result<()> {
-        Ok(self.this = v.into())
+        Ok(self.this = ASTKind::Integer(Box::new(Integer::from(v))).into_node())
     }
 
     fn serialize_u64(self, v: u64) -> Result<()> {
-        Ok(self.this = v.into())
+        Ok(self.this = ASTKind::Integer(Box::new(Integer::from(v))).into_node())
     }
 
     fn serialize_f32(self, v: f32) -> Result<()> {
-        Ok(self.this = v.into())
+        Ok(self.this = ASTKind::Decimal(Box::new(Decimal::from(v))).into_node())
     }
 
     fn serialize_f64(self, v: f64) -> Result<()> {
-        Ok(self.this = v.into())
+        Ok(self.this = ASTKind::Decimal(Box::new(Decimal::from(v))).into_node())
     }
 
     fn serialize_char(self, v: char) -> Result<()> {
-        Ok(self.this = v.into())
+        Ok(self.this = ASTKind::String(Box::new(Text::from(v))).into_node())
     }
 
     fn serialize_str(self, v: &str) -> Result<()> {
-        Ok(self.this = v.into())
+        Ok(self.this = ASTKind::String(Box::new(Text::from(v))).into_node())
     }
 
     // Serialize a byte array as an array of bytes. Could also use a base64
@@ -99,7 +100,7 @@ impl<'a> Serializer for &'a mut ReadableConfigSerializer {
 
     /// None
     fn serialize_none(self) -> Result<()> {
-        Ok(self.this = AST::default())
+        Ok(self.this = ASTKind::Null.into_node())
     }
 
     fn serialize_some<T>(self, value: &T) -> Result<()>
@@ -112,14 +113,14 @@ impl<'a> Serializer for &'a mut ReadableConfigSerializer {
     /// In Serde, unit means an anonymous value containing no data.
     /// Nothing to output, aka Null in wolfram language
     fn serialize_unit(self) -> Result<()> {
-        Ok(self.this = ASTKind::Null.into())
+        Ok(self.this = ASTKind::List(vec![]).into())
     }
 
     // Unit struct means a named value containing no data. Again, since there is
     // no data, map this to JSON as `null`. There is no need to serialize the
     // name in most formats.
     fn serialize_unit_struct(self, _name: &'static str) -> Result<()> {
-        unimplemented!()
+       unimplemented!()
     }
 
     // When serializing a unit variant (or any other kind of variant), formats
@@ -191,8 +192,11 @@ impl<'a> Serializer for &'a mut ReadableConfigSerializer {
     }
 
     // Maps are represented in JSON as `{ K: V, K: V, ... }`.
-    fn serialize_map(self, _: Option<usize>) -> Result<Self::SerializeMap> {
-        Ok(self)
+    fn serialize_map(self, length: Option<usize>) -> Result<Self::SerializeMap> {
+        match length {
+            None => Ok(MapBuffer::new(self, None, 0)),
+            Some(s) => Ok(MapBuffer::new(self, None, s)),
+        }
     }
 
     // Structs look just like maps in JSON. In particular, JSON requires that we
@@ -200,23 +204,19 @@ impl<'a> Serializer for &'a mut ReadableConfigSerializer {
     // omit the field names when serializing structs because the corresponding
     // Deserialize implementation is required to know what the keys are without
     // looking at the serialized data.
-    fn serialize_struct(self, _name: &'static str, len: usize) -> Result<Self::SerializeStruct> {
-        self.serialize_map(Some(len))
+    fn serialize_struct(self, name: &'static str, length: usize) -> Result<Self::SerializeStruct> {
+        Ok(MapBuffer::new(self, Some(name), length))
     }
 
     // Struct variants are represented in JSON as `{ NAME: { K: V, ... } }`.
     // This is the externally tagged representation.
     fn serialize_struct_variant(
         self,
-        _name: &'static str,
+        name: &'static str,
         _variant_index: u32,
         _variant: &'static str,
-        _len: usize,
+        length: usize,
     ) -> Result<Self::SerializeStructVariant> {
-        // self.inner += "{";
-        // variant.serialize(&mut *self)?;
-        // self.inner += ":{";
-        // Ok(self)
-        unimplemented!()
+        Ok(MapBuffer::new(self, Some(name), length))
     }
 }

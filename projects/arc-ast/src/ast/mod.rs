@@ -90,6 +90,20 @@ impl AST {
 }
 
 impl ASTKind {
+    pub fn into_node(self) -> AST {
+        AST {
+            kind: self,
+            range: Default::default(),
+            additional: None
+        }
+    }
+    pub const True: Self = ASTKind::Boolean(true);
+    pub const False: Self = ASTKind::Boolean(false);
+}
+
+impl ASTKind {
+
+
     ///
     pub fn program(children: Vec<AST>) -> Self {
         Self::Program(children)

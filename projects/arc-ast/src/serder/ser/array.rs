@@ -17,7 +17,7 @@ impl<'s> ArrayBuffer<'s> {
             T: ?Sized + Serialize,
     {
         value.serialize(&mut *self.ptr)?;
-        self.buffer.push(self.ptr.this.to_wolfram());
+        self.buffer.push(self.ptr.this.to_owned());
         Ok(())
     }
 }

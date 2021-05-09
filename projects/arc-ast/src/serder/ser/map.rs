@@ -1,10 +1,25 @@
 use super::*;
+use indexmap::IndexMap;
 
 
 pub struct MapBuffer<'s> {
     ptr: &'s mut ReadableConfigSerializer,
     name: Option<&'static str>,
-    buffer: BTreeMap<AST, AST>,
+    buffer: IndexMap<AST, AST>,
+}
+
+impl<'s> MapBuffer<'s> {
+    pub fn new(ptr: &'s mut ReadableConfigSerializer, name: Option<&'static str>, _: usize) -> Self {
+        Self { name, ptr, buffer: IndexMap::new() }
+    }
+    fn push_sequence<T>(&mut self, value: &T) -> Result<()>
+        where
+            T: ?Sized + Serialize,
+    {
+        value.serialize(&mut *self.ptr)?;
+        self.buffer.push(self.ptr.this.to_wolfram());
+        Ok(())
+    }
 }
 
 // Some `Serialize` types are not able to hold a key and value in memory at the
