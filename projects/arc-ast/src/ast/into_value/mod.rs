@@ -35,6 +35,7 @@ impl Scope {
             ASTKind::Program(v) | ASTKind::Dict(v) => v.into_iter().for_each(|item| self.visit_ast(item.kind)),
             ASTKind::String(v) => self.top = Value::from(*v),
             ASTKind::Integer(v) => self.top = Value::from(*v),
+            ASTKind::Boolean(v) => self.top = Value::from(v),
             _ => unimplemented!("ASTKind::{:?}", ast),
         }
         self.top.to_owned()

@@ -1,24 +1,18 @@
 use super::*;
-use indexmap::IndexMap;
+use std::mem::swap;
+use crate::value::Dict;
 
 
 pub struct MapBuffer<'s> {
     ptr: &'s mut ReadableConfigSerializer,
     name: Option<&'static str>,
-    buffer: IndexMap<AST, AST>,
+    k_slots: Vec<AST>,
+    v_slots: Vec<AST>,
 }
 
 impl<'s> MapBuffer<'s> {
     pub fn new(ptr: &'s mut ReadableConfigSerializer, name: Option<&'static str>, _: usize) -> Self {
-        Self { name, ptr, buffer: IndexMap::new() }
-    }
-    fn push_sequence<T>(&mut self, value: &T) -> Result<()>
-        where
-            T: ?Sized + Serialize,
-    {
-        value.serialize(&mut *self.ptr)?;
-        self.buffer.push(self.ptr.this.to_wolfram());
-        Ok(())
+        Self { name, k_slots: vec![], ptr, v_slots: vec![] }
     }
 }
 
@@ -37,36 +31,30 @@ impl<'a> ser::SerializeMap for MapBuffer<'a> {
     // The Serde data model allows map keys to be any serializable type. JSON
     // only allows string keys so the implementation below will produce invalid
     // JSON if the key serializes as something other than a string.
-    //
-    // A real JSON serializer would need to validate that map keys are strings.
-    // This can be done by using a different Serializer to serialize the key
-    // (instead of `&mut **self`) and having that other serializer only
-    // implement `serialize_str` and return an error on any other data type.
-    fn serialize_key<T>(&mut self, _key: &T) -> Result<()>
+    fn serialize_key<T>(&mut self, key: &T) -> Result<()>
         where
             T: ?Sized + Serialize,
     {
-        // if !self.inner.ends_with('{') {
-        //     self.inner += ",";
-        // }
-        // key.serialize(&mut **self)
-        unimplemented!()
-    }
-
-    // It doesn't make a difference whether the colon is printed at the end of
-    // `serialize_key` or at the beginning of `serialize_value`. In this case
-    // the code is a bit simpler having it here.
-    fn serialize_value<T>(&mut self, _value: &T) -> Result<()>
-        where
-            T: ?Sized + Serialize,
-    {
-        // self.inner += ":";
-        // value.serialize(&mut **self)
-        unimplemented!()
-    }
-
-    fn end(self) -> Result<()> {
+        key.serialize(&mut *self.ptr);
+        self.k_slots.push(self.ptr.this.to_owned());
         Ok(())
+    }
+
+    fn serialize_value<T>(&mut self, value: &T) -> Result<()>
+        where
+            T: ?Sized + Serialize,
+    {
+        value.serialize(&mut *self.ptr);
+        self.v_slots.push(self.ptr.this.to_owned());
+        Ok(())
+    }
+
+    fn end(mut self) -> Result<()> {
+        let mut map = Vec::with_capacity(self.k_slots.len());
+        for (k, v) in self.k_slots.into_iter().zip(self.v_slots.into_iter()) {
+            map.push(ASTKind::Pair(Box::new(k),Box::new(v)).into_node())
+        }
+        Ok(self.ptr.this = ASTKind::Dict(map).into_node())
     }
 }
 
@@ -81,15 +69,19 @@ impl<'a> ser::SerializeStruct for MapBuffer<'a> {
         where
             T: ?Sized + Serialize,
     {
-        value.serialize(&mut **self)?;
-        self.dict_buffer.insert(key.to_wolfram(), self.this.to_wolfram());
+        key.serialize(&mut *self.ptr);
+        self.k_slots.push(self.ptr.this.to_owned());
+        value.serialize(&mut *self.ptr);
+        self.v_slots.push(self.ptr.this.to_owned());
         Ok(())
     }
 
     fn end(self) -> Result<()> {
-        self.this = self.dict_buffer.to_wolfram();
-        self.dict_buffer.clear();
-        Ok(())
+        let mut map = Vec::with_capacity(self.k_slots.len());
+        for (k, v) in self.k_slots.into_iter().zip(self.v_slots.into_iter()) {
+            map.push(ASTKind::Pair(Box::new(k),Box::new(v)).into_node())
+        }
+        Ok(self.ptr.this = ASTKind::Dict(map).into_node())
     }
 }
 
@@ -103,12 +95,6 @@ impl<'a> ser::SerializeStructVariant for MapBuffer<'a> {
         where
             T: ?Sized + Serialize,
     {
-        // if !self.inner.ends_with('{') {
-        //     self.inner += ",";
-        // }
-        // key.serialize(&mut **self)?;
-        // self.inner += ":";
-        // value.serialize(&mut **self)
         unimplemented!()
     }
 

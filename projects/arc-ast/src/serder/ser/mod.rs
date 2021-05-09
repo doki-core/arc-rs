@@ -21,8 +21,8 @@ impl Default for ReadableConfigSerializer {
 
 impl ReadableConfigSerializer {
     pub fn serialize(&mut self, v: impl Serialize) -> Result<AST> {
-        v.serialize(self)?;
-        Ok(self.this.to_owned())
+        v.serialize(&mut *self)?;
+        Ok(self.this.clone())
     }
 }
 

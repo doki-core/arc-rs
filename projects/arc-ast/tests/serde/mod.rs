@@ -1,13 +1,23 @@
 use serde::Serialize;
-use wolfram_wxf::ToWolfram;
 use arc_rs::ReadableConfigSerializer;
+use arc_rs::Value;
 
 
 #[test]
-fn test_prim() {
+fn test_primitive() {
     let mut s = ReadableConfigSerializer::default();
 
-    assert_eq!(s.serialize(0usize).unwrap(), "0");
+    let v= Value::from(s.serialize(0usize).unwrap());
+    assert_eq!(format!("{:?}", v), "0");
+
+    let v= Value::from(s.serialize("0").unwrap());
+    assert_eq!(format!("{:?}", v), "\"0\"");
+
+    let v= Value::from(s.serialize('0').unwrap());
+    assert_eq!(format!("{:?}", v), "\"0\"");
+
+    let v= Value::from(s.serialize(true).unwrap());
+    assert_eq!(format!("{:?}", v), "true");
 }
 
 //
