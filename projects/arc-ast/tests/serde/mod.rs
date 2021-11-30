@@ -1,6 +1,7 @@
 use serde::Serialize;
 use arc_rs::ReadableConfigSerializer;
 use arc_rs::Value;
+use std::collections::HashMap;
 
 
 #[test]
@@ -20,44 +21,61 @@ fn test_primitive() {
     assert_eq!(format!("{:?}", v), "true");
 }
 
-//
-// #[test]
-// fn test_list() {
-//     let mut serializer = WXFSerializer::default();
-//
-//     vec![0].serialize(&mut serializer).unwrap();
-//     assert_eq!(serializer.to_wolfram_string(), "{0}");
-//
-//     vec![vec![0], vec![1]].serialize(&mut serializer).unwrap();
-//     assert_eq!(serializer.to_wolfram_string(), "{{0},{1}}");
-//
-//     (vec![0], vec![1]).serialize(&mut serializer).unwrap();
-//     assert_eq!(serializer.to_wolfram_string(), "{{0},{1}}");
-// }
-//
-// #[derive(Serialize)]
-// struct TestTuple(usize, Vec<usize>);
-//
-// #[derive(Serialize)]
-// struct TestStruct {
-//     int: usize,
-//     seq: Vec<usize>,
-// }
-//
-// #[test]
-// fn test_struct() {
-//     let mut serializer = WXFSerializer::default();
-//     let test = TestStruct { int: 0, seq: vec![1, 2] };
-//     test.serialize(&mut serializer).unwrap();
-//     // let expected = r#"Test["int"->1,"seq"->{"a","b"}]"#;
-//     assert_eq!(serializer.to_wolfram_string(), r#"<|"int"->0,"seq"->{1,2}|>"#);
-//
-//     let test = TestTuple(0, vec![1, 2]);
-//     test.serialize(&mut serializer).unwrap();
-//     // let expected = r#"Test["int"->1,"seq"->{"a","b"}]"#;
-//     assert_eq!(serializer.to_wolfram_string(), r#"TestTuple[0,{1,2}]"#);
-// }
-//
+
+#[test]
+fn test_list() {
+    let mut s = ReadableConfigSerializer::default();
+
+    let test = ();
+    let v= Value::from(s.serialize(test).unwrap());
+    assert_eq!(format!("{:?}", v), "0");
+
+    let test = vec![0];
+    let v= Value::from(s.serialize(test).unwrap());
+    assert_eq!(format!("{:?}", v), "0");
+
+    let test = vec![vec![0], vec![1]];
+    let v= Value::from(s.serialize(test).unwrap());
+    assert_eq!(format!("{:?}", v), "0");
+
+    let test = (vec![0], vec![1]);
+    let v= Value::from(s.serialize(test).unwrap());
+    assert_eq!(format!("{:?}", v), "0");
+}
+
+#[test]
+fn test_dict() {
+    let mut s = ReadableConfigSerializer::default();
+
+    let mut map = HashMap::new();
+    map.insert(0, true);
+    let v= Value::from(s.serialize(map).unwrap());
+    assert_eq!(format!("{:?}", v), "0");
+}
+
+
+#[derive(Serialize)]
+struct TestTuple(usize, Vec<usize>);
+
+#[derive(Serialize)]
+struct TestStruct {
+    int: usize,
+    seq: Vec<usize>,
+}
+
+#[test]
+fn test_named() {
+    let mut s = ReadableConfigSerializer::default();
+
+    let test = TestStruct { int: 0, seq: vec![1, 2] };
+    let v= Value::from(s.serialize(test).unwrap());
+    assert_eq!(format!("{:?}", v), "0");
+
+    let test = TestTuple(0, vec![1, 2]);
+    let v= Value::from(s.serialize(test).unwrap());
+    assert_eq!(format!("{:?}", v), "0");
+}
+
 // //
 // // #[test]
 // // fn test_enum() {

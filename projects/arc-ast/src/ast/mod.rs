@@ -89,7 +89,9 @@ impl AST {
     }
 }
 
+#[allow(non_upper_case_globals)]
 impl ASTKind {
+    ///
     pub fn into_node(self) -> AST {
         AST {
             kind: self,
@@ -97,13 +99,13 @@ impl ASTKind {
             additional: None
         }
     }
+    ///
     pub const True: Self = ASTKind::Boolean(true);
+    ///
     pub const False: Self = ASTKind::Boolean(false);
 }
 
 impl ASTKind {
-
-
     ///
     pub fn program(children: Vec<AST>) -> Self {
         Self::Program(children)

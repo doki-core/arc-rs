@@ -9,6 +9,7 @@
         "fix": "cargo fix --allow-dirty",
         "reset": "git reset Head~ --soft",
         "pub": "cargo-publish-all --yes --allow-dirty --no-verify1 --verbose",
-        "lsp":  "cargo install --path projects/arc-lsp --debug"
+        "lsp":  "cargo install --path projects/arc-lsp --debug",
+        "web":  "cd projects/arc-preview && trunk serve"
     }
 }

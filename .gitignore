@@ -5,6 +5,7 @@
 
 # Rust
 target/
+dist/
 Cargo.lock
 *.ps1
 *.nb
