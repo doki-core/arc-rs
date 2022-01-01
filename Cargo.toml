@@ -1,11 +1,11 @@
 [workspace]
 
 default-members = [
-    "projects/arc-ast",
+    "projects/voml-ast",
     "projects/arc-pest",
     "projects/arc-fmt",
-    "projects/arc-number",
-    "projects/arc-plugin",
+    "projects/voml-vm",
+    "projects/voml-from",
 ]
 members = ["projects/*"]
 
