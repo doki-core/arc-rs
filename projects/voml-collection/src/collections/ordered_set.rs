@@ -1,39 +1,39 @@
 use super::*;
 use indexmap::set::Iter;
 
-impl OrderedSet {
+impl<T> OrderedSet<T> {
     /// Returns an iterator over the slice.
     #[inline]
-    pub fn iter(&self) -> OrderedSetIter {
+    pub fn iter(&self) -> OrderedSetIter<T> {
         OrderedSetIter { inner: self.inner.iter() }
     }
 }
 
-impl<'i> IntoIterator for &'i OrderedSet {
-    type Item = &'i Value;
-    type IntoIter = OrderedSetIter<'i>;
+impl<'i,T> IntoIterator for &'i OrderedSet<T> {
+    type Item = &'i T;
+    type IntoIter = OrderedSetIter<'i, T>;
 
     fn into_iter(self) -> Self::IntoIter {
         OrderedSetIter { inner: self.inner.iter() }
     }
 }
 /// Wrapper type of [`OrderedSet::iter`]
-pub struct OrderedSetIter<'i> {
-    inner: Iter<'i, Literal<Value>>,
+pub struct OrderedSetIter<'i, T> {
+    inner: Iter<'i, Literal<T>>,
 }
 
-impl<'i> Iterator for OrderedSetIter<'i> {
-    type Item = &'i Value;
+impl<'i, T> Iterator for OrderedSetIter<'i, T> {
+    type Item = &'i T;
 
     fn next(&mut self) -> Option<Self::Item> {
         self.inner.next().map(|f| &f.value)
     }
 }
 
-impl<'i> DoubleEndedIterator for OrderedSetIter<'i> {
+impl<'i, T> DoubleEndedIterator for OrderedSetIter<'i, T> {
     fn next_back(&mut self) -> Option<Self::Item> {
         self.inner.next_back().map(|f| &f.value)
     }
 }
 
-impl<'i> ExactSizeIterator for OrderedSetIter<'i> {}
+impl<'i, T> ExactSizeIterator for OrderedSetIter<'i, T> {}

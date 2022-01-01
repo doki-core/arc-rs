@@ -1,12 +1,13 @@
+use std::convert::TryFrom;
 use super::*;
 use num::One;
 
-impl SparseArray {
+impl<T> SparseArray<T> {
     /// Returns a reference to the value corresponding to the key.
     /// The key may be any borrowed form of the map's key type, but the ordering
     /// on the borrowed form must match the ordering on the key type.
     #[inline]
-    pub fn get(&self, index: &BigUint) -> Option<Value> {
+    pub fn get(&self, index: &BigUint) -> Option<T> {
         self.inner.get(index).map(|f| f.value.to_owned())
     }
     /// Returns a [`bool`] value corresponding to the key.
@@ -23,21 +24,21 @@ impl SparseArray {
     }
     /// Get last key value of the array.
     #[inline]
-    pub fn last_key_value(&self) -> Option<(&BigUint, &Value)> {
+    pub fn last_key_value(&self) -> Option<(&BigUint, &T)> {
         self.inner.last_key_value().map(|(k, v)| (k, &v.value))
     }
 }
 
-impl SparseArray {
+impl<T> SparseArray<T> {
     /// Removes a key from the map, returning the value at the key if the key
     /// was previously in the map.
     #[inline]
-    pub fn extract(&mut self, index: &BigUint) -> Option<Value> {
+    pub fn extract(&mut self, index: &BigUint) -> Option<T> {
         self.inner.remove(index).map(|f| f.value)
     }
 }
 
-impl SparseArray {
+impl<T> SparseArray<T> {
     /// Returns true if the array contains no elements
     #[inline]
     pub fn is_empty(&self) -> bool {
@@ -47,7 +48,7 @@ impl SparseArray {
     /// Appends an element to the back of a collection
     #[inline]
     #[allow(mutable_borrow_reservation_conflict)]
-    pub fn push(&mut self, value: Literal<Value>) {
+    pub fn push(&mut self, value: Literal<T>) {
         let last = self.inner.last_key_value().map(|f| f.0);
         match last {
             None => self.insert(BigUint::one(), value),
@@ -57,28 +58,28 @@ impl SparseArray {
     /// Inserts an element at position index within the vector, shifting all
     /// elements after it to the right
     #[inline]
-    pub fn insert(&mut self, index: BigUint, value: Literal<Value>) -> Option<Literal<Value>> {
+    pub fn insert(&mut self, index: BigUint, value: Literal<T>) -> Option<Literal<T>> {
         self.inner.insert(index, value)
     }
 }
 
-impl SparseArray {
+impl<T> SparseArray<T> {
     /// Return an iterator over array with default value if not set
     #[inline]
-    pub fn iter(&self) -> SparseArrayIter {
+    pub fn iter(&self) -> SparseArrayIter<T> {
         SparseArrayIter { current: BigUint::one(), default: &self.default, inner: &self.inner }
     }
 }
 
 /// Wrapper type of [`SparseArray::values`]
-pub struct SparseArrayIter<'a> {
+pub struct SparseArrayIter<'i,T> {
     current: BigUint,
-    default: &'a Value,
-    inner: &'a BTreeMap<BigUint, Literal<Value>>,
+    default: &'i T,
+    inner: &'i BTreeMap<BigUint, Literal<T>>,
 }
 
-impl<'a> Iterator for SparseArrayIter<'a> {
-    type Item = &'a Value;
+impl<'i, T> Iterator for SparseArrayIter<'i, T> {
+    type Item = &'i T;
     #[inline]
     fn next(&mut self) -> Option<Self::Item> {
         self.current += 1u8;

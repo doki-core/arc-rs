@@ -1,10 +1,11 @@
+use std::convert::TryFrom;
 use super::*;
 use indexmap::map::{Iter, Keys, Values};
 
-impl OrderedMap {
+impl<T> OrderedMap<T> {
     /// Get value from Ordered Map
     #[inline]
-    pub fn get(&self, key: &str) -> Option<Value> {
+    pub fn get(&self, key: &str) -> Option<T> {
         self.inner.get(key).map(|f| f.value.value.to_owned())
     }
     /// Get value from Ordered Map
@@ -19,10 +20,10 @@ impl OrderedMap {
     }
 }
 
-impl OrderedMap {
+impl<T> OrderedMap<T> {
     /// Extract value from Ordered Map
     #[inline]
-    pub fn extract(&mut self, key: &str) -> Option<Value> {
+    pub fn extract(&mut self, key: &str) -> Option<T> {
         self.inner.remove(key).map(|f| f.value.value)
     }
     /// Extract value from Ordered Map
@@ -37,7 +38,7 @@ impl OrderedMap {
     }
 }
 
-impl OrderedMap {
+impl<T> OrderedMap<T> {
     /// Returns true if the array contains no elements
     #[inline]
     pub fn is_empty(&self) -> bool {
@@ -46,72 +47,72 @@ impl OrderedMap {
 
     /// Insert a ranged key-value pair in the map.
     #[inline]
-    pub fn insert_raw(&mut self, pair: LiteralPair) -> Option<LiteralPair> {
+    pub fn insert_raw(&mut self, pair: KVPair<T>) -> Option<KVPair<T>> {
         self.inner.insert(pair.key.value.to_owned(), pair)
     }
     /// Insert a key-value pair in the map.
     #[inline]
-    pub fn insert(&mut self, key: String, value: Value) -> Option<Value> {
-        let pair = LiteralPair { key: Literal { value: key, range: None }, value: Literal { value, range: None } };
+    pub fn insert(&mut self, key: String, value: T) -> Option<T> {
+        let pair = KVPair { key: Literal { value: key, range: None }, value: Literal { value, range: None } };
         self.inner.insert(pair.key.value.to_owned(), pair).map(|pair| pair.value.value)
     }
 }
 
 /// Iterator related methods
-impl OrderedMap {
+impl<T> OrderedMap<T> {
     /// Return an iterator over the key-value pairs of the map in their order
     #[inline]
-    pub fn iter(&self) -> OrderedMapIter {
+    pub fn iter(&self) -> OrderedMapIter<T> {
         OrderedMapIter { inner: self.inner.iter() }
     }
     /// Return an iterator over the key-value pairs of the map in their order
     #[inline]
-    pub fn iter_raw(&self) -> OrderedMapIterRaw {
+    pub fn iter_raw(&self) -> OrderedMapIterRaw<T> {
         OrderedMapIterRaw { inner: self.inner.iter() }
     }
     /// Return an iterator over the keys of the map in their order
     #[inline]
-    pub fn keys(&self) -> OrderedMapKeys {
+    pub fn keys(&self) -> OrderedMapKeys<T> {
         OrderedMapKeys { inner: self.inner.keys() }
     }
     /// Return an iterator over the values of the map in their order
     #[inline]
-    pub fn values(&self) -> OrderedMapValues {
+    pub fn values(&self) -> OrderedMapValues<T> {
         OrderedMapValues { inner: self.inner.values() }
     }
 }
 
-impl<'a> IntoIterator for &'a OrderedMap {
-    type Item = (&'a String, &'a Value);
-    type IntoIter = OrderedMapIter<'a>;
+impl<'i, T> IntoIterator for &'i OrderedMap<T> {
+    type Item = (&'i String, &'i T);
+    type IntoIter = OrderedMapIter<'i, T>;
     #[inline]
     fn into_iter(self) -> Self::IntoIter {
         self.iter()
     }
 }
 
-// impl<'a, K, V, S> IntoIterator for &'a mut IndexMap<K, V, S> {
-//     type Item = (&'a K, &'a mut V);
-//     type IntoIter = IterMut<'a, K, V>;
+// impl<'i, K, V, S> IntoIterator for &'i mut IndexMap<K, V, S> {
+//     type Item = (&'i K, &'i mut V);
+//     type IntoIter = IterMut<'i, K, V>;
 //     fn into_iter(self) -> Self::IntoIter {
 //         self.iter_mut()
 //     }
 // }
 
 /// Wrapper type of [`OrderedMap::iter`]
-pub struct OrderedMapIter<'a> {
-    inner: Iter<'a, String, LiteralPair>,
+pub struct OrderedMapIter<'i, T> {
+    inner: Iter<'i, String, KVPair<T>>,
 }
 
-impl<'a> Iterator for OrderedMapIter<'a> {
-    type Item = (&'a String, &'a Value);
+impl<'i, T> Iterator for OrderedMapIter<'i, T> {
+    type Item = (&'i String, &'i T);
     #[inline]
     fn next(&mut self) -> Option<Self::Item> {
         self.inner.next().map(|(k, v)| (k, &v.value.value))
     }
 }
 
-impl<'a> ExactSizeIterator for OrderedMapIter<'a> {
+impl<'i, T> ExactSizeIterator for OrderedMapIter<'i, T> {
     #[inline]
     fn len(&self) -> usize {
         self.inner.len()
@@ -119,12 +120,12 @@ impl<'a> ExactSizeIterator for OrderedMapIter<'a> {
 }
 
 /// Wrapper type of [`OrderedMap::iter_raw`]
-pub struct OrderedMapIterRaw<'a> {
-    inner: Iter<'a, String, LiteralPair>,
+pub struct OrderedMapIterRaw<'i, T> {
+    inner: Iter<'i, String, KVPair<T>>,
 }
 
-impl<'a> Iterator for OrderedMapIterRaw<'a> {
-    type Item = (&'a Literal<String>, &'a Literal<Value>);
+impl<'i, T> Iterator for OrderedMapIterRaw<'i, T> {
+    type Item = (&'i Literal<String>, &'i Literal<T>);
     #[inline]
     fn next(&mut self) -> Option<Self::Item> {
         self.inner.next().map(|(_, v)| (&v.key, &v.value))
@@ -132,12 +133,12 @@ impl<'a> Iterator for OrderedMapIterRaw<'a> {
 }
 
 /// Wrapper type of [`OrderedMap::values`]
-pub struct OrderedMapKeys<'a> {
-    inner: Keys<'a, String, LiteralPair>,
+pub struct OrderedMapKeys<'i, T> {
+    inner: Keys<'i, String, KVPair<T>>,
 }
 
-impl<'a> Iterator for OrderedMapKeys<'a> {
-    type Item = &'a String;
+impl<'i,T> Iterator for OrderedMapKeys<'i, T> {
+    type Item = &'i String;
     #[inline]
     fn next(&mut self) -> Option<Self::Item> {
         self.inner.next()
@@ -145,19 +146,19 @@ impl<'a> Iterator for OrderedMapKeys<'a> {
 }
 
 /// Wrapper type of [`OrderedMap::values`]
-pub struct OrderedMapValues<'a> {
-    inner: Values<'a, String, LiteralPair>,
+pub struct OrderedMapValues<'i, T> {
+    inner: Values<'i, String, KVPair<T>>,
 }
 
-impl<'a> Iterator for OrderedMapValues<'a> {
-    type Item = &'a Value;
+impl<'i, T> Iterator for OrderedMapValues<'i, T> {
+    type Item = &'i T;
     #[inline]
     fn next(&mut self) -> Option<Self::Item> {
         self.inner.next().map(|f| &f.value.value)
     }
 }
 
-impl<'a> DoubleEndedIterator for OrderedMapValues<'a> {
+impl<'i, T> DoubleEndedIterator for OrderedMapValues<'i, T> {
     #[inline]
     fn next_back(&mut self) -> Option<Self::Item> {
         self.inner.next_back().map(|f| &f.value.value)

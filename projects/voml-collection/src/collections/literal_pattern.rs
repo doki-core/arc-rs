@@ -1,26 +1,12 @@
 use super::*;
 use std::{
-    fmt::{Debug, Display, Formatter},
     hash::{Hash, Hasher},
     slice::Iter,
 };
 
-impl Debug for LiteralPattern {
-    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        f.debug_list().entries(self.inner.iter().cloned().map(|s| s.value)).finish()
-    }
-}
 
-impl Display for LiteralPattern {
-    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        for i in &self.inner {
-            write!(f, "[{}]", i)?;
-        }
-        Ok(())
-    }
-}
 
-impl Hash for LiteralPattern {
+impl<T> Hash for LiteralVector<T> {
     fn hash<H: Hasher>(&self, state: &mut H) {
         for i in &self.inner {
             i.value.hash(state)
@@ -28,7 +14,7 @@ impl Hash for LiteralPattern {
     }
 }
 
-impl LiteralPattern {
+impl<T> LiteralVector<T> {
     /// Returns the number of elements in the vector, also referred to as its 'length'.
     #[inline]
     pub fn len(&self) -> usize {
@@ -41,7 +27,7 @@ impl LiteralPattern {
     }
 }
 
-impl LiteralPattern {
+impl<T> LiteralVector<T> {
     /// Returns an iterator over the slice.
     #[inline]
     pub fn iter(&self) -> LiteralPatternIter {
