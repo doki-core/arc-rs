@@ -1,8 +1,8 @@
 [package]
-name = "voml-error"
+name = "voml-collection"
 version = "0.1.0"
 authors = ["192607617@qq.com"]
-description = "External function system for arc"
+description = "..."
 license = "MPL-2.0"
 readme = "../../Readme.md"
 repository = "https://github.com/doki-land/arc-rs"
@@ -10,9 +10,20 @@ exclude = ["/tests/*"]
 edition = "2018"
 
 [dependencies]
-url = "2.2.2"
+num = "0.3"
+bigdecimal = "0.2"
+serde1 = { version = "1.0", optional = true }
+yggdrasil-shared = "0.1.7"
 
 [dev-dependencies]
 
 [features]
 default = []
+
+rand = [
+    "num/rand",
+]
+
+serde = [
+    "num/serde",
+]

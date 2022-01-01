@@ -6,7 +6,6 @@ mod check;
 mod decimal;
 mod dict;
 mod from_native;
-mod integer;
 mod into_ast;
 mod into_native;
 mod list;

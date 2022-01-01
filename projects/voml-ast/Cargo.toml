@@ -16,12 +16,11 @@ bigdecimal = "0.2"
 indexmap = "1.6"
 yggdrasil-shared = "0.1.7"
 
-serde = "1.0"
-
-arc-pest = {version = "0.4", path = "../arc-pest"}
+serde1 = {version = "1.0.1", optional = true}
+voml-error = {version = "0.1", path = "../voml-error"}
 lsp-types = {version = "0.81", optional = true}
 
 [features]
-default = ["lsp"]
-
+default = []
+serde = ["serde1"]
 lsp = ["lsp-types"]

@@ -1,11 +1,11 @@
 use crate::{
-    ast::{ASTKind, AST},
+    ast::{ASTKind, ASTNode},
     value::{Dict, Integer, List, Text},
     Value, BUILD_EMPTY_SCOPE,
 };
 
-impl From<AST> for Value {
-    fn from(ast: AST) -> Self {
+impl From<ASTNode> for Value {
+    fn from(ast: ASTNode) -> Self {
         Value::from(ast.kind)
     }
 }
@@ -43,7 +43,7 @@ impl Scope {
 
     pub fn visit_ast(&mut self, ast: ASTKind) {
         match ast {
-            ASTKind::ListScope(depth, path) | ASTKind::DictScope(depth, path) => {
+            ASTKind::Scope(depth, path) | ASTKind::DictScope(depth, path) => {
                 // println!("{} vs {}", depth,self.pin_path.len());
                 match depth >= self.pin_path.len() {
                     true => self.push_pin(path.kind),

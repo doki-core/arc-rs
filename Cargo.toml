@@ -2,7 +2,7 @@
 
 default-members = [
     "projects/voml-ast",
-    "projects/arc-pest",
+    "projects/voml-pest",
     "projects/arc-fmt",
     "projects/voml-vm",
     "projects/voml-from",

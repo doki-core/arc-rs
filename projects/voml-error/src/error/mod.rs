@@ -115,13 +115,13 @@ impl VomlError {
 macro_rules! error_msg {
     ($name:ident => $t:ident) => {
         /// Constructor of [`NoteErrorKind::$t`]
-        pub fn $name(msg: impl Into<String>) -> NoteError {
-            let kind = NoteErrorKind::$t(msg.into());
+        pub fn $name(msg: impl Into<String>) -> VomlError {
+            let kind = VomlErrorKind::$t(msg.into());
             Self { kind: Box::new(kind), level: DiagnosticLevel::None, file: None, range: None }
         }
     };
     ($($name:ident => $t:ident),+ $(,)?) => (
-        impl NoteError { $(error_msg!($name=>$t);)+ }
+        impl VomlError { $(error_msg!($name=>$t);)+ }
     );
 }
 

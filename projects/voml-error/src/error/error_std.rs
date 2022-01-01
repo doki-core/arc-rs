@@ -2,9 +2,9 @@ use super::*;
 
 macro_rules! error_wrap {
     ($t:ty => $name:ident) => {
-        impl From<$t> for NoteError {
+        impl From<$t> for VomlError {
             fn from(e: $t) -> Self {
-                Self { kind: Box::new(NoteErrorKind::$name(e)), level: DiagnosticLevel::None, file: None, range: None }
+                Self { kind: Box::new(VomlErrorKind::$name(e)), level: DiagnosticLevel::None, file: None, range: None }
             }
         }
     };

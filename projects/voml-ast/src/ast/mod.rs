@@ -2,45 +2,36 @@ mod display;
 mod into_value;
 mod literal;
 mod statements;
+mod scope;
+mod paired;
 
 use crate::{
     value::{parse_number, Decimal, Integer, Text, TextDelimiter},
     Value,
 };
-use lsp_types::Range;
+use yggdrasil_shared::records::Literal;
 use num::{BigInt, Num};
 pub use statements::{ExtendFormat, ExtendStatement};
 
 /// AST tree for arc
-#[derive(Clone, Eq, PartialEq)]
-pub struct AST {
-    /// AST data
-    pub kind: ASTKind,
-    /// 1-indexed start to end position
-    pub range: Range,
-    /// Whitespace, Newline, Comment
-    pub additional: Option<String>,
-}
+pub type  ASTNode = Literal<ASTKind>;
 
 /// missing
 #[derive(Debug, Clone, Eq, PartialEq)]
 pub enum ASTKind {
-    /// Placeholder
-    /// Unreachable structure
-    None,
     /// Root of all nodes
-    Program(Vec<AST>),
+    Program(Vec<ASTNode>),
     /// Flattened structure
-    Sequence(Vec<AST>),
+    Sequence(Vec<ASTNode>),
     /// Plain Text, NewLines
     Span(String),
     ExtendStatement(Box<ExtendStatement>),
     /// `[list.scope]`
-    ListScope(usize, Box<AST>),
+    Scope(usize, Box<ASTNode>),
     /// `{dict.scope}`
-    DictScope(usize, Box<AST>),
+    DictScope(usize, Box<ASTNode>),
     ///
-    Pair(Box<AST>, Box<AST>),
+    Pair(Box<ASTNode>, Box<ASTNode>),
     /// `null`
     Null,
     /// `true` | `false`
@@ -48,26 +39,30 @@ pub enum ASTKind {
     ///
     String(Box<Text>),
     ///
-    Namespace(Vec<AST>),
+    Namespace(Vec<ASTNode>),
     ///
     Integer(Box<Integer>),
     ///
     Decimal(Box<Decimal>),
     ///
-    Cite(Box<AST>),
+    Cite(Box<ASTNode>),
     ///
-    Dict(Vec<AST>),
+    Dict(Vec<ASTNode>),
     ///
-    List(Vec<AST>),
+    List(Vec<ASTNode>),
 }
 
-impl Default for AST {
+pub enum BracketKind {
+
+}
+
+impl Default for ASTNode {
     fn default() -> Self {
         Self { kind: ASTKind::None, range: Default::default(), additional: None }
     }
 }
 
-impl From<ASTKind> for AST {
+impl From<ASTKind> for ASTNode {
     fn from(kind: ASTKind) -> Self {
         Self { kind, range: Default::default(), additional: None }
     }
@@ -82,7 +77,7 @@ impl From<ASTKind> for AST {
 //     }
 // }
 
-impl AST {
+impl ASTNode {
     ///
     pub fn set_additional(&mut self, info: impl Into<String>) {
         self.additional = Some(info.into())
@@ -92,8 +87,8 @@ impl AST {
 #[allow(non_upper_case_globals)]
 impl ASTKind {
     ///
-    pub fn into_node(self) -> AST {
-        AST {
+    pub fn into_node(self) -> ASTNode {
+        ASTNode {
             kind: self,
             range: Default::default(),
             additional: None
@@ -107,11 +102,11 @@ impl ASTKind {
 
 impl ASTKind {
     ///
-    pub fn program(children: Vec<AST>) -> Self {
+    pub fn program(children: Vec<ASTNode>) -> Self {
         Self::Program(children)
     }
     ///
-    pub fn block(children: Vec<AST>) -> Self {
+    pub fn block(children: Vec<ASTNode>) -> Self {
         Self::Sequence(children)
     }
     // pub fn statement(children: Vec<AST>, r: TextRange) -> Self {
@@ -205,19 +200,19 @@ impl ASTKind {
         }
     }
     ///
-    pub fn namespace(value: Vec<AST>) -> Self {
+    pub fn namespace(value: Vec<ASTNode>) -> Self {
         Self::Namespace(value)
     }
     ///
-    pub fn list(value: Vec<AST>) -> Self {
+    pub fn list(value: Vec<ASTNode>) -> Self {
         Self::List(value)
     }
     ///
-    pub fn dict(pairs: Vec<AST>) -> Self {
+    pub fn dict(pairs: Vec<ASTNode>) -> Self {
         Self::Dict(pairs)
     }
     ///
-    pub fn pair(lhs: AST, rhs: AST) -> Self {
+    pub fn pair(lhs: ASTNode, rhs: ASTNode) -> Self {
         Self::Pair(Box::new(lhs), Box::new(rhs))
     }
 }

@@ -1,4 +1,4 @@
-use crate::{ast::ASTKind, Range, AST};
+use crate::{ast::ASTKind, Range, ASTNode};
 use lsp_types::{CodeLens, Command, DocumentSymbol, SymbolKind};
 
 #[derive(Debug)]
@@ -36,7 +36,7 @@ impl Default for TOC {
 //     }
 // }
 
-impl AST {
+impl ASTNode {
     /// Table of contents
     pub fn toc(&self, max_depth: usize) -> TOC {
         let mut root = TOC::default();
@@ -52,7 +52,7 @@ impl AST {
                             let new = TOC { level: 1 + level, kind: SymbolKind::Class, name: children.to_string(), range: term.range, children: vec![] };
                             parent.children.push(new);
                         }
-                        ASTKind::ListScope(level, children) => {
+                        ASTKind::Scope(level, children) => {
                             if 1 + level > max_depth {
                                 continue;
                             }

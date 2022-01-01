@@ -3,23 +3,19 @@
 //! missing
 
 mod ast;
-mod convert;
-mod errors;
-mod parser;
-mod serder;
+#[cfg(feature = "serde")]
+mod serde;
 mod traits;
 pub mod utils;
 pub mod value;
 #[macro_use]
 mod macros;
 
-pub use self::ast::{ASTKind, AST};
-pub use self::errors::{ReadableConfigError, Result};
-pub use lsp_types::Range;
-pub use self::parser::ParserConfig;
+pub use self::ast::{ASTKind, ASTNode};
+pub use voml_error::{VomlError,VomlErrorKind,Result};
 pub use self::value::Value;
-pub use serde;
-pub use self::serder::ReadableConfigSerializer;
+#[cfg(feature = "serde")]
+pub use self::serde::ReadableConfigSerializer;
 
 /// if ture, { } will be null
 pub const BUILD_EMPTY_SCOPE: bool = true;

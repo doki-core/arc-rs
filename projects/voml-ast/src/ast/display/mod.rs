@@ -1,10 +1,10 @@
-use crate::{ast::ASTKind, AST};
+use crate::{ast::ASTKind, ASTNode};
 use std::fmt::{self, Debug, Display, Formatter};
 
-impl Debug for AST {
+impl Debug for ASTNode {
     fn fmt(&self, f: &mut Formatter) -> fmt::Result {
         match self {
-            AST { kind, range, additional } => {
+            ASTNode { kind, range, additional } => {
                 let mut builder = f.debug_struct("AST");
                 builder.field("kind", kind);
                 builder.field("range", range);
@@ -17,7 +17,7 @@ impl Debug for AST {
     }
 }
 
-impl Display for AST {
+impl Display for ASTNode {
     fn fmt(&self, f: &mut Formatter) -> fmt::Result {
         match &self.kind {
             ASTKind::Namespace(names) => {
