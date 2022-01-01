@@ -1,26 +1,34 @@
-use std::convert::TryFrom;
 use super::*;
 use num::One;
+use std::convert::TryFrom;
 
 impl<T> SparseArray<T> {
     /// Returns a reference to the value corresponding to the key.
     /// The key may be any borrowed form of the map's key type, but the ordering
     /// on the borrowed form must match the ordering on the key type.
     #[inline]
-    pub fn get(&self, index: &BigUint) -> Option<T> {
-        self.inner.get(index).map(|f| f.value.to_owned())
+    pub fn get(&self, index: &BigUint) -> Option<&T> {
+        self.inner.get(index).map(|f| &f.value)
     }
     /// Returns a [`bool`] value corresponding to the key.
     /// Return [`None`] if the key is not [`bool`] or missing.
     #[inline]
-    pub fn get_bool(&self, index: &BigUint) -> Option<bool> {
-        self.get(index).and_then(|f| bool::try_from(f.to_owned()).ok())
+    pub fn get_bool(&self, index: &BigUint) -> Option<bool>
+    where
+        bool: TryFrom<T>,
+        T: Clone,
+    {
+        self.get(index).cloned().and_then(|f| bool::try_from(f).ok())
     }
     /// Returns a [`String`] value corresponding to the key.
     /// Return [`None`] if the key is not [`String`] or missing.
     #[inline]
-    pub fn get_string(&self, index: &BigUint) -> Option<String> {
-        self.get(index).and_then(|f| String::try_from(f.to_owned()).ok())
+    pub fn get_string(&self, index: &BigUint) -> Option<String>
+    where
+        String: TryFrom<T>,
+        T: Clone,
+    {
+        self.get(index).cloned().and_then(|f| String::try_from(f).ok())
     }
     /// Get last key value of the array.
     #[inline]
@@ -72,7 +80,7 @@ impl<T> SparseArray<T> {
 }
 
 /// Wrapper type of [`SparseArray::values`]
-pub struct SparseArrayIter<'i,T> {
+pub struct SparseArrayIter<'i, T> {
     current: BigUint,
     default: &'i T,
     inner: &'i BTreeMap<BigUint, Literal<T>>,

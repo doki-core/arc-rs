@@ -34,7 +34,7 @@ pub struct KVPair<T> {
 }
 
 /// Literal Patterns for command
-#[derive(Clone, Default, Eq, PartialEq)]
+#[derive(Clone, Default, Eq, PartialEq, Hash)]
 pub struct LiteralVector<T> {
     inner: Vec<Literal<T>>,
 }

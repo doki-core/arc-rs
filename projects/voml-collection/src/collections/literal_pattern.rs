@@ -1,18 +1,8 @@
 use super::*;
 use std::{
-    hash::{Hash, Hasher},
     slice::Iter,
 };
 
-
-
-impl<T> Hash for LiteralVector<T> {
-    fn hash<H: Hasher>(&self, state: &mut H) {
-        for i in &self.inner {
-            i.value.hash(state)
-        }
-    }
-}
 
 impl<T> LiteralVector<T> {
     /// Returns the number of elements in the vector, also referred to as its 'length'.
@@ -30,18 +20,18 @@ impl<T> LiteralVector<T> {
 impl<T> LiteralVector<T> {
     /// Returns an iterator over the slice.
     #[inline]
-    pub fn iter(&self) -> LiteralPatternIter {
+    pub fn iter(&self) -> LiteralPatternIter<T> {
         LiteralPatternIter { inner: self.inner.iter() }
     }
 }
 
 /// Wrapper type of [`LiteralPattern::iter`]
-pub struct LiteralPatternIter<'i> {
-    inner: Iter<'i, Literal<String>>,
+pub struct LiteralPatternIter<'i,T> {
+    inner: Iter<'i, Literal<T>>,
 }
 
-impl<'i> Iterator for LiteralPatternIter<'i> {
-    type Item = &'i String;
+impl<'i,T> Iterator for LiteralPatternIter<'i,T>{
+    type Item = &'i T;
 
     fn next(&mut self) -> Option<Self::Item> {
         self.inner.next().map(|f| &f.value)

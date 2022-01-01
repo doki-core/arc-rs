@@ -1,22 +1,30 @@
-use std::convert::TryFrom;
 use super::*;
 use indexmap::map::{Iter, Keys, Values};
+use std::convert::TryFrom;
 
 impl<T> OrderedMap<T> {
     /// Get value from Ordered Map
     #[inline]
-    pub fn get(&self, key: &str) -> Option<T> {
-        self.inner.get(key).map(|f| f.value.value.to_owned())
+    pub fn get(&self, key: &str) -> Option<&T> {
+        self.inner.get(key).map(|f| &f.value.value)
     }
     /// Get value from Ordered Map
     #[inline]
-    pub fn get_bool(&self, key: &str) -> Option<bool> {
-        self.get(key).and_then(|f| bool::try_from(f).ok())
+    pub fn get_bool(&self, key: &str) -> Option<bool>
+    where
+        bool: TryFrom<T>,
+        T: Clone,
+    {
+        self.get(key).cloned().and_then(|f| bool::try_from(f).ok())
     }
     /// Get value from Ordered Map
     #[inline]
-    pub fn get_string(&self, key: &str) -> Option<String> {
-        self.get(key).and_then(|f| String::try_from(f).ok())
+    pub fn get_string(&self, key: &str) -> Option<String>
+    where
+        String: TryFrom<T>,
+        T: Clone,
+    {
+        self.get(key).cloned().and_then(|f| String::try_from(f).ok())
     }
 }
 
@@ -28,12 +36,18 @@ impl<T> OrderedMap<T> {
     }
     /// Extract value from Ordered Map
     #[inline]
-    pub fn extract_bool(&mut self, key: &str) -> Option<bool> {
+    pub fn extract_bool(&mut self, key: &str) -> Option<bool>
+    where
+        bool: TryFrom<T>,
+    {
         self.extract(key).and_then(|f| bool::try_from(f).ok())
     }
     /// Extract value from Ordered Map
     #[inline]
-    pub fn extract_string(&mut self, key: &str) -> Option<String> {
+    pub fn extract_string(&mut self, key: &str) -> Option<String>
+    where
+        String: TryFrom<T>,
+    {
         self.extract(key).and_then(|f| String::try_from(f).ok())
     }
 }
@@ -137,7 +151,7 @@ pub struct OrderedMapKeys<'i, T> {
     inner: Keys<'i, String, KVPair<T>>,
 }
 
-impl<'i,T> Iterator for OrderedMapKeys<'i, T> {
+impl<'i, T> Iterator for OrderedMapKeys<'i, T> {
     type Item = &'i String;
     #[inline]
     fn next(&mut self) -> Option<Self::Item> {
