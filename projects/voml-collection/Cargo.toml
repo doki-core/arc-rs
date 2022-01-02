@@ -1,18 +1,19 @@
 [package]
 name = "voml-collection"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["192607617@qq.com"]
-description = "..."
-license = "MPL-2.0"
-readme = "../../Readme.md"
+description = "Collections for [VOML]()"
 repository = "https://github.com/doki-land/arc-rs"
+documentation = "https://docs.rs/voml-collection"
+readme = "../../Readme.md"
+license = "MPL-2.0"
 exclude = ["/tests/*"]
-edition = "2018"
+edition = "2021"
 
 [dependencies]
 num = "0.4.0"
 serde1 = { version = "1.0.1", optional = true }
-yggdrasil-shared = "0.1.8"
+yggdrasil-shared = { version = "0.1.9", default-features = false }
 indexmap = "1.7.0"
 
 [dev-dependencies]
@@ -27,3 +28,5 @@ rand = [
 serde = [
     "num/serde",
 ]
+
+lsp = ["yggdrasil-shared/lsp"]

@@ -9,7 +9,7 @@ impl<T> OrderedSet<T> {
     }
 }
 
-impl<'i,T> IntoIterator for &'i OrderedSet<T> {
+impl<'i, T> IntoIterator for &'i OrderedSet<T> {
     type Item = &'i T;
     type IntoIter = OrderedSetIter<'i, T>;
 

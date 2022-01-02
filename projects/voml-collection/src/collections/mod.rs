@@ -4,44 +4,43 @@ mod ordered_set;
 mod sparse_array;
 mod traits;
 
-use std::collections::BTreeMap;
 use indexmap::{IndexMap, IndexSet};
-use num::BigUint;
-use yggdrasil_shared::records::Literal;
 pub use literal_pattern::*;
+use num::BigUint;
 pub use ordered_map::*;
 pub use ordered_set::*;
 pub use sparse_array::*;
-
+use std::collections::BTreeMap;
+use yggdrasil_shared::records::Literal;
 
 /// Ordered set of values
-#[derive(Clone, Default, Debug, Eq, PartialEq)]
+#[derive(Clone, Default, Debug)]
 pub struct OrderedSet<T> {
     inner: IndexSet<Literal<T>>,
 }
 
 /// Ordered map of key value pairs
-#[derive(Clone, Default, Debug, Eq, PartialEq)]
+#[derive(Clone, Default, Debug)]
 pub struct OrderedMap<T> {
     inner: IndexMap<String, KVPair<T>>,
 }
 
 /// Ordered map of key value pairs
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Debug)]
 pub struct KVPair<T> {
     key: Literal<String>,
     value: Literal<T>,
 }
 
 /// Literal Patterns for command
-#[derive(Clone, Default, Eq, PartialEq, Hash)]
+#[derive(Clone, Default, Hash)]
 pub struct LiteralVector<T> {
     inner: Vec<Literal<T>>,
 }
 
 /// Sparse representation of the array, the subscript can be any non-zero integer
 /// 1-index
-#[derive(Clone, Default, Debug, Eq, PartialEq, Hash)]
+#[derive(Clone, Default, Debug, Hash)]
 pub struct SparseArray<T> {
     default: T,
     inner: BTreeMap<BigUint, Literal<T>>,

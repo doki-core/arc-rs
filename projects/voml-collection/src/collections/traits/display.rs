@@ -3,7 +3,7 @@ use std::fmt::{Debug, Display, Formatter};
 
 impl<T: Debug> Debug for LiteralVector<T> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        f.debug_list().entries(self.inner.iter().map(|s| s.value)).finish()
+        f.debug_list().entries(self.inner.iter().map(|s| &s.value)).finish()
     }
 }
 
