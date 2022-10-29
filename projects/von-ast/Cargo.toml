@@ -17,7 +17,7 @@ bigdecimal = "0.3.0"
 peginator = "0.3.0"
 unicode-ident = "1.0.5"
 diagnostic = "0.3.2"
-serde1 = {version = "1.0.1", features = ["derive"]}
+serde = { version = "1.0.147", optional = true }
 
 [dev-dependencies]
 
