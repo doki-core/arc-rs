@@ -1,5 +1,5 @@
 use crate::{
-    parser::von::{SpecialNode, StringNode},
+    parser::von::{NumberNode, SpecialNode, StringNode},
     Text,
 };
 
@@ -8,7 +8,7 @@ use super::*;
 impl ValueNode {
     pub fn into_von(self) -> VonNode {
         match self {
-            ValueNode::NumNode(v) => VonNode::Number(v.into_von()),
+            ValueNode::NumberNode(v) => VonNode::Number(v.into_von()),
             ValueNode::SpecialNode(v) => v.into_von(),
             ValueNode::StringNode(v) => v.into_von(),
             ValueNode::TableNode(_) => {
@@ -18,15 +18,16 @@ impl ValueNode {
     }
 }
 
-impl NumNode {
+impl NumberNode {
     pub fn into_von(self) -> Number {
-        Number { hint: "".to_string(), value: Default::default() }
+        let value = BigDecimal::from_str(&self.num.string).unwrap_or_default();
+        Number { hint: as_hint(self.hint), value }
     }
 }
 
 impl StringNode {
     pub fn into_von(self) -> Text {
-        Text { hint: "".to_string(), value: Default::default() }
+        Text { hint: as_hint(self.hint), value: Default::default() }
     }
 }
 

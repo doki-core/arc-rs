@@ -1,6 +1,7 @@
 use std::str::FromStr;
 
 use bigdecimal::BigDecimal;
+use diagnostic::Span;
 use peginator::PegParser;
 
 use voml_error::{FileID, Result, Validation, VomlError};
@@ -9,6 +10,7 @@ use crate::{
     parser::von::{KeyNode, NumNode, TableNode, ValueNode, VonParser},
     Number, VonNode,
 };
+use crate::parser::von::IdentifierNode;
 
 mod number;
 mod table;
@@ -27,10 +29,18 @@ pub struct Identifier {
     span: Span,
 }
 
+
 pub fn parse(text: &str, id: &FileID) -> Validation<VonNode> {
     match ParserState::parse_text(text.to_string(), id.clone()) {
         Ok(o) => Validation::Success { value: o.ast, diagnostics: o.errors },
         Err(e) => Validation::Failure { fatal: e, diagnostics: vec![] },
+    }
+}
+
+fn as_hint(v: Option<IdentifierNode>) -> String {
+    match v {
+        Some(s) => s.string,
+        None => String::new(),
     }
 }
 

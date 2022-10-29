@@ -21,7 +21,7 @@ KeyValueNode = key:KeyNode ':' value:ValueNode;
 @position
 KeyNode = @:IdentifierNode | @:NumNode;
 
-StringNode = hint:IdentifierNode '\"' '\"';
+StringNode = [hint:IdentifierNode] '\"' '\"';
 
 @position
 @no_skip_ws
@@ -31,10 +31,6 @@ NumberNode = num:Num [hint:IdentifierNode];
 @position
 @no_skip_ws
 Num = {'0'..'9'}+ [Dot {'0'..'9'}+];
-
-@position
-@string
-ModifierNode = IdentifierNode !('{'|'[');
 
 @position
 NamespaceNode = path:IdentifierNode {(Dot | '::') path:IdentifierNode};
