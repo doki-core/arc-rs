@@ -2,9 +2,11 @@ use std::cmp::Ordering;
 use std::ops::{Add, Mul};
 use std::ops::{Div, Neg, Rem, Sub};
 
-use num::{One, Zero};
+use bigdecimal::ParseBigDecimalError;
+use num::traits::NumOps;
 use num::Num;
-use num::traits::real::Real;
+use num::{NumCast, ToPrimitive};
+use num::{One, Zero};
 
 use super::*;
 
@@ -16,7 +18,6 @@ impl Number {
         self.value.is_integer()
     }
 }
-
 
 impl Zero for Number {
     fn zero() -> Self {
@@ -31,7 +32,6 @@ impl Zero for Number {
     }
 }
 
-
 impl One for Number {
     fn one() -> Self {
         Self {
@@ -43,12 +43,15 @@ impl One for Number {
 
 impl PartialEq for Number {
     fn eq(&self, other: &Self) -> bool {
-        todo!()
+        self.hint.eq(&other.hint) && self.value.eq(&other.value)
     }
 }
 
 impl PartialOrd for Number {
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
-        todo!()
+        match self.hint.eq(&other.hint) {
+            true => self.value.partial_cmp(&other.value),
+            false => None,
+        }
     }
 }

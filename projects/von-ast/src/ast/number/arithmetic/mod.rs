@@ -5,55 +5,78 @@ impl Add<Self> for Number {
     fn add(self, rhs: Self) -> Self::Output {
         Self {
             hint: self.hint,
-            value: self.value.add(rhs.value)
+            value: self.value.add(rhs.value),
         }
     }
 }
-impl Sub<Self, Output=Self> for Number {
-    type Output = ();
+
+impl Sub<Self> for Number {
+    type Output = Self;
 
     fn sub(self, rhs: Self) -> Self::Output {
-        todo!()
+        Self {
+            hint: self.hint,
+            value: self.value.add(rhs.value),
+        }
     }
 }
+
 impl Mul<Self> for Number {
     type Output = Self;
 
     fn mul(self, rhs: Self) -> Self::Output {
-        todo!()
+        Self {
+            hint: self.hint,
+            value: self.value.mul(rhs.value),
+        }
     }
 }
 
-impl Div<Self, Output=Self> for Number {
-    type Output = ();
+impl Div<Self> for Number {
+    type Output = Self;
 
     fn div(self, rhs: Self) -> Self::Output {
-        todo!()
+        Self {
+            hint: self.hint,
+            value: self.value.div(rhs.value),
+        }
     }
 }
 
-impl Rem<Self, Output=Self> for Number {
-    type Output = ();
+impl Rem<Self> for Number {
+    type Output = Self;
 
     fn rem(self, rhs: Self) -> Self::Output {
-        todo!()
+        Self {
+            hint: self.hint,
+            value: self.value.rem(rhs.value),
+        }
     }
 }
 
+impl Neg for Number {
+    type Output = Self;
 
+    fn neg(self) -> Self::Output {
+        Self {
+            hint: self.hint,
+            value: self.value.neg(),
+        }
+    }
+}
 
 impl Num for Number {
-    type FromStrRadixErr = ();
-
+    type FromStrRadixErr = ParseBigDecimalError;
     fn from_str_radix(str: &str, radix: u32) -> Result<Self, Self::FromStrRadixErr> {
-        todo!()
+        let dec = BigDecimal::from_str_radix(str, radix)?;
+        Ok(Self {
+            hint: "".to_string(),
+            value: dec,
+        })
     }
 }
 
-
-
 impl NumOps for Number {}
-
 
 impl NumCast for Number {
     fn from<T: ToPrimitive>(n: T) -> Option<Self> {
@@ -63,212 +86,21 @@ impl NumCast for Number {
 
 impl ToPrimitive for Number {
     fn to_i64(&self) -> Option<i64> {
-        todo!()
+        self.value.to_i64()
+    }
+
+    fn to_i128(&self) -> Option<i128> {
+        self.value.to_i128()
     }
 
     fn to_u64(&self) -> Option<u64> {
-        todo!()
+        self.value.to_u64()
+    }
+
+    fn to_u128(&self) -> Option<u128> {
+        self.value.to_u128()
+    }
+    fn to_f64(&self) -> Option<f64> {
+        self.value.to_f64()
     }
 }
-
-
-
-impl Neg<Output=Self> for Number {
-    type Output = ();
-
-    fn neg(self) -> Self::Output {
-        todo!()
-    }
-}
-
-impl Real for Number {
-    fn min_value() -> Self {
-        todo!()
-    }
-
-    fn min_positive_value() -> Self {
-        todo!()
-    }
-
-    fn epsilon() -> Self {
-        todo!()
-    }
-
-    fn max_value() -> Self {
-        todo!()
-    }
-
-    fn floor(self) -> Self {
-        todo!()
-    }
-
-    fn ceil(self) -> Self {
-        todo!()
-    }
-
-    fn round(self) -> Self {
-        todo!()
-    }
-
-    fn trunc(self) -> Self {
-        todo!()
-    }
-
-    fn fract(self) -> Self {
-        todo!()
-    }
-
-    fn abs(self) -> Self {
-        todo!()
-    }
-
-    fn signum(self) -> Self {
-        todo!()
-    }
-
-    fn is_sign_positive(self) -> bool {
-        todo!()
-    }
-
-    fn is_sign_negative(self) -> bool {
-        todo!()
-    }
-
-    fn mul_add(self, a: Self, b: Self) -> Self {
-        todo!()
-    }
-
-    fn recip(self) -> Self {
-        todo!()
-    }
-
-    fn powi(self, n: i32) -> Self {
-        todo!()
-    }
-
-    fn powf(self, n: Self) -> Self {
-        todo!()
-    }
-
-    fn sqrt(self) -> Self {
-        todo!()
-    }
-
-    fn exp(self) -> Self {
-        todo!()
-    }
-
-    fn exp2(self) -> Self {
-        todo!()
-    }
-
-    fn ln(self) -> Self {
-        todo!()
-    }
-
-    fn log(self, base: Self) -> Self {
-        todo!()
-    }
-
-    fn log2(self) -> Self {
-        todo!()
-    }
-
-    fn log10(self) -> Self {
-        todo!()
-    }
-
-    fn to_degrees(self) -> Self {
-        todo!()
-    }
-
-    fn to_radians(self) -> Self {
-        todo!()
-    }
-
-    fn max(self, other: Self) -> Self {
-        todo!()
-    }
-
-    fn min(self, other: Self) -> Self {
-        todo!()
-    }
-
-    fn abs_sub(self, other: Self) -> Self {
-        todo!()
-    }
-
-    fn cbrt(self) -> Self {
-        todo!()
-    }
-
-    fn hypot(self, other: Self) -> Self {
-        todo!()
-    }
-
-    fn sin(self) -> Self {
-        todo!()
-    }
-
-    fn cos(self) -> Self {
-        todo!()
-    }
-
-    fn tan(self) -> Self {
-        todo!()
-    }
-
-    fn asin(self) -> Self {
-        todo!()
-    }
-
-    fn acos(self) -> Self {
-        todo!()
-    }
-
-    fn atan(self) -> Self {
-        todo!()
-    }
-
-    fn atan2(self, other: Self) -> Self {
-        todo!()
-    }
-
-    fn sin_cos(self) -> (Self, Self) {
-        todo!()
-    }
-
-    fn exp_m1(self) -> Self {
-        todo!()
-    }
-
-    fn ln_1p(self) -> Self {
-        todo!()
-    }
-
-    fn sinh(self) -> Self {
-        todo!()
-    }
-
-    fn cosh(self) -> Self {
-        todo!()
-    }
-
-    fn tanh(self) -> Self {
-        todo!()
-    }
-
-    fn asinh(self) -> Self {
-        todo!()
-    }
-
-    fn acosh(self) -> Self {
-        todo!()
-    }
-
-    fn atanh(self) -> Self {
-        todo!()
-    }
-}
-
-
