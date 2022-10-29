@@ -3,7 +3,7 @@
 
 pub use diagnostic::{Diagnostic, DiagnosticLevel, FileID, Span, TextStorage};
 
-pub use self::error::{Result, Validation, VomlError, VomlErrorKind};
+pub use self::error::{duplicate::DuplicateItem, Result, Validation, VomlError, VomlErrorKind};
 
 mod error;
 mod for_3rd;

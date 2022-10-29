@@ -22,7 +22,7 @@ fn test_atom() {
     let mut store = TextStorage::default();
     let ast1 = parse_from_store(&mut store, "1cm");
     let ast2 = parse_from_store(&mut store, "true");
-    let ast3 = parse_from_store(&mut store, "()");
+    let ast3 = parse_from_store(&mut store, "(a:2,a:1)");
     println!("{:#?}", ast1);
     println!("{:#?}", ast2);
     println!("{:#?}", ast3);
@@ -31,7 +31,7 @@ fn test_atom() {
 #[track_caller]
 fn parse_from_store(store: &mut TextStorage, input: &str) -> Validation<VonNode> {
     let file = store.anonymous(input);
-    let text = &store.get(&file).unwrap().source;
+    let text = store.get_text(&file).unwrap();
     parse(&text, &file)
 }
 

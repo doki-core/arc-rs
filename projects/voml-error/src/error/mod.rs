@@ -4,9 +4,12 @@ use std::{
     fmt::{Debug, Display, Formatter},
 };
 
+use crate::DuplicateItem;
 use diagnostic::{DiagnosticLevel, FileID, Span};
 
 mod for_std;
+
+pub mod duplicate;
 
 /// All result about notedown
 pub type Result<T = ()> = std::result::Result<T, VomlError>;
@@ -26,12 +29,13 @@ pub struct VomlError {
 }
 
 /// Actual error data for the error
-#[derive(Debug)]
 pub enum VomlErrorKind {
     /// The error type for I/O operations
     IOError(std::io::Error),
     /// The error type for I/O operations
     ParseError(ParseFail),
+    /// The error type for I/O operations
+    Duplicate(DuplicateItem),
     /// Unknown error
     UnknownError,
 }
@@ -39,7 +43,7 @@ pub enum VomlErrorKind {
 #[derive(Debug)]
 pub struct ParseFail {
     pub message: String,
-    pub  span: Span,
+    pub span: Span,
 }
 
 impl Error for VomlError {}

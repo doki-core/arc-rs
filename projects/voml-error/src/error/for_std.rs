@@ -1,5 +1,16 @@
 use super::*;
 
+impl Debug for VomlErrorKind {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        match self {
+            VomlErrorKind::IOError(v) => Debug::fmt(v, f),
+            VomlErrorKind::ParseError(v) => Debug::fmt(v, f),
+            VomlErrorKind::Duplicate(v) => Debug::fmt(v, f),
+            VomlErrorKind::UnknownError => f.write_str("UnknownError"),
+        }
+    }
+}
+
 impl From<std::io::Error> for VomlError {
     fn from(e: std::io::Error) -> Self {
         Self { kind: Box::new(VomlErrorKind::IOError(e)), level: DiagnosticLevel::Error, file: Default::default() }

@@ -29,6 +29,4 @@ default = []
 serde = ["serde1"]
 lsp = [
     "lsp-types",
-    "yggdrasil-shared/lsp",
-    "voml-collection/lsp"
 ]

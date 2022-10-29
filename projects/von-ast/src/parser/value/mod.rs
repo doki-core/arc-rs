@@ -6,14 +6,12 @@ use crate::{
 use super::*;
 
 impl ValueNode {
-    pub fn into_von(self) -> VonNode {
+    pub fn into_von(self, state: &mut ParserState) -> VonNode {
         match self {
             ValueNode::SpecialNode(v) => v.into_von(),
             ValueNode::NumberNode(v) => v.into_von(),
             ValueNode::StringNode(v) => v.into_von(),
-            ValueNode::TableNode(_) => {
-                todo!()
-            }
+            ValueNode::TableNode(v) => v.into_von(state),
         }
     }
 }

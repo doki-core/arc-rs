@@ -15,7 +15,7 @@ mod table;
 mod value;
 mod von;
 
-struct ParserState {
+pub struct ParserState {
     ast: VonNode,
     file_id: FileID,
     text: String,
@@ -50,14 +50,7 @@ impl ParserState {
 
     fn do_parse(&mut self) -> Result {
         let value = VonParser::parse(&self.text)?.value;
-        match value {
-            ValueNode::NumberNode(v) => self.ast = v.into_von(),
-            ValueNode::SpecialNode(v) => self.ast = v.into_von(),
-            ValueNode::StringNode(v) => self.ast = v.into_von(),
-            ValueNode::TableNode(_) => {
-                todo!()
-            }
-        }
+        self.ast = value.into_von(self);
         return Ok(());
     }
 }

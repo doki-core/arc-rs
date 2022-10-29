@@ -7,7 +7,9 @@ default-members = [
     "projects/voml-error",
 #    "projects/voml-from",
 ]
-members = ["projects/*"]
+members = [
+    "projects/*"
+]
 
 [profile.release]
 lto = true
