@@ -24,6 +24,7 @@ KeyNode =
 	@:StringNode
 	;
 
+@position
 StringNode = [hint:IdentifierNode] '\"' '\"';
 
 @position
