@@ -3,7 +3,9 @@ use diagnostic::Span;
 use indexmap::IndexMap;
 
 mod display;
+#[cfg(feature = "serde")]
 mod ser;
+#[cfg(feature = "serde")]
 mod der;
 mod number;
 
@@ -24,19 +26,19 @@ pub struct Number {
 
 #[derive(Clone, Hash)]
 pub struct Text {
-    pub hint: Option<Identifier>,
+    pub hint: String,
     pub value: String,
 }
 
 #[derive(Clone)]
 pub struct List {
-    pub hint: Option<Identifier>,
+    pub hint: String,
     pub value: Vec<VonNode>,
 }
 
 #[derive(Clone)]
 pub struct Dict {
-    pub hint: Option<Identifier>,
+    pub hint: String,
     pub value: IndexMap<String, VonNode>,
 }
 
