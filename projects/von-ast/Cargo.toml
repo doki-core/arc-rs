@@ -17,7 +17,7 @@ bigdecimal = "0.3.0"
 peginator = "0.3.0"
 unicode-ident = "1.0.5"
 diagnostic = "0.3.2"
-serde = { version = "1.0.147", optional = true }
+serde = { version = "1.0.147", features = ["derive"], optional = true }
 
 [dev-dependencies]
 
@@ -26,4 +26,4 @@ peginator = "0.3.0"
 
 [features]
 default = ["serde"]
-serde = ["bigdecimal/serde", "indexmap/serde", "num/serde"]
+serde = ["dep:serde", "bigdecimal/serde", "indexmap/serde", "num/serde"]

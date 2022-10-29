@@ -76,7 +76,7 @@ impl Num for Number {
     }
 }
 
-impl NumOps for Number {}
+// impl NumOps for Number {}
 
 impl NumCast for Number {
     fn from<T: ToPrimitive>(n: T) -> Option<Self> {
