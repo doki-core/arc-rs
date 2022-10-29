@@ -6,7 +6,7 @@ use peginator::PegParser;
 use voml_error::{FileID, Result, Span, Validation, VomlError};
 
 use crate::{
-    parser::von::{IdentifierNode, KeyNode, TableNode, ValueNode, VonParser},
+    parser::von::{IdentifierNode, TableNode, ValueNode, VonParser},
     Number, VonNode,
 };
 

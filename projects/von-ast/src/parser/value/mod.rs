@@ -56,4 +56,8 @@ impl IdentifierNode {
     }
 }
 
-impl NamespaceNode {}
+impl NamespaceNode {
+    pub fn into_namespace(self) -> Vec<Identifier> {
+        self.path.into_iter().map(|v| v.into_identifier()).collect()
+    }
+}
