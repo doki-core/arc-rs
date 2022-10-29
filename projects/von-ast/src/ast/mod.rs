@@ -1,27 +1,43 @@
 use bigdecimal::BigDecimal;
 use diagnostic::Span;
 use indexmap::IndexMap;
-use num::BigInt;
 
 mod display;
 mod ser;
 mod der;
+mod number;
 
 #[derive(Clone)]
-pub struct VonNode {
-    pub kind: VonKind,
-    pub hint: Identifier,
-    pub span: Span,
+pub enum VonNode {
+    Boolean(bool),
+    Number(Number),
+    Text(Text),
+    List(List),
+    Dict(Dict),
+}
+
+#[derive(Clone, Hash)]
+pub struct Number {
+    pub hint: Option<Identifier>,
+    pub value: BigDecimal,
+}
+
+#[derive(Clone, Hash)]
+pub struct Text {
+    pub hint: Option<Identifier>,
+    pub value: String,
 }
 
 #[derive(Clone)]
-pub enum VonKind {
-    Boolean(bool),
-    Integer(BigInt),
-    Decimal(BigDecimal),
-    Text(String),
-    List(Vec<VonNode>),
-    Dict(IndexMap<String, VonNode>),
+pub struct List {
+    pub hint: Option<Identifier>,
+    pub value: Vec<VonNode>,
+}
+
+#[derive(Clone)]
+pub struct Dict {
+    pub hint: Option<Identifier>,
+    pub value: IndexMap<String, VonNode>,
 }
 
 #[derive(Clone)]
