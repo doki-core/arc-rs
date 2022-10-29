@@ -9,7 +9,7 @@ use serde::{
 use super::*;
 
 impl<'de> Deserialize<'de> for VonNode {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    fn deserialize<D>(_deserializer: D) -> Result<Self, D::Error>
     where
         D: Deserializer<'de>,
     {
@@ -49,7 +49,7 @@ impl<'de> Visitor<'de> for Text {
         Ok(self)
     }
 
-    fn visit_map<A>(self, map: A) -> Result<Self::Value, A::Error>
+    fn visit_map<A>(self, _map: A) -> Result<Self::Value, A::Error>
     where
         A: MapAccess<'de>,
     {
@@ -99,14 +99,14 @@ impl<'de> Visitor<'de> for Number {
         unsafe { Ok(Number::from_i128(v).unwrap_unchecked()) }
     }
 
-    fn visit_str<E>(self, v: &str) -> Result<Self::Value, E>
+    fn visit_str<E>(self, _v: &str) -> Result<Self::Value, E>
     where
         E: Error,
     {
         todo!()
     }
 
-    fn visit_map<A>(self, map: A) -> Result<Self::Value, A::Error>
+    fn visit_map<A>(self, _map: A) -> Result<Self::Value, A::Error>
     where
         A: MapAccess<'de>,
     {
@@ -115,7 +115,7 @@ impl<'de> Visitor<'de> for Number {
 }
 
 impl<'de> Deserialize<'de> for Table {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    fn deserialize<D>(_deserializer: D) -> Result<Self, D::Error>
     where
         D: Deserializer<'de>,
     {

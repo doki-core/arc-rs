@@ -5,7 +5,7 @@ use num::{BigInt, FromPrimitive};
 use super::*;
 
 impl NumCast for Number {
-    fn from<T: ToPrimitive>(n: T) -> Option<Self> {
+    fn from<T: ToPrimitive>(_n: T) -> Option<Self> {
         todo!()
     }
 }

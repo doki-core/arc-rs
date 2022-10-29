@@ -3,7 +3,7 @@ use serde::{ser::SerializeStruct, Serialize, Serializer};
 use super::*;
 
 impl Serialize for VonNode {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    fn serialize<S>(&self, _serializer: S) -> Result<S::Ok, S::Error>
     where
         S: Serializer,
     {

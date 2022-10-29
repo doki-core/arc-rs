@@ -1,6 +1,5 @@
 use std::{
     cmp::Ordering,
-    collections::hash_map::DefaultHasher,
     ops::{Add, Div, Mul, Neg, Rem, Sub},
 };
 
