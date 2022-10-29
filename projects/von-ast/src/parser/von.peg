@@ -19,7 +19,7 @@ TableItem =
 KeyValueNode = key:KeyNode ':' value:ValueNode;
 
 @position
-KeyNode = @:IdentifierNode | @:NumNode;
+KeyNode = @:IdentifierNode | @:NumberNode;
 
 StringNode = [hint:IdentifierNode] '\"' '\"';
 

@@ -1,5 +1,7 @@
+use diagnostic::TextStorage;
 use serde::{Deserialize, Serialize};
 use std::path::PathBuf;
+use von::parse;
 
 #[test]
 fn ready() {
@@ -13,6 +15,21 @@ fn here() {
 #[derive(Debug, Serialize, Deserialize)]
 pub struct TestSerde {
     num1: u32,
+}
+
+fn test_atom() {
+    let mut store = TextStorage::default();
+    let file1 = store.anonymous("1cm");
+    let file2 = store.anonymous("0.1m");
+
+    let text1 = &store.get(&file1).unwrap().source;
+    let text2 = &store.get(&file2).unwrap().source;
+
+    let ast1 = parse(&text1, &file1);
+    let ast2 = parse(&text2, &file1);
+
+    println!("{:#?}", ast1);
+    println!("{:#?}", ast2);
 }
 
 #[test]

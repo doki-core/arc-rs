@@ -4,7 +4,7 @@ use std::{
     fmt::{Debug, Display, Formatter},
 };
 
-use diagnostic::{DiagnosticLevel, FileID};
+use diagnostic::{DiagnosticLevel, FileID, Span};
 
 mod for_std;
 
@@ -30,8 +30,16 @@ pub struct VomlError {
 pub enum VomlErrorKind {
     /// The error type for I/O operations
     IOError(std::io::Error),
+    /// The error type for I/O operations
+    ParseError(ParseFail),
     /// Unknown error
     UnknownError,
+}
+
+#[derive(Debug)]
+pub struct ParseFail {
+    pub(crate) message: String,
+    pub(crate) span: Span,
 }
 
 impl Error for VomlError {}

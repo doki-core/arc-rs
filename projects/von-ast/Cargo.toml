@@ -21,7 +21,7 @@ serde = { version = "1.0.147", features = ["derive"], optional = true }
 [dependencies.voml-error]
 version = "0.1.0"
 path = "../voml-error"
-features = []
+features = ["peginator"]
 
 [dev-dependencies]
 serde_json = "1.0.87"

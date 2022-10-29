@@ -4,6 +4,8 @@ mod for_globset;
 mod for_lsp;
 #[cfg(feature = "num")]
 mod for_num;
+#[cfg(feature = "peginator")]
+mod for_peg;
 #[cfg(feature = "pest")]
 mod for_pest;
 #[cfg(feature = "rsass")]

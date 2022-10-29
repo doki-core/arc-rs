@@ -1,7 +1,7 @@
 #![forbid(missing_docs)]
 #![doc = include_str!("../Readme.md")]
 
-pub use diagnostic::{Diagnostic, DiagnosticLevel, FileID, Span};
+pub use diagnostic::{Diagnostic, DiagnosticLevel, FileID, Span, TextStorage};
 
 pub use self::error::{Result, Validation, VomlError, VomlErrorKind};
 

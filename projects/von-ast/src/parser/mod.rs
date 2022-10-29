@@ -1,16 +1,14 @@
 use std::str::FromStr;
 
 use bigdecimal::BigDecimal;
-use diagnostic::Span;
 use peginator::PegParser;
 
-use voml_error::{FileID, Result, Validation, VomlError};
+use voml_error::{FileID, Result, Span, Validation, VomlError};
 
 use crate::{
-    parser::von::{KeyNode, NumNode, TableNode, ValueNode, VonParser},
+    parser::von::{IdentifierNode, KeyNode, TableNode, ValueNode, VonParser},
     Number, VonNode,
 };
-use crate::parser::von::IdentifierNode;
 
 mod number;
 mod table;
@@ -29,7 +27,6 @@ pub struct Identifier {
     span: Span,
 }
 
-
 pub fn parse(text: &str, id: &FileID) -> Validation<VonNode> {
     match ParserState::parse_text(text.to_string(), id.clone()) {
         Ok(o) => Validation::Success { value: o.ast, diagnostics: o.errors },
@@ -37,17 +34,10 @@ pub fn parse(text: &str, id: &FileID) -> Validation<VonNode> {
     }
 }
 
-fn as_hint(v: Option<IdentifierNode>) -> String {
+fn into_hint(v: Option<IdentifierNode>) -> String {
     match v {
         Some(s) => s.string,
         None => String::new(),
-    }
-}
-
-fn as_value(v: &Option<ValueNode>) -> Result<VonNode> {
-    match v {
-        Some(s) => s.as_value(),
-        None => Ok(VonNode::default()),
     }
 }
 
@@ -59,7 +49,15 @@ impl ParserState {
     }
 
     fn do_parse(&mut self) -> Result {
-        match VonParser::parse(&self.text)?.value {}
+        let value = VonParser::parse(&self.text)?.value;
+        match value {
+            ValueNode::NumberNode(v) => self.ast = v.into_von(),
+            ValueNode::SpecialNode(v) => self.ast = v.into_von(),
+            ValueNode::StringNode(v) => self.ast = v.into_von(),
+            ValueNode::TableNode(_) => {
+                todo!()
+            }
+        }
         return Ok(());
     }
 }

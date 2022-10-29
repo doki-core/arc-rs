@@ -22,12 +22,6 @@ impl Display for Table {
     }
 }
 
-impl Display for Table {
-    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        todo!()
-    }
-}
-
 // #[derive(Clone)]
 // pub struct Text {
 //     pub hint: Option<Identifier>,
