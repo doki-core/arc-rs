@@ -36,14 +36,14 @@ fn as_value(v: &Option<ValueNode>) -> Result<ValueStatement> {
 }
 
 impl ParserState {
-    pub fn parse_text(text: String, file_id: FileID) -> VosResult<Self> {
+    pub fn parse_text(text: String, file_id: FileID) -> Result<Self> {
         let mut parser = Self { ast: Default::default(), file_id, text, errors: vec![] };
         parser.do_parse()?;
         Ok(parser)
     }
 
-    fn do_parse(&mut self) -> VosResult {
-        for statement in VosParser::parse(&self.text)?.statements {
+    fn do_parse(&mut self) -> Result {
+        for statement in VonParser::parse(&self.text)?.statements {
             match self.visit_statement(statement) {
                 Ok(_) => {}
                 Err(e) => self.errors.push(e),
@@ -51,7 +51,7 @@ impl ParserState {
         }
         return Ok(());
     }
-    fn visit_statement(&mut self, node: VosStatementNode) -> VosResult {
+    fn visit_statement(&mut self, node: VonParser) -> Result {
         match node {
             VosStatementNode::StructDeclareNode(s) => {
                 let mut table = TableStatement::default();
@@ -73,7 +73,7 @@ impl ParserState {
         }
         Ok(())
     }
-    fn push_table(&mut self, mut table: TableStatement, id: IdentifierNode, body: Vec<DeclareBodyNode>) -> VosResult {
+    fn push_table(&mut self, mut table: TableStatement, id: IdentifierNode, body: Vec<DeclareBodyNode>) -> Result {
         table.name = id.as_identifier();
         for term in body {
             match term {

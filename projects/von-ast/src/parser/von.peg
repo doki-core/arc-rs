@@ -1,28 +1,27 @@
 @export
-VonParser =
-	@:DictNode |
-	@:ListNode |
-	@:SpecialNode |
-	@:NumNode |
-	@:NamespaceNode $
+VonParser = ValueNode $;
+
+TableNode = hint:IdentifierNode '(' {items:TableItem} ')' ;
+
+TableItem =
+	@:KeyValueNode |
+	@:ValueNode |
+	@:Split
 	;
-
-@position
-KeyNode = @:IdentifierNode | @:NumNode;
-
-@position
-DictNode = '{' {items:DictItem} '}' ;
-
-DictItem = @:KeyValueNode | @:Split;
 
 KeyValueNode = key:KeyNode ':' value:ValueNode;
 
 @position
-ListNode =
-	'[' {items:ListItem} ']' |
-	'{' {items:ListItem} '}' ;
+KeyNode = @:IdentifierNode | @:NumNode;
 
-ListItem = @:ValueNode | @:Split;
+ValueNode =
+	@:TableNode |
+	@:SpecialNode |
+	@:NumNode |
+	@:StringNode
+	;
+
+StringNode = '\"' '\"';
 
 @string
 @position
