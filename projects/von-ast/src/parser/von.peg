@@ -8,7 +8,7 @@ ValueNode =
 	@:StringNode
 	;
 
-TableNode = hint:IdentifierNode '(' {items:TableItem} ')' ;
+TableNode = [hint:IdentifierNode] '(' {items:TableItem} ')' ;
 
 TableItem =
 	@:KeyValueNode |
@@ -19,7 +19,10 @@ TableItem =
 KeyValueNode = key:KeyNode ':' value:ValueNode;
 
 @position
-KeyNode = @:IdentifierNode | @:NumberNode;
+KeyNode =
+	@:NamespaceNode |
+	@:IdentifierNode
+	;
 
 StringNode = [hint:IdentifierNode] '\"' '\"';
 

@@ -22,7 +22,7 @@ impl SpecialNode {
         match self.string.as_str() {
             "true" => VonNode::Boolean(true),
             "false" => VonNode::Boolean(false),
-            _ => VonNode::Default,
+            _ => VonNode::Keyword("default"),
         }
     }
 }
@@ -35,6 +35,9 @@ impl NumberNode {
     pub fn into_num(self) -> Number {
         let value = BigDecimal::from_str(&self.num.string).unwrap_or_default();
         Number { hint: into_hint(self.hint), value }
+    }
+    pub fn into_identifier(self) -> Identifier {
+        Identifier { name: self.num.string, span: self.position }
     }
 }
 

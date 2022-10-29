@@ -1,8 +1,20 @@
-use std::fmt::{Display, Formatter};
+use std::fmt::{Debug, Display, Formatter};
 
 use super::*;
 
 pub struct PrettyPrint {}
+
+impl Debug for VonNode {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        match self {
+            VonNode::Keyword(v) => Debug::fmt(v, f),
+            VonNode::Boolean(v) => Debug::fmt(v, f),
+            VonNode::Number(v) => Debug::fmt(v, f),
+            VonNode::Text(v) => Debug::fmt(v, f),
+            VonNode::Table(v) => Debug::fmt(v, f),
+        }
+    }
+}
 
 impl Display for VonNode {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {

@@ -22,23 +22,31 @@ impl<'de> Deserialize<'de> for Text {
     where
         D: Deserializer<'de>,
     {
-        deserializer.deserialize_any(TextVisitor {})
+        deserializer.deserialize_any(Text::default())
     }
 }
-struct TextVisitor {}
 
-impl<'de> Visitor<'de> for TextVisitor {
-    type Value = Text;
+impl<'de> Visitor<'de> for Text {
+    type Value = Self;
 
     fn expecting(&self, formatter: &mut Formatter) -> std::fmt::Result {
         formatter.write_str("except a `String` or `Text` struct")
     }
 
-    fn visit_str<E>(self, v: &str) -> Result<Self::Value, E>
+    fn visit_str<E>(mut self, v: &str) -> Result<Self::Value, E>
     where
         E: Error,
     {
-        Ok(Text { hint: "".to_string(), value: v.to_string() })
+        self.value = v.to_string();
+        Ok(self)
+    }
+
+    fn visit_string<E>(mut self, v: String) -> Result<Self::Value, E>
+    where
+        E: Error,
+    {
+        self.value = v;
+        Ok(self)
     }
 
     fn visit_map<A>(self, map: A) -> Result<Self::Value, A::Error>
@@ -54,14 +62,12 @@ impl<'de> Deserialize<'de> for Number {
     where
         D: Deserializer<'de>,
     {
-        todo!()
+        deserializer.deserialize_any(Number::default())
     }
 }
 
-struct NumberVisitor {}
-
-impl<'de> Visitor<'de> for NumberVisitor {
-    type Value = Number;
+impl<'de> Visitor<'de> for Number {
+    type Value = Self;
 
     fn expecting(&self, formatter: &mut Formatter) -> std::fmt::Result {
         formatter.write_str("except a number `String` or `Number` struct")

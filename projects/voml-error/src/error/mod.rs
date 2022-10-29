@@ -38,8 +38,8 @@ pub enum VomlErrorKind {
 
 #[derive(Debug)]
 pub struct ParseFail {
-    pub(crate) message: String,
-    pub(crate) span: Span,
+    pub message: String,
+    pub  span: Span,
 }
 
 impl Error for VomlError {}

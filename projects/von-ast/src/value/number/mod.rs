@@ -1,11 +1,11 @@
-use std::cmp::Ordering;
-use std::ops::{Add, Mul};
-use std::ops::{Div, Neg, Rem, Sub};
+use std::{
+    cmp::Ordering,
+    collections::hash_map::DefaultHasher,
+    ops::{Add, Div, Mul, Neg, Rem, Sub},
+};
 
 use bigdecimal::ParseBigDecimalError;
-use num::Num;
-use num::{NumCast, ToPrimitive};
-use num::{One, Zero};
+use num::{Num, NumCast, One, ToPrimitive, Zero};
 
 use super::*;
 mod primitive;
@@ -19,12 +19,15 @@ impl Number {
     }
 }
 
+impl Default for Number {
+    fn default() -> Self {
+        Self::zero()
+    }
+}
+
 impl Zero for Number {
     fn zero() -> Self {
-        Self {
-            hint: String::new(),
-            value: BigDecimal::zero(),
-        }
+        Self { hint: String::new(), value: BigDecimal::zero() }
     }
 
     fn is_zero(&self) -> bool {
@@ -34,10 +37,7 @@ impl Zero for Number {
 
 impl One for Number {
     fn one() -> Self {
-        Self {
-            hint: String::new(),
-            value: BigDecimal::one(),
-        }
+        Self { hint: String::new(), value: BigDecimal::one() }
     }
 }
 
