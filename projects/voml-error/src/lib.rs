@@ -3,6 +3,7 @@
 #![allow(clippy::needless_return)]
 
 mod error;
-mod error_3rd;
+mod for_3rd;
 
-pub use error::{DiagnosticLevel, MaybeRanged, VomlError, VomlErrorKind, Result};
+pub use diagnostic::{Diagnostic, DiagnosticLevel, FileID};
+pub use error::{Result, VomlError, VomlErrorKind};

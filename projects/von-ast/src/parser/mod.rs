@@ -1,18 +1,19 @@
 use std::{cmp::Ordering, ops::Range, str::FromStr};
 
 use bigdecimal::BigDecimal;
+use diagnostic::{FileID, Validation};
 use peginator::PegParser;
 
 use vos_error::{DuplicateDeclare, FileID, Validation, VosError, VosResult};
 
 use crate::{
-    ast::{TableKind, TableStatement, VosAST, VosStatement},
     parser::vos::{
         ConstraintStatementNode, DeclareBodyNode, FieldStatementNode, GenericNode, GenericNum1, GenericNum1Token, GenericNum2,
         GenericNum2Token, GenericNum3, IdentifierNode, KeyNode, NamespaceNode, NumNode, TypeValueNode, ValueNode, VosParser,
         VosStatementNode,
     },
     ConstraintStatement, FieldStatement, FieldTyping, GenericStatement, Identifier, Namespace, ValueKind, ValueStatement,
+    VonNode,
 };
 
 mod field;
@@ -21,15 +22,15 @@ mod symbol;
 mod value;
 mod vos;
 
-struct VosVisitor {
-    ast: VosAST,
+struct ParserState {
+    ast: VonNode,
     file_id: FileID,
     text: String,
     errors: Vec<VosError>,
 }
 
-pub fn parse(text: &str, id: &FileID) -> Validation<VosAST> {
-    match VosVisitor::parse_text(text.to_string(), id.clone()) {
+pub fn parse(text: &str, id: &FileID) -> Validation<VonNode> {
+    match ParserState::parse_text(text.to_string(), id.clone()) {
         Ok(o) => Validation::Success { value: o.ast, diagnostics: o.errors },
         Err(e) => Validation::Failure { fatal: e, diagnostics: vec![] },
     }
@@ -46,7 +47,7 @@ fn as_value(v: &Option<ValueNode>) -> VosResult<ValueStatement> {
     }
 }
 
-impl VosVisitor {
+impl ParserState {
     pub fn parse_text(text: String, file_id: FileID) -> VosResult<Self> {
         let mut parser = Self { ast: Default::default(), file_id, text, errors: vec![] };
         parser.do_parse()?;

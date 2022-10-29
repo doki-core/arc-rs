@@ -2,6 +2,8 @@ use std::fmt::{Display, Formatter};
 
 use super::*;
 
+pub struct PrettyPrint {}
+
 impl Display for VonNode {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         todo!()

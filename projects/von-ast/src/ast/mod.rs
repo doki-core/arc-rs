@@ -1,12 +1,15 @@
 use bigdecimal::BigDecimal;
 use indexmap::IndexMap;
 
+mod collection;
 #[cfg(feature = "serde")]
 mod der;
-mod display;
+pub mod display;
 mod number;
 #[cfg(feature = "serde")]
 mod ser;
+
+mod text;
 
 #[derive(Clone)]
 pub enum VonNode {

@@ -1,8 +1,10 @@
 use std::fmt::Formatter;
 
 use num::FromPrimitive;
-use serde::de::{Error, MapAccess, Visitor};
-use serde::{Deserialize, Deserializer};
+use serde::{
+    de::{Error, MapAccess, Visitor},
+    Deserialize, Deserializer,
+};
 
 use super::*;
 
@@ -36,10 +38,7 @@ impl<'de> Visitor<'de> for TextVisitor {
     where
         E: Error,
     {
-        Ok(Text {
-            hint: "".to_string(),
-            value: v.to_string(),
-        })
+        Ok(Text { hint: "".to_string(), value: v.to_string() })
     }
 
     fn visit_map<A>(self, map: A) -> Result<Self::Value, A::Error>
@@ -73,10 +72,7 @@ impl<'de> Visitor<'de> for NumberVisitor {
         E: Error,
     {
         match BigDecimal::from_f64(v) {
-            Some(s) => Ok(Number {
-                hint: "".to_string(),
-                value: s,
-            }),
+            Some(s) => Ok(Number { hint: "".to_string(), value: s }),
             None => {
                 todo!()
             }
@@ -88,6 +84,13 @@ impl<'de> Visitor<'de> for NumberVisitor {
         E: Error,
     {
         unsafe { Ok(Number::from_u128(v).unwrap_unchecked()) }
+    }
+
+    fn visit_i128<E>(self, v: i128) -> Result<Self::Value, E>
+    where
+        E: Error,
+    {
+        unsafe { Ok(Number::from_i128(v).unwrap_unchecked()) }
     }
 
     fn visit_str<E>(self, v: &str) -> Result<Self::Value, E>

@@ -34,38 +34,34 @@ impl ToPrimitive for Number {
 impl FromPrimitive for Number {
     #[inline]
     fn from_i64(n: i64) -> Option<Self> {
-        Some(Number {
-            hint: "".to_string(),
-            value: BigDecimal::from(BigInt::from(n)),
-        })
+        Some(Number { hint: "".to_string(), value: BigDecimal::from(BigInt::from(n)) })
     }
     #[inline]
     fn from_i128(n: i128) -> Option<Self> {
-        Some(Number {
-            hint: "".to_string(),
-            value: BigDecimal::from(BigInt::from(n)),
-        })
+        Some(Number { hint: "".to_string(), value: BigDecimal::from(BigInt::from(n)) })
     }
     #[inline]
     fn from_u64(n: u64) -> Option<Self> {
-        Some(Number {
-            hint: "".to_string(),
-            value: BigDecimal::from(BigInt::from(n)),
-        })
+        Some(Number { hint: "".to_string(), value: BigDecimal::from(BigInt::from(n)) })
     }
     #[inline]
     fn from_u128(n: u128) -> Option<Self> {
-        Some(Number {
-            hint: "".to_string(),
-            value: BigDecimal::from(BigInt::from(n)),
-        })
+        Some(Number { hint: "".to_string(), value: BigDecimal::from(BigInt::from(n)) })
+    }
+}
+
+impl Num for Number {
+    type FromStrRadixErr = ParseBigDecimalError;
+    fn from_str_radix(str: &str, radix: u32) -> Result<Self, Self::FromStrRadixErr> {
+        let dec = BigDecimal::from_str_radix(str, radix)?;
+        Ok(Self { hint: "".to_string(), value: dec })
     }
 }
 
 impl FromStr for Number {
-    type Err = ();
+    type Err = ParseBigDecimalError;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        todo!()
+        Number::from_str_radix(s, 10)
     }
 }
