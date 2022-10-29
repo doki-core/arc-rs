@@ -1,7 +1,7 @@
 use std::{
     convert::Infallible,
     error::Error,
-    fmt::{self, Debug, Display, Formatter},
+    fmt::{Debug, Display, Formatter},
 };
 
 use diagnostic::{DiagnosticLevel, FileID};
@@ -11,6 +11,7 @@ mod for_std;
 /// All result about notedown
 pub type Result<T = ()> = std::result::Result<T, VomlError>;
 
+/// Many errors
 pub type Validation<T> = diagnostic::Validation<T, VomlError>;
 
 /// Error type for all Notedown operators
@@ -29,18 +30,20 @@ pub struct VomlError {
 pub enum VomlErrorKind {
     /// The error type for I/O operations
     IOError(std::io::Error),
+    /// Unknown error
+    UnknownError,
 }
 
 impl Error for VomlError {}
 
 impl Display for VomlError {
-    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         Debug::fmt(self, f)
     }
 }
 
 impl Display for VomlErrorKind {
-    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         Debug::fmt(self, f)
     }
 }

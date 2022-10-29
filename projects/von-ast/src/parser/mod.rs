@@ -1,32 +1,24 @@
-use std::{cmp::Ordering, ops::Range, str::FromStr};
-
+use crate::{
+    parser::von::{NumNode, ValueNode},
+    Number, VonNode,
+};
 use bigdecimal::BigDecimal;
 use diagnostic::{FileID, Validation};
 use peginator::PegParser;
-
-use vos_error::{DuplicateDeclare, FileID, Validation, VosError, VosResult};
-
-use crate::{
-    parser::vos::{
-        ConstraintStatementNode, DeclareBodyNode, FieldStatementNode, GenericNode, GenericNum1, GenericNum1Token, GenericNum2,
-        GenericNum2Token, GenericNum3, IdentifierNode, KeyNode, NamespaceNode, NumNode, TypeValueNode, ValueNode, VosParser,
-        VosStatementNode,
-    },
-    ConstraintStatement, FieldStatement, FieldTyping, GenericStatement, Identifier, Namespace, ValueKind, ValueStatement,
-    VonNode,
-};
+use std::{cmp::Ordering, ops::Range, str::FromStr};
+use voml_error::Result;
 
 mod field;
 mod number;
 mod symbol;
 mod value;
-mod vos;
+mod von;
 
 struct ParserState {
     ast: VonNode,
     file_id: FileID,
     text: String,
-    errors: Vec<VosError>,
+    errors: Vec<VomlError>,
 }
 
 pub fn parse(text: &str, id: &FileID) -> Validation<VonNode> {
@@ -36,11 +28,7 @@ pub fn parse(text: &str, id: &FileID) -> Validation<VonNode> {
     }
 }
 
-pub fn as_range(range: &Range<usize>) -> Range<u32> {
-    Range { start: range.start as u32, end: range.end as u32 }
-}
-
-fn as_value(v: &Option<ValueNode>) -> VosResult<ValueStatement> {
+fn as_value(v: &Option<ValueNode>) -> Result<ValueStatement> {
     match v {
         Some(s) => s.as_value(),
         None => Ok(ValueStatement::default()),

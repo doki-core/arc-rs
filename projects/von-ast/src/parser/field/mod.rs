@@ -1,8 +1,7 @@
-use indexmap::IndexMap;
-
-use crate::parser::vos::{DictItem, ListItem, SpecialNode};
-
 use super::*;
+use crate::parser::von::DictNode;
+
+impl DictNode {}
 
 impl FieldStatementNode {
     pub fn as_field(&self) -> VosResult<FieldStatement> {

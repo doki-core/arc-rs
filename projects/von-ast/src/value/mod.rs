@@ -13,6 +13,7 @@ mod text;
 
 #[derive(Clone)]
 pub enum VonNode {
+    Default,
     Boolean(bool),
     Number(Number),
     Text(Text),

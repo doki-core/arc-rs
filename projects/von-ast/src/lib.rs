@@ -1,10 +1,9 @@
-pub use self::ast::*;
+pub use self::{
+    parser::parse,
+    value::{display::PrettyPrint, *},
+};
 
-mod ast;
 #[allow(dead_code)]
 #[allow(non_camel_case_types)]
 mod parser;
-
-pub use self::parser::parse;
-
-pub use self::ast::display::PrettyPrint;
+mod value;
