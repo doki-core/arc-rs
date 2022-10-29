@@ -3,12 +3,12 @@ use std::ops::{Add, Mul};
 use std::ops::{Div, Neg, Rem, Sub};
 
 use bigdecimal::ParseBigDecimalError;
-use num::traits::NumOps;
 use num::Num;
 use num::{NumCast, ToPrimitive};
 use num::{One, Zero};
 
 use super::*;
+mod primitive;
 
 mod arithmetic;
 

@@ -1,5 +1,6 @@
 use std::fmt::Formatter;
 
+use num::FromPrimitive;
 use serde::de::{Error, MapAccess, Visitor};
 use serde::{Deserialize, Deserializer};
 
@@ -41,7 +42,7 @@ impl<'de> Visitor<'de> for TextVisitor {
         })
     }
 
-    fn visit_map<A>(self, map: A) -> Result<Self::Value, D::Error>
+    fn visit_map<A>(self, map: A) -> Result<Self::Value, A::Error>
     where
         A: MapAccess<'de>,
     {
@@ -53,6 +54,52 @@ impl<'de> Deserialize<'de> for Number {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: Deserializer<'de>,
+    {
+        todo!()
+    }
+}
+
+struct NumberVisitor {}
+
+impl<'de> Visitor<'de> for NumberVisitor {
+    type Value = Number;
+
+    fn expecting(&self, formatter: &mut Formatter) -> std::fmt::Result {
+        formatter.write_str("except a number `String` or `Number` struct")
+    }
+
+    fn visit_f64<E>(self, v: f64) -> Result<Self::Value, E>
+    where
+        E: Error,
+    {
+        match BigDecimal::from_f64(v) {
+            Some(s) => Ok(Number {
+                hint: "".to_string(),
+                value: s,
+            }),
+            None => {
+                todo!()
+            }
+        }
+    }
+
+    fn visit_u128<E>(self, v: u128) -> Result<Self::Value, E>
+    where
+        E: Error,
+    {
+        unsafe { Ok(Number::from_u128(v).unwrap_unchecked()) }
+    }
+
+    fn visit_str<E>(self, v: &str) -> Result<Self::Value, E>
+    where
+        E: Error,
+    {
+        todo!()
+    }
+
+    fn visit_map<A>(self, map: A) -> Result<Self::Value, A::Error>
+    where
+        A: MapAccess<'de>,
     {
         todo!()
     }
