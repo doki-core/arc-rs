@@ -20,7 +20,7 @@ pub enum VonNode {
 
 #[derive(Clone, Hash)]
 pub struct Number {
-    pub hint: Option<Identifier>,
+    pub hint: String,
     pub value: BigDecimal,
 }
 
@@ -40,10 +40,4 @@ pub struct List {
 pub struct Dict {
     pub hint: String,
     pub value: IndexMap<String, VonNode>,
-}
-
-#[derive(Clone)]
-pub struct Identifier {
-    pub id: String,
-    pub span: Span,
 }
