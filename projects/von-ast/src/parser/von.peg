@@ -1,5 +1,12 @@
 @export
-VonParser = ValueNode $;
+VonParser = value:ValueNode $;
+
+ValueNode =
+	@:TableNode |
+	@:SpecialNode |
+	@:NumberNode |
+	@:StringNode
+	;
 
 TableNode = hint:IdentifierNode '(' {items:TableItem} ')' ;
 
@@ -14,19 +21,16 @@ KeyValueNode = key:KeyNode ':' value:ValueNode;
 @position
 KeyNode = @:IdentifierNode | @:NumNode;
 
-ValueNode =
-	@:TableNode |
-	@:SpecialNode |
-	@:NumNode |
-	@:StringNode
-	;
+StringNode = hint:IdentifierNode '\"' '\"';
 
-StringNode = '\"' '\"';
+@position
+@no_skip_ws
+NumberNode = num:Num [hint:IdentifierNode];
 
 @string
 @position
 @no_skip_ws
-NumNode = {'0'..'9'}+ [Dot {'0'..'9'}+];
+Num = {'0'..'9'}+ [Dot {'0'..'9'}+];
 
 @position
 @string

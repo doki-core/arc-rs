@@ -16,13 +16,13 @@ impl Display for Text {
     }
 }
 
-impl Display for List {
+impl Display for Table {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         todo!()
     }
 }
 
-impl Display for Dict {
+impl Display for Table {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         todo!()
     }

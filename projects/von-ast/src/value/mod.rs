@@ -1,13 +1,13 @@
 use bigdecimal::BigDecimal;
 use indexmap::IndexMap;
 
-mod collection;
 #[cfg(feature = "serde")]
 mod der;
 pub mod display;
 mod number;
 #[cfg(feature = "serde")]
 mod ser;
+mod table;
 
 mod text;
 
@@ -17,8 +17,7 @@ pub enum VonNode {
     Boolean(bool),
     Number(Number),
     Text(Text),
-    List(List),
-    Dict(Dict),
+    Table(Table),
 }
 
 #[derive(Clone, Hash)]
@@ -34,13 +33,8 @@ pub struct Text {
 }
 
 #[derive(Clone)]
-pub struct List {
+pub struct Table {
     pub hint: String,
-    pub value: Vec<VonNode>,
-}
-
-#[derive(Clone)]
-pub struct Dict {
-    pub hint: String,
-    pub value: IndexMap<String, VonNode>,
+    pub list: Vec<VonNode>,
+    pub dict: IndexMap<String, VonNode>,
 }

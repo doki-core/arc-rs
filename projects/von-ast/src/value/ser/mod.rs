@@ -1,5 +1,4 @@
-use serde::ser::SerializeStruct;
-use serde::{Serialize, Serializer};
+use serde::{ser::SerializeStruct, Serialize, Serializer};
 
 use super::*;
 
@@ -24,14 +23,14 @@ impl Serialize for Text {
     }
 }
 
-impl Serialize for Dict {
+impl Serialize for Table {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: Serializer,
     {
         let mut s = serializer.serialize_struct("Dict", 2)?;
         s.serialize_field("hint", &self.hint)?;
-        s.serialize_field("value", &self.value)?;
+        s.serialize_field("value", &self.dict)?;
         s.end()
     }
 }

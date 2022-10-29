@@ -108,7 +108,7 @@ impl<'de> Visitor<'de> for NumberVisitor {
     }
 }
 
-impl<'de> Deserialize<'de> for List {
+impl<'de> Deserialize<'de> for Table {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: Deserializer<'de>,

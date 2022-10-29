@@ -53,7 +53,7 @@ impl<T> SparseArray<T> {
         self.inner.is_empty()
     }
 
-    /// Appends an element to the back of a collection
+    /// Appends an element to the back of a table
     #[inline]
     #[allow(mutable_borrow_reservation_conflict)]
     pub fn push(&mut self, value: Literal<T>) {
