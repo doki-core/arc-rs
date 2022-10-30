@@ -1,8 +1,10 @@
-use std::fmt::{Debug, Display, Formatter};
+use std::fmt::{Arguments, Debug, Display, Formatter, Write};
 
 use super::*;
 
-pub struct PrettyPrint {}
+pub struct PrettyPrint {
+    buffer: String,
+}
 
 impl Debug for VonNode {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
@@ -13,6 +15,18 @@ impl Debug for VonNode {
             VonNode::Text(v) => Debug::fmt(v, f),
             VonNode::Table(v) => Debug::fmt(v, f),
         }
+    }
+}
+
+impl Write for PrettyPrint {
+    fn write_str(&mut self, s: &str) -> std::fmt::Result {
+        self.buffer.write_str(s)
+    }
+    fn write_char(&mut self, c: char) -> std::fmt::Result {
+        self.buffer.write_char(c)
+    }
+    fn write_fmt(&mut self, args: Arguments<'_>) -> std::fmt::Result {
+        self.buffer.write_fmt(args)
     }
 }
 
@@ -34,20 +48,4 @@ impl Display for Table {
     }
 }
 
-// #[derive(Clone)]
-// pub struct Text {
-//     pub hint: Option<Identifier>,
-//     pub value: String,
-// }
-//
-// #[derive(Clone)]
-// pub struct List {
-//     pub hint: Option<Identifier>,
-//     pub value: Vec<VonNode>,
-// }
-//
-// #[derive(Clone)]
-// pub struct Dict {
-//     pub hint: Option<Identifier>,
-//     pub value: IndexMap<String, VonNode>,
-// }
+impl PrettyPrint {}

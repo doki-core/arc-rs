@@ -46,16 +46,4 @@ pub struct ParseFail {
     pub span: Span,
 }
 
-impl Error for VomlError {}
-
-impl Display for VomlError {
-    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        Debug::fmt(self, f)
-    }
-}
-
-impl Display for VomlErrorKind {
-    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        Debug::fmt(self, f)
-    }
-}
+impl VomlError {}

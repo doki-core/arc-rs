@@ -1,4 +1,5 @@
 use super::*;
+impl Error for VomlError {}
 
 impl Debug for VomlErrorKind {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
@@ -8,6 +9,17 @@ impl Debug for VomlErrorKind {
             VomlErrorKind::Duplicate(v) => Debug::fmt(v, f),
             VomlErrorKind::UnknownError => f.write_str("UnknownError"),
         }
+    }
+}
+impl Display for VomlError {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        Debug::fmt(self, f)
+    }
+}
+
+impl Display for VomlErrorKind {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        Debug::fmt(self, f)
     }
 }
 

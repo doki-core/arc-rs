@@ -2,7 +2,7 @@ use std::fmt::Formatter;
 
 use num::FromPrimitive;
 use serde::{
-    de::{Error, MapAccess, Visitor},
+    de::{Error, MapAccess, SeqAccess, Visitor},
     Deserialize, Deserializer,
 };
 
@@ -49,11 +49,25 @@ impl<'de> Visitor<'de> for Text {
         Ok(self)
     }
 
-    fn visit_map<A>(self, _map: A) -> Result<Self::Value, A::Error>
+    fn visit_map<A>(mut self, mut map: A) -> Result<Self::Value, A::Error>
     where
         A: MapAccess<'de>,
     {
-        todo!()
+        while let Some(k) = map.next_key::<&str>()? {
+            match k {
+                "type" => {
+                    let key: &str = map.next_value()?;
+                    if key != "number" {
+                        return Err(Error::custom("not"));
+                    }
+                }
+                "hint" => self.hint = map.next_value()?,
+                // TODO: next any value
+                "value" => self.value = map.next_value()?,
+                _ => {}
+            }
+        }
+        Ok(self)
     }
 }
 
@@ -106,11 +120,25 @@ impl<'de> Visitor<'de> for Number {
         todo!()
     }
 
-    fn visit_map<A>(self, _map: A) -> Result<Self::Value, A::Error>
+    fn visit_map<A>(mut self, mut map: A) -> Result<Self::Value, A::Error>
     where
         A: MapAccess<'de>,
     {
-        todo!()
+        while let Some(k) = map.next_key::<&str>()? {
+            match k {
+                "type" => {
+                    let key: &str = map.next_value()?;
+                    if key != "number" {
+                        return Err(Error::custom("not"));
+                    }
+                }
+                "hint" => self.hint = map.next_value()?,
+                // TODO: next any value
+                "value" => self.value = map.next_value()?,
+                _ => {}
+            }
+        }
+        Ok(self)
     }
 }
 
@@ -120,5 +148,41 @@ impl<'de> Deserialize<'de> for Table {
         D: Deserializer<'de>,
     {
         todo!()
+    }
+}
+
+impl<'de> Visitor<'de> for Table {
+    type Value = Self;
+
+    fn expecting(&self, formatter: &mut Formatter) -> std::fmt::Result {
+        formatter.write_str("except a number `String` or `Number` struct")
+    }
+
+    fn visit_seq<A>(self, seq: A) -> Result<Self::Value, A::Error>
+    where
+        A: SeqAccess<'de>,
+    {
+        todo!()
+    }
+
+    fn visit_map<A>(mut self, mut map: A) -> Result<Self::Value, A::Error>
+    where
+        A: MapAccess<'de>,
+    {
+        while let Some(k) = map.next_key::<&str>()? {
+            match k {
+                "type" => {
+                    let key: &str = map.next_value()?;
+                    if key != "number" {
+                        return Err(Error::custom("not"));
+                    }
+                }
+                "hint" => self.hint = map.next_value()?,
+                // TODO: next any value
+                "value" => self.value = map.next_value()?,
+                _ => {}
+            }
+        }
+        Ok(self)
     }
 }

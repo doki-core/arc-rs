@@ -1,5 +1,5 @@
 use serde::{Deserialize, Serialize};
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 use voml_error::{TextStorage, Validation};
 use von::{parse, VonNode};
 
@@ -20,17 +20,22 @@ pub struct TestSerde {
 #[test]
 fn test_atom() {
     let mut store = TextStorage::default();
-    let ast1 = parse_from_store(&mut store, "1cm");
-    let ast2 = parse_from_store(&mut store, "true");
-    let ast3 = parse_from_store(&mut store, "(a:2,a:1)");
+    let ast1 = parse_text_store(&mut store, "1cm");
+    let ast2 = parse_file_store(&mut store, "tests/basic.von");
     println!("{:#?}", ast1);
     println!("{:#?}", ast2);
-    println!("{:#?}", ast3);
 }
 
 #[track_caller]
-fn parse_from_store(store: &mut TextStorage, input: &str) -> Validation<VonNode> {
+fn parse_text_store(store: &mut TextStorage, input: &str) -> Validation<VonNode> {
     let file = store.anonymous(input);
+    let text = store.get_text(&file).unwrap();
+    parse(&text, &file)
+}
+
+#[track_caller]
+fn parse_file_store(store: &mut TextStorage, input: impl AsRef<Path>) -> Validation<VonNode> {
+    let file = store.file(input).unwrap();
     let text = store.get_text(&file).unwrap();
     parse(&text, &file)
 }

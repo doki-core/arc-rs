@@ -3,11 +3,26 @@ use serde::{ser::SerializeStruct, Serialize, Serializer};
 use super::*;
 
 impl Serialize for VonNode {
-    fn serialize<S>(&self, _serializer: S) -> Result<S::Ok, S::Error>
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: Serializer,
     {
-        todo!()
+        let mut s = serializer.serialize_struct("VonNode", 2)?;
+        // s.serialize_field("hint", &self.hint)?;
+        // s.serialize_field("value", &self.value)?;
+        s.end()
+    }
+}
+
+impl Serialize for Number {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+        where
+            S: Serializer,
+    {
+        let mut s = serializer.serialize_struct("VonNumber", 2)?;
+        s.serialize_field("hint", &self.hint)?;
+        s.serialize_field("value", &self.value.to_string())?;
+        s.end()
     }
 }
 
@@ -16,7 +31,7 @@ impl Serialize for Text {
     where
         S: Serializer,
     {
-        let mut s = serializer.serialize_struct("Text", 2)?;
+        let mut s = serializer.serialize_struct("VonText", 2)?;
         s.serialize_field("hint", &self.hint)?;
         s.serialize_field("value", &self.value)?;
         s.end()
@@ -28,7 +43,7 @@ impl Serialize for Table {
     where
         S: Serializer,
     {
-        let mut s = serializer.serialize_struct("Dict", 2)?;
+        let mut s = serializer.serialize_struct("VonDict", 2)?;
         s.serialize_field("hint", &self.hint)?;
         s.serialize_field("value", &self.dict)?;
         s.end()

@@ -1,3 +1,5 @@
+use num::Signed;
+
 use super::*;
 
 impl Add<Self> for Number {
@@ -44,6 +46,28 @@ impl Neg for Number {
 
     fn neg(self) -> Self::Output {
         Self { hint: self.hint, value: self.value.neg() }
+    }
+}
+
+impl Signed for Number {
+    fn abs(&self) -> Self {
+        Self { hint: self.hint.clone(), value: self.value.abs() }
+    }
+
+    fn abs_sub(&self, other: &Self) -> Self {
+        Self { hint: self.hint.clone(), value: self.value.abs_sub(&other.value) }
+    }
+
+    fn signum(&self) -> Self {
+        Self { hint: self.hint.clone(), value: self.value.signum() }
+    }
+
+    fn is_positive(&self) -> bool {
+        self.value.is_positive()
+    }
+
+    fn is_negative(&self) -> bool {
+        self.value.is_negative()
     }
 }
 

@@ -4,7 +4,7 @@ use std::{
 };
 
 use bigdecimal::ParseBigDecimalError;
-use num::{Num, NumCast, One, ToPrimitive, Zero};
+use num::{Num, One, ToPrimitive, Zero};
 
 use super::*;
 mod primitive;

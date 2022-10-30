@@ -34,7 +34,7 @@ NumberNode = num:Num [hint:IdentifierNode];
 @string
 @position
 @no_skip_ws
-Num = {'0'..'9'}+ [Dot {'0'..'9'}+];
+Num = ['+'|'-'] {'0'..'9'}+ [Dot {'0'..'9'}+];
 
 @position
 NamespaceNode = path:IdentifierNode {Dot path:IdentifierNode};

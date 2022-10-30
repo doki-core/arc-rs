@@ -4,11 +4,14 @@ use num::{BigInt, FromPrimitive};
 
 use super::*;
 
-impl NumCast for Number {
-    fn from<T: ToPrimitive>(_n: T) -> Option<Self> {
-        todo!()
-    }
-}
+// impl NumCast for Number {
+//     fn from<T>(n: T) -> Option<Self>
+//     where
+//         T: ToPrimitive,
+//     {
+//         Some(Self { hint: "".to_string(), value: n.into() })
+//     }
+// }
 
 impl ToPrimitive for Number {
     fn to_i64(&self) -> Option<i64> {

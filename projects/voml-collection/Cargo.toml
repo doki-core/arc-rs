@@ -11,22 +11,12 @@ exclude = ["/tests/*"]
 edition = "2021"
 
 [dependencies]
-num = "0.4.0"
-serde1 = { version = "1.0.1", optional = true }
-yggdrasil-shared = { version = "0.2.2", default-features = false }
-indexmap = "1.9.1"
+num = { version = "0.4.0", features = ["serde"] }
+bigdecimal = { version = "0.3.0", features = ["serde"] }
+serde = { version = "1.0.147", features = ["derive"] }
+indexmap = { version = "1.9.1", features = ["serde"] }
 
 [dev-dependencies]
 
 [features]
 default = []
-
-rand = [
-    "num/rand",
-]
-
-serde = [
-    "num/serde",
-]
-
-lsp = []

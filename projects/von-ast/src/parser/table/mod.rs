@@ -18,7 +18,6 @@ struct TableBuilder {
 impl TableNode {
     pub fn into_von(self, ctx: &mut ParserState) -> VonNode {
         let mut builder = TableBuilder { hint: into_hint(self.hint), list: vec![], dict: Default::default() };
-
         for item in self.items {
             match item {
                 TableItem::KeyValueNode(pair) => {
@@ -39,7 +38,7 @@ impl TableNode {
 
 impl TableBuilder {
     pub fn build(self) -> Table {
-        Table { hint: self.hint, list: self.list, dict: Default::default() }
+        Table { hint: self.hint, list: self.list, dict: self.dict.into_iter().map(|(k, v)| (k, v.0)).collect() }
     }
 }
 

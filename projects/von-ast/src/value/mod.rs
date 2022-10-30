@@ -20,7 +20,7 @@ pub enum VonNode {
     Table(Table),
 }
 
-#[derive(Clone, Debug, Hash, Eq)]
+#[derive(Clone,Debug, Hash, Eq)]
 pub struct Number {
     pub hint: String,
     pub value: BigDecimal,
