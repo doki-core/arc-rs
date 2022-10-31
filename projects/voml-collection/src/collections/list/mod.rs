@@ -41,6 +41,16 @@ impl<T> List<T> {
     pub fn push(&mut self, value: T) {
         self.list.push_back(value)
     }
+    pub fn push_front(&mut self, value: T) {
+        self.list.push_front(value)
+    }
+    pub fn extend<I, V>(&mut self, iter: I)
+    where
+        I: IntoIterator<Item = V>,
+        T: From<V>,
+    {
+        self.list.extend(iter.into_iter().map(|v| T::from(v)))
+    }
     pub fn clear(&mut self) {
         self.list.clear()
     }

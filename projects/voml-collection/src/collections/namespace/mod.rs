@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 use std::fmt::Debug;
 
-#[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Clone, Debug, Default, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
 pub struct Namespace {
     pub path: Vec<String>,
 }
@@ -36,7 +36,6 @@ where
     where
         T: IntoIterator<Item = V>,
     {
-        let list = Vec::from_iter(iter.into_iter().map(|v| String::from(v)));
-        Namespace { path: list }
+        Namespace { path: Vec::from_iter(iter.into_iter().map(|v| String::from(v))) }
     }
 }
