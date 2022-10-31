@@ -1,8 +1,9 @@
-use super::*;
-use indexmap::IndexMap;
-use std::slice::Iter;
 
-#[derive(Clone, Debug, Eq)]
+use indexmap::IndexMap;
+use serde::{Deserialize, Serialize};
+
+
+#[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Table<T> {
     pub hint: String,
     pub list: Vec<T>,

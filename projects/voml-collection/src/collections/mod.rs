@@ -4,7 +4,11 @@
 // mod sparse_array;
 // mod traits;
 
+pub use self::{decimal::Decimal, dict::Dict, integer::Integer, list::List, number::Number, table::Table, text::Text};
+
+mod decimal;
 mod dict;
+mod integer;
 mod list;
 mod number;
 mod table;
