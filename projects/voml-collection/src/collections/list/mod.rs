@@ -1,14 +1,11 @@
-use std::{
-    collections::VecDeque,
-    fmt::{Debug, Formatter, Write},
-};
+use std::fmt::{Debug, Formatter, Write};
 
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Default, PartialEq, Eq, Serialize, Deserialize)]
 pub struct List<T> {
     pub hint: String,
-    pub list: VecDeque<T>,
+    pub list: Vec<T>,
 }
 
 impl<T> Debug for List<T>
@@ -32,17 +29,23 @@ where
     where
         T: IntoIterator<Item = V>,
     {
-        let list = VecDeque::from_iter(iter.into_iter().map(|v| O::from(v)));
+        let list = Vec::from_iter(iter.into_iter().map(|v| O::from(v)));
         List { hint: "".to_string(), list }
     }
 }
 
 impl<T> List<T> {
-    pub fn push(&mut self, value: T) {
-        self.list.push_back(value)
+    pub fn clear(&mut self) {
+        self.list.clear()
     }
-    pub fn push_front(&mut self, value: T) {
-        self.list.push_front(value)
+    pub fn push(&mut self, value: T) {
+        self.list.push(value)
+    }
+    pub fn get(&mut self, query: usize) -> Option<&T> {
+        self.list.get(query)
+    }
+    pub fn get_mut(&mut self, query: usize) -> Option<&mut T> {
+        self.list.get_mut(query)
     }
     pub fn extend<I, V>(&mut self, iter: I)
     where
@@ -50,8 +53,5 @@ impl<T> List<T> {
         T: From<V>,
     {
         self.list.extend(iter.into_iter().map(|v| T::from(v)))
-    }
-    pub fn clear(&mut self) {
-        self.list.clear()
     }
 }

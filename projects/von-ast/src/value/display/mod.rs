@@ -36,16 +36,4 @@ impl Display for VonNode {
     }
 }
 
-impl Display for Text {
-    fn fmt(&self, _f: &mut Formatter<'_>) -> std::fmt::Result {
-        todo!()
-    }
-}
-
-impl Display for Table {
-    fn fmt(&self, _f: &mut Formatter<'_>) -> std::fmt::Result {
-        todo!()
-    }
-}
-
 impl PrettyPrint {}

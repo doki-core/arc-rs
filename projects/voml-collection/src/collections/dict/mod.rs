@@ -9,12 +9,6 @@ pub struct Dict<T> {
     pub dict: IndexMap<String, T>,
 }
 
-pub enum DictQuery<'i> {
-    Key(&'i str),
-    Index(usize),
-    Hash(usize),
-}
-
 impl<T> Debug for Dict<T>
 where
     T: Debug,
@@ -42,6 +36,9 @@ where
 }
 
 impl<T> Dict<T> {
+    pub fn clear(&mut self) {
+        self.dict.clear()
+    }
     pub fn insert<K, V>(&mut self, k: K, v: V) -> Option<T>
     where
         K: Into<String>,
@@ -49,27 +46,34 @@ impl<T> Dict<T> {
     {
         self.dict.insert(k.into(), v.into())
     }
-    pub fn get<'i, Q>(&self, query: &'i Q) -> Option<&T>
-    where
-        DictQuery<'i>: From<&'i Q>,
-    {
-        match query.into() {
-            DictQuery::Key(key) => self.dict.get(key),
-            DictQuery::Index(key) => self.dict.get_index(key).map(|v| v.1),
-            DictQuery::Hash(_) => unimplemented!(),
-        }
+    /// Return a reference to the value stored for `key`, if it is present,
+    /// else `None`.
+    ///
+    /// Computes in **O(1)** time (average).
+    pub fn get_key(&self, query: &str) -> Option<&T> {
+        self.dict.get(query)
     }
-    pub fn get_entry<'i, Q>(&self, query: &'i Q) -> Option<(usize, &str, &T)>
-    where
-        DictQuery<'i>: From<&'i Q>,
-    {
-        match query.into() {
-            DictQuery::Key(key) => self.dict.get_full(key).map(|(i, k, v)| (i, k.as_str(), v)),
-            DictQuery::Index(key) => self.dict.get_index(key).map(|(k, v)| (key, k.as_str(), v)),
-            DictQuery::Hash(_) => unimplemented!(),
-        }
+    /// Return a reference to the value stored for `key`, if it is present,
+    /// else `None`.
+    ///
+    /// Computes in **O(1)** time (average).
+    pub fn get_key_mut(&mut self, query: &str) -> Option<&mut T> {
+        self.dict.get_mut(query)
     }
-    pub fn clear(&mut self) {
-        self.dict.clear()
+    /// Get a key-value pair by index
+    ///
+    /// Valid indices are *0 <= index < self.len()*
+    ///
+    /// Computes in **O(1)** time.
+    pub fn get_index(&self, query: usize) -> Option<&T> {
+        self.dict.get_index(query).map(|v| v.1)
+    }
+    /// Get a key-value pair by index
+    ///
+    /// Valid indices are *0 <= index < self.len()*
+    ///
+    /// Computes in **O(1)** time.
+    pub fn get_index_mut(&mut self, query: usize) -> Option<&mut T> {
+        self.dict.get_index_mut(query).map(|v| v.1)
     }
 }

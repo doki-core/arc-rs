@@ -1,5 +1,10 @@
 use super::*;
 use indexmap::set::Iter;
+/// Ordered set of values
+#[derive(Clone, Default, Debug)]
+pub struct OrderedSet<T> {
+    inner: IndexSet<Literal<T>>,
+}
 
 impl<T> OrderedSet<T> {
     /// Returns an iterator over the slice.

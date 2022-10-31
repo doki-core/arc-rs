@@ -44,7 +44,7 @@ impl StringNode {
         VonNode::Text(self.into_str())
     }
     pub fn into_str(self) -> Text {
-        Text { hint: into_hint(self.hint), value: Default::default() }
+        Text { hint: into_hint(self.hint), text: Default::default() }
     }
 }
 

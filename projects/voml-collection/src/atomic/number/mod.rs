@@ -3,9 +3,12 @@ use serde::{Deserialize, Serialize};
 
 mod primitive;
 
+/// An arbitrary-precision integer with a unit
 #[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Number {
+    /// The unit of this number
     pub hint: String,
+    /// The value of this number
     pub value: BigDecimal,
 }
 

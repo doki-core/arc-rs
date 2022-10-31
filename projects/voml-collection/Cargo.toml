@@ -1,6 +1,6 @@
 [package]
 name = "voml-collection"
-version = "0.2.1"
+version = "0.2.2"
 authors = ["192607617@qq.com"]
 description = "Collections for [VOML]()"
 repository = "https://github.com/doki-land/arc-rs"
@@ -11,9 +11,9 @@ exclude = ["/tests/*"]
 edition = "2021"
 
 [dependencies]
+serde = { version = "1.0.147", features = ["derive"] }
 num = { version = "0.4.0", features = ["serde"] }
 bigdecimal = { version = "0.3.0", features = ["serde"] }
-serde = { version = "1.0.147", features = ["derive"] }
 indexmap = { version = "1.9.1", features = ["serde"] }
 
 [dev-dependencies]

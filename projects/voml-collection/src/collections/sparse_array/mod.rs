@@ -2,6 +2,27 @@ use super::*;
 use num::One;
 use std::convert::TryFrom;
 
+/// Ordered map of key value pairs
+#[derive(Clone, Debug)]
+pub struct KVPair<T> {
+    key: Literal<String>,
+    value: Literal<T>,
+}
+
+/// Literal Patterns for command
+#[derive(Clone, Default, Hash)]
+pub struct LiteralVector<T> {
+    inner: Vec<Literal<T>>,
+}
+
+/// Sparse representation of the array, the subscript can be any non-zero integer
+/// 1-index
+#[derive(Clone, Default, Debug, Hash)]
+pub struct SparseArray<T> {
+    default: T,
+    inner: BTreeMap<BigUint, Literal<T>>,
+}
+
 impl<T> SparseArray<T> {
     /// Returns a reference to the value corresponding to the key.
     /// The key may be any borrowed form of the map's key type, but the ordering

@@ -1,6 +1,11 @@
 use super::*;
 use indexmap::map::{Iter, Keys, Values};
 use std::convert::TryFrom;
+/// Ordered map of key value pairs
+#[derive(Clone, Default, Debug)]
+pub struct OrderedMap<T> {
+    inner: IndexMap<String, KVPair<T>>,
+}
 
 impl<T> OrderedMap<T> {
     /// Get value from Ordered Map
