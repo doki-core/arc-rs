@@ -18,7 +18,7 @@ serde1 = { version = "1.0.1", optional = true }
 lsp-types = { version = "0.93.2", optional = true }
 
 voml-error = {version = "0.1", path = "../voml-error"}
-voml-collection = {version = "0.1", path = "../voml-collection"}
+voml-collection = "0.2.0"
 
 [dependencies.yggdrasil-shared]
 version = "0.2.2"

@@ -17,6 +17,7 @@ bigdecimal = "0.3.0"
 peginator = "0.3.0"
 unicode-ident = "1.0.5"
 serde = { version = "1.0.147", features = ["derive"], optional = true }
+voml-collection = "0.2.0"
 
 [dependencies.voml-error]
 version = "0.1.0"
