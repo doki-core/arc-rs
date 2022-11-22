@@ -8,6 +8,7 @@ pub use self::{
     value::{Von, VonSerializer},
 };
 
+mod convert;
 mod error;
 mod for_3rd;
 mod value;

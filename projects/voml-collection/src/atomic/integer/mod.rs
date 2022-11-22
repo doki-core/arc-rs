@@ -1,11 +1,11 @@
 use num::{BigInt, FromPrimitive, ToPrimitive};
 use serde::{Deserialize, Serialize};
 
-mod primitive;
 mod cmp;
+mod primitive;
 
 /// An arbitrary-precision integer with a unit
-#[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Clone, Debug, Default, Eq, Serialize, Deserialize)]
 pub struct Integer {
     /// The unit of this integer
     pub hint: String,

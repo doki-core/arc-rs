@@ -8,3 +8,9 @@ impl PartialEq<usize> for Integer {
         }
     }
 }
+
+impl PartialEq<Self> for Integer {
+    fn eq(&self, other: &Self) -> bool {
+        self.value.eq(&other.value)
+    }
+}

@@ -1,3 +1,5 @@
+use num::BigInt;
+
 use super::*;
 
 impl PartialEq<u8> for Von {
@@ -134,3 +136,45 @@ impl PartialEq<isize> for Von {
         }
     }
 }
+
+impl PartialEq<BigInt> for Von {
+    fn eq(&self, other: &BigInt) -> bool {
+        match self {
+            Von::Integer(v) => v.value.eq(other),
+            _ => false,
+        }
+    }
+}
+
+impl PartialEq<f32> for Von {
+    fn eq(&self, other: &f32) -> bool {
+        match self {
+            Von::Decimal(v) => match v.value.to_f32() {
+                Some(s) => s.eq(other),
+                None => false,
+            },
+            _ => false,
+        }
+    }
+}
+
+impl PartialEq<f64> for Von {
+    fn eq(&self, other: &f64) -> bool {
+        match self {
+            Von::Decimal(v) => match v.value.to_f64() {
+                Some(s) => s.eq(other),
+                None => false,
+            },
+            _ => false,
+        }
+    }
+}
+
+// impl PartialEq<Integer> for Von {
+//     fn eq(&self, other: &Integer) -> bool {
+//         match self {
+//             Von::Integer(v) => v.eq(&**other),
+//             _ => false,
+//         }
+//     }
+// }

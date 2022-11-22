@@ -12,6 +12,7 @@ pub struct VonSerializer {}
 
 ///
 pub enum Von {
+    Boolean(bool),
     ///
     Integer(Box<Integer>),
     ///
