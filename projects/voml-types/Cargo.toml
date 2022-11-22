@@ -23,7 +23,7 @@ serde = { version = "1.0.147", features = ["derive"] }
 [dependencies.voml-collection]
 #version = "0.3.0"
 path = "../voml-collection"
-features = ["rust_decimal"]
+features = ["bigdecimal"]
 
 [dev-dependencies]
 

@@ -25,7 +25,6 @@ pub struct TestTupleUnit();
 #[derive(Serialize, Deserialize)]
 pub struct TestTuple(u8, u16, u32);
 
-
 #[derive(Serialize, Deserialize)]
 pub struct TestStructUnit {}
 
@@ -33,5 +32,15 @@ pub struct TestStructUnit {}
 pub struct TestStruct {
     a: u8,
     b: u16,
-    c: u32
+    c: u32,
+}
+
+#[derive(Serialize, Deserialize)]
+pub enum TestEnumUnit {}
+
+#[repr(u8)]
+#[derive(Serialize, Deserialize)]
+pub enum TestEnum {
+    Nothing = 0,
+    Something(bool),
 }

@@ -3,13 +3,13 @@ use std::fmt::Display;
 use indexmap::IndexMap;
 use serde::{
     ser::{
-        SerializeMap, SerializeSeq, SerializeStruct, SerializeStructVariant, SerializeTuple, SerializeTupleStruct,
+        Error, SerializeMap, SerializeSeq, SerializeStruct, SerializeStructVariant, SerializeTuple, SerializeTupleStruct,
         SerializeTupleVariant,
     },
     Serialize, Serializer,
 };
 
-use voml_collection::Bytes;
+use voml_collection::{Bytes, Text};
 
 use crate::{VError, VResult, Von, VonSerializer};
 
@@ -18,7 +18,7 @@ pub use self::{for_dict::VDict, for_list::VList};
 mod for_dict;
 mod for_list;
 
-impl serde::ser::Error for VError {
+impl Error for VError {
     fn custom<T>(msg: T) -> Self
     where
         T: Display,
@@ -122,15 +122,14 @@ impl Serializer for VonSerializer {
     }
 
     #[inline]
-    #[allow(unused_variables)]
     fn serialize_unit_struct(self, name: &'static str) -> VResult<Self::Ok> {
-        self.serialize_unit()
+        Ok(Von::list(name.to_string(), vec![]))
     }
 
     #[inline]
     #[allow(unused_variables)]
     fn serialize_unit_variant(self, name: &'static str, variant_index: u32, variant: &'static str) -> VResult<Self::Ok> {
-        self.serialize_str(variant)
+        Ok(Von::String(Box::new(Text { hint: name.to_string(), text: variant.to_string() })))
     }
 
     #[inline]
@@ -138,7 +137,8 @@ impl Serializer for VonSerializer {
     where
         T: ?Sized + Serialize,
     {
-        value.serialize(self)
+        todo!()
+        // value.serialize(self)
     }
 
     fn serialize_newtype_variant<T>(
@@ -159,7 +159,8 @@ impl Serializer for VonSerializer {
 
     #[inline]
     fn serialize_none(self) -> VResult<Self::Ok> {
-        self.serialize_unit()
+        todo!()
+        // self.serialize_unit()
     }
 
     #[inline]
@@ -167,7 +168,8 @@ impl Serializer for VonSerializer {
     where
         T: ?Sized + Serialize,
     {
-        value.serialize(self)
+        todo!()
+        // value.serialize(self)
     }
 
     #[inline]
@@ -185,23 +187,20 @@ impl Serializer for VonSerializer {
 
     fn serialize_tuple_variant(
         self,
-        _name: &'static str,
-        _variant_index: u32,
+        name: &'static str,
+        variant_index: u32,
         variant: &'static str,
         len: usize,
     ) -> VResult<Self::SerializeTupleVariant> {
         todo!()
-        // Ok(SeqVariant { name: String::from(variant), vec: Vec::with_capacity(len) })
     }
 
-    fn serialize_map(self, len: Option<usize>) -> VResult<Self::SerializeMap> {
-        Ok(VDict { name: "".to_string(), map: Default::default() })
+    fn serialize_map(self, length: Option<usize>) -> VResult<Self::SerializeMap> {
+        Ok(VDict { name: "".to_string(), map: IndexMap::with_capacity(length.unwrap_or(0)) })
     }
 
-    fn serialize_struct(self, name: &'static str, len: usize) -> VResult<Self::SerializeStruct> {
-        match name {
-            _ => self.serialize_map(Some(len)),
-        }
+    fn serialize_struct(self, name: &'static str, length: usize) -> VResult<Self::SerializeStruct> {
+        Ok(VDict { name: name.to_string(), map: IndexMap::with_capacity(length) })
     }
 
     fn serialize_struct_variant(

@@ -31,7 +31,7 @@ impl SerializeMap for VDict {
             Von::Integer(_) => {
                 todo!()
             }
-            Von::Decimal(_) => {
+            Von::Number(_) => {
                 todo!()
             }
             Von::String(s) => {

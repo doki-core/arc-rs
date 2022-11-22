@@ -158,7 +158,7 @@ impl PartialEq<BigInt> for Von {
 impl PartialEq<f32> for Von {
     fn eq(&self, other: &f32) -> bool {
         match self {
-            Von::Decimal(v) => match v.value.to_f32() {
+            Von::Number(v) => match v.value.to_f32() {
                 Some(s) => s.eq(other),
                 None => false,
             },
@@ -170,7 +170,7 @@ impl PartialEq<f32> for Von {
 impl PartialEq<f64> for Von {
     fn eq(&self, other: &f64) -> bool {
         match self {
-            Von::Decimal(v) => match v.value.to_f64() {
+            Von::Number(v) => match v.value.to_f64() {
                 Some(s) => s.eq(other),
                 None => false,
             },
@@ -178,12 +178,3 @@ impl PartialEq<f64> for Von {
         }
     }
 }
-
-// impl PartialEq<Integer> for Von {
-//     fn eq(&self, other: &Integer) -> bool {
-//         match self {
-//             Von::Integer(v) => v.eq(&**other),
-//             _ => false,
-//         }
-//     }
-// }

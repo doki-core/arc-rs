@@ -5,12 +5,36 @@ impl Debug for Von {
         match self {
             Von::Boolean(v) => Debug::fmt(v, f),
             Von::Integer(v) => Debug::fmt(v, f),
-            Von::Decimal(v) => Debug::fmt(v, f),
+            Von::Number(v) => Debug::fmt(v, f),
             Von::String(v) => Debug::fmt(v, f),
             Von::Binary(v) => Debug::fmt(v, f),
             Von::List(v) => Debug::fmt(v, f),
             Von::Dict(v) => Debug::fmt(v, f),
         }
+    }
+}
+
+impl Von {
+    /// Get mutable reference if the value is dict
+    ///
+    ///
+    /// # Arguments
+    ///
+    /// * `a`:
+    ///
+    /// returns: Option<&mut Dict<Von>>
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use voml_types::Von;
+    /// ```
+    #[inline]
+    pub fn list<S>(name: S, items: Vec<Von>) -> Self
+    where
+        S: Into<String>,
+    {
+        Self::List(Box::new(List { hint: name.into(), list: items }))
     }
 }
 
@@ -159,9 +183,9 @@ impl Von {
     /// use voml_types::Von;
     /// ```
     #[inline]
-    pub fn get_integer(&self) -> Option<&Integer> {
+    pub fn get_integer(&self) -> Option<&Number> {
         match self {
-            Von::Integer(v) => Some(&**v),
+            Von::Number(v) => Some(&**v),
             _ => None,
         }
     }
@@ -180,9 +204,9 @@ impl Von {
     /// use voml_types::Von;
     /// ```
     #[inline]
-    pub fn mut_integer(&mut self) -> Option<&mut Integer> {
+    pub fn mut_integer(&mut self) -> Option<&mut Number> {
         match self {
-            Von::Integer(v) => Some(&mut **v),
+            Von::Number(v) => Some(&mut **v),
             _ => None,
         }
     }
@@ -201,9 +225,9 @@ impl Von {
     /// use voml_types::Von;
     /// ```
     #[inline]
-    pub fn get_decimal(&self) -> Option<&Decimal> {
+    pub fn get_decimal(&self) -> Option<&Number> {
         match self {
-            Von::Decimal(v) => Some(&**v),
+            Von::Number(v) => Some(&**v),
             _ => None,
         }
     }
@@ -222,9 +246,9 @@ impl Von {
     /// use voml_types::Von;
     /// ```
     #[inline]
-    pub fn mut_decimal(&mut self) -> Option<&mut Decimal> {
+    pub fn mut_decimal(&mut self) -> Option<&mut Number> {
         match self {
-            Von::Decimal(v) => Some(&mut **v),
+            Von::Number(v) => Some(&mut **v),
             _ => None,
         }
     }

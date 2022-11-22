@@ -3,7 +3,7 @@ use std::fmt::{Debug, Display, Formatter};
 use num::{FromPrimitive, ToPrimitive};
 
 use serde::{ser::SerializeSeq, Serialize, Serializer};
-use voml_collection::{Bytes, Decimal, Dict, Integer, List, Text};
+use voml_collection::{Bytes, Dict, Integer, List, Number, Text};
 
 mod der;
 mod display;
@@ -17,6 +17,7 @@ pub struct VonSerializer;
 /// Represents an valid [VON]() value.
 ///
 /// See the [`serde_json::value` module documentation](self) for usage examples.
+#[derive(PartialEq, Eq)]
 pub enum Von {
     /// Represents a JSON boolean.
     ///
@@ -29,19 +30,11 @@ pub enum Von {
     /// Represents a JSON boolean.
     ///
     /// ```
-    /// # use von::von;
+    /// # use serde_json::json;
     /// #
-    /// let v = von!(true);
+    /// let v = json!(true);
     /// ```
-    Integer(Box<Integer>),
-    /// Represents a JSON boolean.
-    ///
-    /// ```
-    /// # use von::von;
-    /// #
-    /// let v = von!(true);
-    /// ```
-    Decimal(Box<Decimal>),
+    Number(Box<Number>),
     /// Represents a JSON boolean.
     ///
     /// ```
