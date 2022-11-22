@@ -1,10 +1,13 @@
+use std::fmt::{Debug, Formatter};
+
 use bigdecimal::BigDecimal;
 use serde::{Deserialize, Serialize};
 
+mod display;
 mod primitive;
 
 /// An arbitrary-precision integer with a unit
-#[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Clone, Default, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Number {
     /// The unit of this number
     pub hint: String,

@@ -3,7 +3,7 @@ use serde_json::Value;
 
 use voml_types::{Von, VonSerializer};
 
-use crate::{TestEnum, TestStruct, TestStructUnit, TestTuple, TestTupleUnit, TestUnit};
+use crate::{TestEnum, TestStruct, TestTuple, TestTupleUnit, TestUnit};
 
 #[test]
 fn test_atom() {
