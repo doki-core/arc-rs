@@ -1,8 +1,8 @@
-use crate::VomlError;
+use crate::VError;
 use globset::Error;
 
-impl From<Error> for VomlError {
+impl From<Error> for VError {
     fn from(e: Error) -> Self {
-        VomlError::runtime_error(e.to_string())
+        VError::runtime_error(e.to_string())
     }
 }

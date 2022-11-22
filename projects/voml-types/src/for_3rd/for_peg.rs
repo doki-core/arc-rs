@@ -1,11 +1,11 @@
 use diagnostic::{DiagnosticLevel, Span};
 use peginator::ParseError;
 
-use crate::{error::ParseFail, VomlError, VomlErrorKind};
+use crate::{error::ParseFail, VError, VErrorKind};
 
-impl From<ParseError> for VomlError {
+impl From<ParseError> for VError {
     fn from(error: ParseError) -> Self {
         let e = ParseFail { message: error.specifics.to_string(), span: Span { start: error.position, end: error.position } };
-        VomlError { kind: Box::new(VomlErrorKind::ParseError(e)), level: DiagnosticLevel::Error, file: Default::default() }
+        VError { kind: Box::new(VErrorKind::ParseError(e)), level: DiagnosticLevel::Error, file: Default::default() }
     }
 }

@@ -1,8 +1,8 @@
-use crate::{MaybeRanged, VomlError};
+use crate::{MaybeRanged, VError};
 use rsass::{Error, ParseError, SourcePos};
 use url::Url;
 
-impl From<Error> for VomlError {
+impl From<Error> for VError {
     fn from(e: Error) -> Self {
         match e {
             Error::Input(path, io) => {
@@ -44,7 +44,7 @@ impl From<Error> for VomlError {
     }
 }
 
-impl From<ParseError> for VomlError {
+impl From<ParseError> for VError {
     fn from(e: ParseError) -> Self {
         let error = Self::runtime_error(e.to_string());
         error

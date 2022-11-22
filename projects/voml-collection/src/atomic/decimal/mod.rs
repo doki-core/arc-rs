@@ -1,6 +1,5 @@
 use std::fmt::{Debug, Formatter};
 
-use bigdecimal::BigDecimal;
 use num::FromPrimitive;
 use serde::{Deserialize, Serialize};
 
@@ -12,7 +11,7 @@ pub struct Decimal {
     /// The unit of the decimal
     pub hint: String,
     /// The value of the decimal
-    pub value: BigDecimal,
+    pub value: rust_decimal::Decimal,
 }
 
 impl Debug for Decimal {

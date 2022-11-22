@@ -1,4 +1,4 @@
-use crate::{error::DiagnosticLevel, VomlError};
+use crate::{error::DiagnosticLevel, VError};
 #[cfg(feature = "yggdrasil-shared")]
 use lsp_types::{Diagnostic, Range};
 use lsp_types::{DiagnosticSeverity, DiagnosticTag};
@@ -18,7 +18,7 @@ impl DiagnosticLevel {
     }
 }
 
-impl VomlError {
+impl VError {
     /// Get the range as [`Range`]
     #[cfg(feature = "yggdrasil-shared")]
     #[inline]

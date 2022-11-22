@@ -12,16 +12,16 @@ mod for_std;
 pub mod duplicate;
 
 /// All result about notedown
-pub type Result<T = ()> = std::result::Result<T, VomlError>;
+pub type Result<T = ()> = std::result::Result<T, VError>;
 
 /// Many errors
-pub type Validation<T> = diagnostic::Validation<T, VomlError>;
+pub type Validation<T> = diagnostic::Validation<T, VError>;
 
 /// Error type for all Notedown operators
 #[derive(Debug)]
-pub struct VomlError {
+pub struct VError {
     /// Actual error kind
-    pub kind: Box<VomlErrorKind>,
+    pub kind: Box<VErrorKind>,
     /// Error level for report
     pub level: DiagnosticLevel,
     /// File name where error occurred
@@ -29,7 +29,7 @@ pub struct VomlError {
 }
 
 /// Actual error data for the error
-pub enum VomlErrorKind {
+pub enum VErrorKind {
     /// The error type for I/O operations
     IOError(std::io::Error),
     /// The error type for I/O operations
@@ -46,4 +46,4 @@ pub struct ParseFail {
     pub span: Span,
 }
 
-impl VomlError {}
+impl VError {}

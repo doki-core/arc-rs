@@ -176,3 +176,8 @@ impl ToPrimitive for Von {
     }
 }
 
+impl From<bool> for Von {
+    fn from(value: bool) -> Self {
+        Von::Boolean(value)
+    }
+}

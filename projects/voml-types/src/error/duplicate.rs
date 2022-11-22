@@ -14,7 +14,7 @@ pub struct DuplicateItem {
 
 impl DuplicateItem {
     /// build error
-    pub fn build_error(self, file: FileID) -> VomlError {
-        VomlError { kind: Box::new(VomlErrorKind::Duplicate(self)), level: DiagnosticLevel::Error, file }
+    pub fn build_error(self, file: FileID) -> VError {
+        VError { kind: Box::new(VErrorKind::Duplicate(self)), level: DiagnosticLevel::Error, file }
     }
 }

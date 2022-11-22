@@ -1,8 +1,8 @@
-use crate::VomlError;
+use crate::VError;
 use pest::error::{Error, ErrorVariant};
 use std::fmt::Debug;
 
-impl<R> From<Error<R>> for VomlError
+impl<R> From<Error<R>> for VError
 where
     R: Debug,
 {
@@ -12,7 +12,7 @@ where
     }
 }
 
-impl<R> From<ErrorVariant<R>> for VomlError
+impl<R> From<ErrorVariant<R>> for VError
 where
     R: Debug,
 {
