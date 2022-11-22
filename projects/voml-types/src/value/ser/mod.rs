@@ -1,94 +1,52 @@
-use std::{collections::BTreeMap, fmt::Display};
+use indexmap::IndexMap;
+use serde::{
+    ser::{
+        SerializeMap, SerializeSeq, SerializeStruct, SerializeStructVariant, SerializeTuple, SerializeTupleStruct,
+        SerializeTupleVariant,
+    },
+    Serializer,
+};
 
-use diagnostic_quick::{QError, QResult};
-use rust_decimal::{prelude::FromPrimitive, Decimal};
-use serde::{ser::SerializeSeq, Serialize, Serializer};
+use crate::{VError, VResult, Von, VonSerializer};
 
-use crate::SahaNode;
+pub use self::{for_dict::VDict, for_list::VList};
 
-pub struct SeqEx {
-    vec: Vec<SahaNode>,
-}
-
-impl SerializeSeq for SeqEx {
-    type Ok = ();
-    type Error = ();
-
-    fn serialize_element<T: ?Sized>(&mut self, value: &T) -> Result<(), Self::Error>
-    where
-        T: Serialize,
-    {
-        todo!()
-    }
-
-    fn end(self) -> Result<Self::Ok, Self::Error> {
-        todo!()
-    }
-}
-
-impl SerializeSeq for SeqEx {
-    type Ok = ();
-    type Error = ();
-
-    fn serialize_element<T: ?Sized>(&mut self, value: &T) -> Result<(), Self::Error>
-    where
-        T: Serialize,
-    {
-        todo!()
-    }
-
-    fn end(self) -> Result<Self::Ok, Self::Error> {
-        todo!()
-    }
-}
-
-pub struct SeqVariant {
-    name: String,
-    vec: Vec<SahaNode>,
-}
-
-pub struct MapEx {
-    map: BTreeMap<String, SahaNode>,
-}
-
-pub struct MapVariant {
-    name: String,
-    map: BTreeMap<String, SahaNode>,
-}
+mod for_dict;
+mod for_list;
 
 impl Serializer for VonSerializer {
-    type Ok = SahaNode;
-    type Error = QError;
+    type Ok = Von;
+    type Error = VError;
 
-    type SerializeSeq = SeqEx;
-    type SerializeTuple = SeqEx;
-    type SerializeTupleStruct = SeqEx;
-    type SerializeTupleVariant = SeqVariant;
-    type SerializeMap = MapEx;
-    type SerializeStruct = MapEx;
-    type SerializeStructVariant = MapVariant;
+    type SerializeSeq = VList;
+    type SerializeTuple = VList;
+    type SerializeTupleStruct = VList;
+    type SerializeTupleVariant = VList;
+    type SerializeMap = VDict;
+    type SerializeStruct = VDict;
+    type SerializeStructVariant = VDict;
 
     #[inline]
-    fn serialize_bool(self, value: bool) -> QResult<SahaNode> {
+    fn serialize_bool(self, value: bool) -> VResult<Self::Ok> {
         Ok(SahaNode::boolean(value))
     }
 
     #[inline]
-    fn serialize_i8(self, value: i8) -> QResult<SahaNode> {
+    fn serialize_i8(self, value: i8) -> VResult<Self::Ok> {
         Ok(SahaNode::number(Decimal::from(value)))
     }
 
     #[inline]
-    fn serialize_i16(self, value: i16) -> QResult<SahaNode> {
+    fn serialize_i16(self, value: i16) -> VResult<Self::Ok> {
         Ok(SahaNode::number(Decimal::from(value)))
     }
 
     #[inline]
-    fn serialize_i32(self, value: i32) -> QResult<SahaNode> {
+    fn serialize_i32(self, value: i32) -> VResult<Self::Ok> {
         Ok(SahaNode::number(Decimal::from(value)))
     }
     #[inline]
-    fn serialize_i64(self, value: i64) -> QResult<SahaNode> {
+    fn serialize_i64(self, value: i64) -> VResult<Self::Ok> {
         Ok(SahaNode::number(Decimal::from(value)))
     }
     #[inline]
@@ -100,22 +58,22 @@ impl Serializer for VonSerializer {
     }
 
     #[inline]
-    fn serialize_u8(self, value: u8) -> QResult<SahaNode> {
+    fn serialize_u8(self, value: u8) -> VResult<Self::Ok> {
         Ok(SahaNode::number(Decimal::from(value)))
     }
 
     #[inline]
-    fn serialize_u16(self, value: u16) -> QResult<SahaNode> {
+    fn serialize_u16(self, value: u16) -> VResult<Self::Ok> {
         Ok(SahaNode::number(Decimal::from(value)))
     }
 
     #[inline]
-    fn serialize_u32(self, value: u32) -> QResult<SahaNode> {
+    fn serialize_u32(self, value: u32) -> VResult<Self::Ok> {
         Ok(SahaNode::number(Decimal::from(value)))
     }
 
     #[inline]
-    fn serialize_u64(self, value: u64) -> QResult<SahaNode> {
+    fn serialize_u64(self, value: u64) -> VResult<Self::Ok> {
         Ok(SahaNode::number(Decimal::from(value)))
     }
     #[inline]
@@ -127,7 +85,7 @@ impl Serializer for VonSerializer {
     }
 
     #[inline]
-    fn serialize_f32(self, value: f32) -> QResult<SahaNode> {
+    fn serialize_f32(self, value: f32) -> VResult<Self::Ok> {
         match Decimal::from_f32(value) {
             Some(s) => Ok(SahaNode::number(s)),
             None => Err(QError::syntax_error(format!("{value} can not cast to `Number`"))),
@@ -135,7 +93,7 @@ impl Serializer for VonSerializer {
     }
 
     #[inline]
-    fn serialize_f64(self, value: f64) -> QResult<SahaNode> {
+    fn serialize_f64(self, value: f64) -> VResult<Self::Ok> {
         match Decimal::from_f64(value) {
             Some(s) => Ok(SahaNode::number(s)),
             None => Err(QError::syntax_error(format!("{value} can not cast to `Number`"))),
@@ -143,39 +101,39 @@ impl Serializer for VonSerializer {
     }
 
     #[inline]
-    fn serialize_char(self, value: char) -> QResult<SahaNode> {
+    fn serialize_char(self, value: char) -> VResult<Self::Ok> {
         todo!("{value}")
     }
 
     #[inline]
-    fn serialize_str(self, value: &str) -> QResult<SahaNode> {
+    fn serialize_str(self, value: &str) -> VResult<Self::Ok> {
         todo!("{value}")
     }
 
-    fn serialize_bytes(self, value: &[u8]) -> QResult<SahaNode> {
+    fn serialize_bytes(self, value: &[u8]) -> VResult<Self::Ok> {
         let vec = value.iter().map(|&b| Value::Number(b.into())).collect();
         Ok(Value::Array(vec))
     }
 
     #[inline]
-    fn serialize_unit(self) -> QResult<SahaNode> {
+    fn serialize_unit(self) -> VResult<Self::Ok> {
         Ok(SahaNode::null())
     }
 
     #[inline]
     #[allow(unused_variables)]
-    fn serialize_unit_struct(self, name: &'static str) -> QResult<SahaNode> {
+    fn serialize_unit_struct(self, name: &'static str) -> VResult<Self::Ok> {
         self.serialize_unit()
     }
 
     #[inline]
     #[allow(unused_variables)]
-    fn serialize_unit_variant(self, name: &'static str, variant_index: u32, variant: &'static str) -> QResult<SahaNode> {
+    fn serialize_unit_variant(self, name: &'static str, variant_index: u32, variant: &'static str) -> VResult<Self::Ok> {
         self.serialize_str(variant)
     }
 
     #[inline]
-    fn serialize_newtype_struct<T>(self, _name: &'static str, value: &T) -> QResult<SahaNode>
+    fn serialize_newtype_struct<T>(self, _name: &'static str, value: &T) -> VResult<Self::Ok>
     where
         T: ?Sized + Serialize,
     {
@@ -188,7 +146,7 @@ impl Serializer for VonSerializer {
         variant_index: u32,
         variant: &'static str,
         value: &T,
-    ) -> QResult<SahaNode>
+    ) -> VResult<Self::Ok>
     where
         T: ?Sized + Serialize,
     {
@@ -198,27 +156,27 @@ impl Serializer for VonSerializer {
     }
 
     #[inline]
-    fn serialize_none(self) -> QResult<SahaNode> {
+    fn serialize_none(self) -> VResult<Self::Ok> {
         self.serialize_unit()
     }
 
     #[inline]
-    fn serialize_some<T>(self, value: &T) -> QResult<SahaNode>
+    fn serialize_some<T>(self, value: &T) -> VResult<Self::Ok>
     where
         T: ?Sized + Serialize,
     {
         value.serialize(self)
     }
 
-    fn serialize_seq(self, len: Option<usize>) -> QResult<Self::SerializeSeq> {
+    fn serialize_seq(self, len: Option<usize>) -> VResult<Self::SerializeSeq> {
         Ok(SerializeVec { vec: Vec::with_capacity(len.unwrap_or(0)) })
     }
 
-    fn serialize_tuple(self, len: usize) -> QResult<Self::SerializeTuple> {
+    fn serialize_tuple(self, len: usize) -> VResult<Self::SerializeTuple> {
         self.serialize_seq(Some(len))
     }
 
-    fn serialize_tuple_struct(self, _name: &'static str, len: usize) -> QResult<Self::SerializeTupleStruct> {
+    fn serialize_tuple_struct(self, _name: &'static str, len: usize) -> VResult<Self::SerializeTupleStruct> {
         self.serialize_seq(Some(len))
     }
 
@@ -232,11 +190,11 @@ impl Serializer for VonSerializer {
         Ok(SeqVariant { name: String::from(variant), vec: Vec::with_capacity(len) })
     }
 
-    fn serialize_map(self, len: Option<usize>) -> QResult<Self::SerializeMap> {
+    fn serialize_map(self, len: Option<usize>) -> VResult<Self::SerializeMap> {
         Ok(MapEx { map: Map::new(), next_key: None })
     }
 
-    fn serialize_struct(self, name: &'static str, len: usize) -> QResult<Self::SerializeStruct> {
+    fn serialize_struct(self, name: &'static str, len: usize) -> VResult<Self::SerializeStruct> {
         match name {
             _ => self.serialize_map(Some(len)),
         }
@@ -248,11 +206,11 @@ impl Serializer for VonSerializer {
         variant_index: u32,
         variant: &'static str,
         len: usize,
-    ) -> QResult<Self::SerializeStructVariant> {
+    ) -> VResult<Self::SerializeStructVariant> {
         Ok(MapVariant { name: String::from(variant), map: Map::new() })
     }
 
-    fn collect_str<T>(self, value: &T) -> QResult<SahaNode>
+    fn collect_str<T>(self, value: &T) -> VResult<Self::Ok>
     where
         T: ?Sized + Display,
     {

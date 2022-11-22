@@ -1,7 +1,8 @@
-use std::fmt::{Debug, Formatter};
+use std::fmt::{Debug, Display, Formatter};
 
 use num::{FromPrimitive, ToPrimitive};
 
+use serde::{ser::SerializeSeq, Serialize, Serializer};
 use voml_collection::{Bytes, Decimal, Dict, Integer, List, Text};
 
 mod der;

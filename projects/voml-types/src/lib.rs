@@ -4,7 +4,7 @@
 pub use diagnostic::{Diagnostic, DiagnosticLevel, FileID, Span, TextStorage};
 
 pub use self::{
-    error::{duplicate::DuplicateItem, Result, VError, VErrorKind, Validation},
+    error::{duplicate::DuplicateItem, VError, VErrorKind, VResult, Validation},
     value::{Von, VonSerializer},
 };
 

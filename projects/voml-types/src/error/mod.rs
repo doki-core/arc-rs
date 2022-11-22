@@ -12,7 +12,7 @@ mod for_std;
 pub mod duplicate;
 
 /// All result about notedown
-pub type Result<T = ()> = std::result::Result<T, VError>;
+pub type VResult<T = ()> = Result<T, VError>;
 
 /// Many errors
 pub type Validation<T> = diagnostic::Validation<T, VError>;
