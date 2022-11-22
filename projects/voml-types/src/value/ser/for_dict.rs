@@ -41,7 +41,7 @@ impl SerializeMap for VDict {
             Von::Binary(_) => {
                 todo!()
             }
-            Von::List(_) => {
+            Von::Table(_) => {
                 todo!()
             }
             Von::Dict(_) => {

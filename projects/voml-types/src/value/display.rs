@@ -4,11 +4,10 @@ impl Debug for Von {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         match self {
             Von::Boolean(v) => Debug::fmt(v, f),
-            Von::Integer(v) => Debug::fmt(v, f),
             Von::Number(v) => Debug::fmt(v, f),
             Von::String(v) => Debug::fmt(v, f),
             Von::Binary(v) => Debug::fmt(v, f),
-            Von::List(v) => Debug::fmt(v, f),
+            Von::Table(v) => Debug::fmt(v, f),
             Von::Dict(v) => Debug::fmt(v, f),
         }
     }
@@ -34,7 +33,7 @@ impl Von {
     where
         S: Into<String>,
     {
-        Self::List(Box::new(List { hint: name.into(), list: items }))
+        Self::Table(Box::new(List { hint: name.into(), list: items }))
     }
 }
 
@@ -73,7 +72,10 @@ impl Von {
     /// ```
     #[inline]
     pub fn is_integer(&self) -> bool {
-        matches!(self, Von::Integer(_))
+        match self {
+            Von::Number(v) => v.is_integer(),
+            _ => false,
+        }
     }
     /// Get mutable reference if the value is dict
     ///
@@ -91,7 +93,10 @@ impl Von {
     /// ```
     #[inline]
     pub fn is_decimal(&self) -> bool {
-        matches!(self, Von::Integer(_))
+        match self {
+            Von::Number(_) => true,
+            _ => false,
+        }
     }
     /// Get mutable reference if the value is dict
     ///
@@ -109,7 +114,7 @@ impl Von {
     /// ```
     #[inline]
     pub fn is_string(&self) -> bool {
-        matches!(self, Von::Integer(_))
+        matches!(self, Von::String(_))
     }
     /// Get mutable reference if the value is dict
     ///
@@ -127,7 +132,7 @@ impl Von {
     /// ```
     #[inline]
     pub fn is_binary(&self) -> bool {
-        matches!(self, Von::Integer(_))
+        matches!(self, Von::Binary(_))
     }
     /// Get mutable reference if the value is dict
     ///
@@ -145,7 +150,7 @@ impl Von {
     /// ```
     #[inline]
     pub fn is_list(&self) -> bool {
-        matches!(self, Von::Integer(_))
+        matches!(self, Von::Table(_))
     }
     /// Get mutable reference if the value is dict
     ///
@@ -163,7 +168,7 @@ impl Von {
     /// ```
     #[inline]
     pub fn is_dict(&self) -> bool {
-        matches!(self, Von::Integer(_))
+        matches!(self, Von::Dict(_))
     }
 }
 
@@ -267,9 +272,9 @@ impl Von {
     /// use voml_types::Von;
     /// ```
     #[inline]
-    pub fn get_list(&self) -> Option<&Integer> {
+    pub fn get_list(&self) -> Option<&Table<Von>> {
         match self {
-            Von::Integer(v) => Some(&**v),
+            Von::Table(v) => Some(&**v),
             _ => None,
         }
     }
@@ -288,9 +293,9 @@ impl Von {
     /// use voml_types::Von;
     /// ```
     #[inline]
-    pub fn mut_list(&mut self) -> Option<&mut Integer> {
+    pub fn mut_list(&mut self) -> Option<&mut List> {
         match self {
-            Von::Integer(v) => Some(&mut **v),
+            Von::Table(v) => Some(&mut **v),
             _ => None,
         }
     }

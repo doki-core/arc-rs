@@ -13,7 +13,7 @@ pub struct VList {
 
 impl VList {
     fn to_list(self) -> Von {
-        Von::List(Box::new(List { hint: self.name, list: self.vec }))
+        Von::Table(Box::new(List { hint: self.name, list: self.vec }))
     }
 }
 

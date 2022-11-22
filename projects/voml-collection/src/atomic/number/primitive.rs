@@ -1,4 +1,6 @@
-use num::{FromPrimitive, ToPrimitive};
+use std::ops::Add;
+
+use num::{FromPrimitive, ToPrimitive, Zero};
 
 use super::*;
 
@@ -46,5 +48,23 @@ impl ToPrimitive for Number {
 
     fn to_f64(&self) -> Option<f64> {
         self.value.to_f64()
+    }
+}
+
+impl Add<Self> for Number {
+    type Output = Self;
+
+    fn add(self, rhs: Self) -> Self::Output {
+        todo!()
+    }
+}
+
+impl Zero for Number {
+    fn zero() -> Self {
+        Number { hint: "".to_string(), value: BigDecimal::zero() }
+    }
+
+    fn is_zero(&self) -> bool {
+        self.value.is_zero()
     }
 }

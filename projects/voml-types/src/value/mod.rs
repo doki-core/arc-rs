@@ -3,7 +3,7 @@ use std::fmt::{Debug, Display, Formatter};
 use num::{FromPrimitive, ToPrimitive};
 
 use serde::{ser::SerializeSeq, Serialize, Serializer};
-use voml_collection::{Bytes, Dict, Integer, List, Number, Text};
+use voml_collection::{Bytes, Dict, Integer, List, Number, Table, Text};
 
 mod der;
 mod display;
@@ -58,13 +58,5 @@ pub enum Von {
     /// #
     /// let v = von!(true);
     /// ```
-    List(Box<List<Von>>),
-    /// Represents a JSON boolean.
-    ///
-    /// ```
-    /// # use serde_json::json;
-    /// #
-    /// let v = json!(true);
-    /// ```
-    Dict(Box<Dict<Von>>),
+    Table(Box<Table<Von>>),
 }

@@ -12,6 +12,44 @@ pub struct Number {
     pub value: BigDecimal,
 }
 
+impl Number {
+    /// is_decimal
+    ///
+    /// # Arguments
+    ///
+    /// * `b`:
+    ///
+    /// returns: bool
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use voml_collection::Number;
+    /// ```
+    #[inline]
+    pub fn is_integer(&self) -> bool {
+        self.value.is_integer()
+    }
+
+    /// is_decimal
+    ///
+    /// # Arguments
+    ///
+    /// * `b`:
+    ///
+    /// returns: bool
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use voml_collection::Number;
+    /// ```
+    #[inline]
+    pub fn is_decimal(&self) -> bool {
+        !self.is_integer()
+    }
+}
+
 // impl FromStr for Number {
 //     type Err = ParseBigDecimalError;
 //
