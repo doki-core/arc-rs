@@ -4,12 +4,13 @@ use voml_collection::{Decimal, Dict, Integer, List};
 
 mod number;
 // mod serializer;
+use num::ToPrimitive;
+use std::fmt::{Debug, Formatter};
 
 ///
 pub struct VonSerializer {}
 
 ///
-#[derive(Debug)]
 pub enum Von {
     ///
     Integer(Box<Integer>),
@@ -20,3 +21,5 @@ pub enum Von {
     ///
     Dict(Box<Dict<Von>>),
 }
+
+mod display;

@@ -1,4 +1,4 @@
-use num::BigInt;
+use num::{BigInt, FromPrimitive, ToPrimitive};
 use serde::{Deserialize, Serialize};
 
 mod primitive;
