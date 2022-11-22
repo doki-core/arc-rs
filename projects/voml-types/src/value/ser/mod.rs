@@ -1,11 +1,15 @@
+use std::fmt::Display;
+
 use indexmap::IndexMap;
 use serde::{
     ser::{
         SerializeMap, SerializeSeq, SerializeStruct, SerializeStructVariant, SerializeTuple, SerializeTupleStruct,
         SerializeTupleVariant,
     },
-    Serializer,
+    Serialize, Serializer,
 };
+
+use voml_collection::Bytes;
 
 use crate::{VError, VResult, Von, VonSerializer};
 
@@ -13,6 +17,15 @@ pub use self::{for_dict::VDict, for_list::VList};
 
 mod for_dict;
 mod for_list;
+
+impl serde::ser::Error for VError {
+    fn custom<T>(msg: T) -> Self
+    where
+        T: Display,
+    {
+        todo!()
+    }
+}
 
 impl Serializer for VonSerializer {
     type Ok = Von;
@@ -90,7 +103,7 @@ impl Serializer for VonSerializer {
 
     #[inline]
     fn serialize_char(self, value: char) -> VResult<Self::Ok> {
-        // Ok(Von::from(value))
+        Ok(Von::from(value))
     }
 
     #[inline]
@@ -99,12 +112,13 @@ impl Serializer for VonSerializer {
     }
 
     fn serialize_bytes(self, value: &[u8]) -> VResult<Self::Ok> {
-        Ok(Von::from(value))
+        Ok(Von::Binary(Box::new(Bytes::from(value))))
     }
 
     #[inline]
     fn serialize_unit(self) -> VResult<Self::Ok> {
-        Ok(SahaNode::null())
+        // Ok(SahaNode::null())
+        todo!()
     }
 
     #[inline]
@@ -120,7 +134,7 @@ impl Serializer for VonSerializer {
     }
 
     #[inline]
-    fn serialize_newtype_struct<T>(self, _name: &'static str, value: &T) -> VResult<Self::Ok>
+    fn serialize_newtype_struct<T>(self, name: &'static str, value: &T) -> VResult<Self::Ok>
     where
         T: ?Sized + Serialize,
     {
@@ -137,9 +151,10 @@ impl Serializer for VonSerializer {
     where
         T: ?Sized + Serialize,
     {
-        let mut values = Map::new();
-        values.insert(String::from(variant), tri!(to_value(value)));
-        Ok(Value::Object(values))
+        todo!()
+        // let mut values = Map::new();
+        // values.insert(String::from(variant), tri!(to_value(value)));
+        // Ok(Value::Object(values))
     }
 
     #[inline]
@@ -155,12 +170,13 @@ impl Serializer for VonSerializer {
         value.serialize(self)
     }
 
+    #[inline]
     fn serialize_seq(self, len: Option<usize>) -> VResult<Self::SerializeSeq> {
-        Ok(SerializeVec { vec: Vec::with_capacity(len.unwrap_or(0)) })
+        Ok(VList { name: "".to_string(), vec: Vec::with_capacity(len.unwrap_or(0)) })
     }
 
     fn serialize_tuple(self, len: usize) -> VResult<Self::SerializeTuple> {
-        self.serialize_seq(Some(len))
+        Ok(VList { name: "".to_string(), vec: Vec::with_capacity(len) })
     }
 
     fn serialize_tuple_struct(self, _name: &'static str, len: usize) -> VResult<Self::SerializeTupleStruct> {
@@ -173,12 +189,14 @@ impl Serializer for VonSerializer {
         _variant_index: u32,
         variant: &'static str,
         len: usize,
-    ) -> Result<Self::SerializeTupleVariant> {
-        Ok(SeqVariant { name: String::from(variant), vec: Vec::with_capacity(len) })
+    ) -> VResult<Self::SerializeTupleVariant> {
+        todo!()
+        // Ok(SeqVariant { name: String::from(variant), vec: Vec::with_capacity(len) })
     }
 
     fn serialize_map(self, len: Option<usize>) -> VResult<Self::SerializeMap> {
-        Ok(MapEx { map: Map::new(), next_key: None })
+        todo!()
+        // Ok(MapEx { map: Map::new(), next_key: None })
     }
 
     fn serialize_struct(self, name: &'static str, len: usize) -> VResult<Self::SerializeStruct> {
@@ -194,13 +212,14 @@ impl Serializer for VonSerializer {
         variant: &'static str,
         len: usize,
     ) -> VResult<Self::SerializeStructVariant> {
-        Ok(MapVariant { name: String::from(variant), map: Map::new() })
+        todo!()
+        // Ok(MapVariant { name: String::from(variant), map: Map::new() })
     }
 
     fn collect_str<T>(self, value: &T) -> VResult<Self::Ok>
     where
         T: ?Sized + Display,
     {
-        Ok(Value::String(value.to_string()))
+        Ok(Von::from(value.to_string()))
     }
 }

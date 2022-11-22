@@ -117,3 +117,15 @@ impl ToPrimitive for Decimal {
         todo!()
     }
 }
+
+impl From<f32> for Decimal {
+    fn from(value: f32) -> Self {
+        Decimal { hint: "".to_string(), value: rust_decimal::Decimal::from_f32(value).unwrap_or_default() }
+    }
+}
+
+impl From<f64> for Decimal {
+    fn from(value: f64) -> Self {
+        Decimal { hint: "".to_string(), value: rust_decimal::Decimal::from_f64(value).unwrap_or_default() }
+    }
+}

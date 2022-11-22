@@ -16,17 +16,17 @@ macro_rules! from_integer {
     };
 }
 
-macro_rules! from_decimal {
+macro_rules! from_string {
     ($T:ty) => {
         impl From<$T> for Von {
             #[inline]
             fn from(value: $T) -> Self {
-                Von::Decimal(Box::new(Decimal::from(value)))
+                Von::String(Box::new(Text::from(value)))
             }
         }
     };
     ($($T:ty), +) => {
-        $(from_decimal!($T);)+
+        $(from_string!($T);)+
     };
 }
 
@@ -212,4 +212,23 @@ impl From<bool> for Von {
 
 from_integer![u8, u16, u32, u64, u128, usize];
 from_integer![i8, i16, i32, i64, i128, isize];
-from_decimal![f32, f64];
+from_string![char, &str, &&str, &String, String];
+
+impl From<f32> for Von {
+    #[inline]
+    fn from(value: f32) -> Self {
+        if value.is_nan() {
+            // todo
+        }
+        Von::Decimal(Box::new(Decimal::from(value)))
+    }
+}
+impl From<f64> for Von {
+    #[inline]
+    fn from(value: f64) -> Self {
+        if value.is_nan() {
+            // todo
+        }
+        Von::Decimal(Box::new(Decimal::from(value)))
+    }
+}

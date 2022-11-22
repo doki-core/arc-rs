@@ -1,5 +1,18 @@
 use super::*;
 
+macro_rules! from_integer {
+    ($T:ty) => {
+        impl From<$T> for Integer {
+            fn from(value: $T) -> Self {
+                Self { hint: "".to_string(), value: BigInt::from(value) }
+            }
+        }
+    };
+    ($($T:ty), +) => {
+        $(from_integer!($T);)+
+    };
+}
+
 impl FromPrimitive for Integer {
     #[inline]
     fn from_isize(n: isize) -> Option<Self> {
@@ -117,3 +130,6 @@ impl ToPrimitive for Integer {
         self.value.to_f64()
     }
 }
+
+from_integer![u8, u16, u32, u64, u128, usize];
+from_integer![i8, i16, i32, i64, i128, isize];

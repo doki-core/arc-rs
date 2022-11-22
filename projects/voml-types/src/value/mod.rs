@@ -9,6 +9,7 @@ mod der;
 mod display;
 mod number;
 mod ser;
+mod text;
 
 ///
 pub struct VonSerializer {}
@@ -44,22 +45,6 @@ pub enum Von {
     /// Represents a JSON boolean.
     ///
     /// ```
-    /// # use von::von;
-    /// #
-    /// let v = von!(true);
-    /// ```
-    List(Box<List<Von>>),
-    /// Represents a JSON boolean.
-    ///
-    /// ```
-    /// # use serde_json::json;
-    /// #
-    /// let v = json!(true);
-    /// ```
-    Dict(Box<Dict<Von>>),
-    /// Represents a JSON boolean.
-    ///
-    /// ```
     /// # use serde_json::json;
     /// #
     /// let v = json!(true);
@@ -73,4 +58,20 @@ pub enum Von {
     /// let v = json!(true);
     /// ```
     Binary(Box<Bytes>),
+    /// Represents a JSON boolean.
+    ///
+    /// ```
+    /// # use von::von;
+    /// #
+    /// let v = von!(true);
+    /// ```
+    List(Box<List<Von>>),
+    /// Represents a JSON boolean.
+    ///
+    /// ```
+    /// # use serde_json::json;
+    /// #
+    /// let v = json!(true);
+    /// ```
+    Dict(Box<Dict<Von>>),
 }

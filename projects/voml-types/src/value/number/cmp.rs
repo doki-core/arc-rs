@@ -2,6 +2,15 @@ use num::BigInt;
 
 use super::*;
 
+impl PartialEq<bool> for Von {
+    fn eq(&self, other: &bool) -> bool {
+        match self {
+            Von::Boolean(v) => v.eq(other),
+            _ => false,
+        }
+    }
+}
+
 impl PartialEq<u8> for Von {
     fn eq(&self, other: &u8) -> bool {
         match self {

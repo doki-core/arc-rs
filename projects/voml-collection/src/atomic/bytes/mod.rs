@@ -15,3 +15,9 @@ impl Bytes {
         Self { hint: hint.into(), text: text.into() }
     }
 }
+
+impl From<&[u8]> for Bytes {
+    fn from(value: &[u8]) -> Self {
+        Self { hint: "".to_string(), text: value.to_vec() }
+    }
+}

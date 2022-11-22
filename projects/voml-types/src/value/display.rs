@@ -3,8 +3,11 @@ use super::*;
 impl Debug for Von {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         match self {
+            Von::Boolean(v) => Debug::fmt(v, f),
             Von::Integer(v) => Debug::fmt(v, f),
             Von::Decimal(v) => Debug::fmt(v, f),
+            Von::String(v) => Debug::fmt(v, f),
+            Von::Binary(v) => Debug::fmt(v, f),
             Von::List(v) => Debug::fmt(v, f),
             Von::Dict(v) => Debug::fmt(v, f),
         }
@@ -27,11 +30,116 @@ impl Von {
     /// use voml_types::Von;
     /// ```
     #[inline]
+    pub fn is_boolean(&self) -> bool {
+        matches!(self, Von::Boolean(_))
+    }
+    /// Get mutable reference if the value is dict
+    ///
+    ///
+    /// # Arguments
+    ///
+    /// * `a`:
+    ///
+    /// returns: Option<&mut Dict<Von>>
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use voml_types::Von;
+    /// ```
+    #[inline]
     pub fn is_integer(&self) -> bool {
-        match self {
-            Von::Integer(_) => true,
-            _ => false,
-        }
+        matches!(self, Von::Integer(_))
+    }
+    /// Get mutable reference if the value is dict
+    ///
+    ///
+    /// # Arguments
+    ///
+    /// * `a`:
+    ///
+    /// returns: Option<&mut Dict<Von>>
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use voml_types::Von;
+    /// ```
+    #[inline]
+    pub fn is_decimal(&self) -> bool {
+        matches!(self, Von::Integer(_))
+    }
+    /// Get mutable reference if the value is dict
+    ///
+    ///
+    /// # Arguments
+    ///
+    /// * `a`:
+    ///
+    /// returns: Option<&mut Dict<Von>>
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use voml_types::Von;
+    /// ```
+    #[inline]
+    pub fn is_string(&self) -> bool {
+        matches!(self, Von::Integer(_))
+    }
+    /// Get mutable reference if the value is dict
+    ///
+    ///
+    /// # Arguments
+    ///
+    /// * `a`:
+    ///
+    /// returns: Option<&mut Dict<Von>>
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use voml_types::Von;
+    /// ```
+    #[inline]
+    pub fn is_binary(&self) -> bool {
+        matches!(self, Von::Integer(_))
+    }
+    /// Get mutable reference if the value is dict
+    ///
+    ///
+    /// # Arguments
+    ///
+    /// * `a`:
+    ///
+    /// returns: Option<&mut Dict<Von>>
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use voml_types::Von;
+    /// ```
+    #[inline]
+    pub fn is_list(&self) -> bool {
+        matches!(self, Von::Integer(_))
+    }
+    /// Get mutable reference if the value is dict
+    ///
+    ///
+    /// # Arguments
+    ///
+    /// * `a`:
+    ///
+    /// returns: Option<&mut Dict<Von>>
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use voml_types::Von;
+    /// ```
+    #[inline]
+    pub fn is_dict(&self) -> bool {
+        matches!(self, Von::Integer(_))
     }
 }
 

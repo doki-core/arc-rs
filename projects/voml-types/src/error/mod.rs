@@ -45,5 +45,3 @@ pub struct ParseFail {
     pub message: String,
     pub span: Span,
 }
-
-impl VError {}
