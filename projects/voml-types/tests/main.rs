@@ -1,6 +1,8 @@
 use num::FromPrimitive;
 use serde::{Deserialize, Serialize};
+
 use voml_types::Von;
+
 mod ser;
 
 #[test]
@@ -14,6 +16,22 @@ pub fn test() {
     println!("{:#?}", Von::from_f32(1.0).unwrap())
 }
 
-
 #[derive(Serialize, Deserialize)]
 pub struct TestUnit;
+
+#[derive(Serialize, Deserialize)]
+pub struct TestTupleUnit();
+
+#[derive(Serialize, Deserialize)]
+pub struct TestTuple(u8, u16, u32);
+
+
+#[derive(Serialize, Deserialize)]
+pub struct TestStructUnit {}
+
+#[derive(Serialize, Deserialize)]
+pub struct TestStruct {
+    a: u8,
+    b: u16,
+    c: u32
+}

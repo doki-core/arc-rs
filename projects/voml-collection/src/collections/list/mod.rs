@@ -2,6 +2,8 @@ use std::fmt::{Debug, Formatter, Write};
 
 use serde::{Deserialize, Serialize};
 
+mod ser;
+
 /// A
 #[derive(Clone, Default, PartialEq, Eq, Serialize, Deserialize)]
 pub struct List<T> {

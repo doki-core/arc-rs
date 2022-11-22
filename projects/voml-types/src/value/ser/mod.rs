@@ -174,13 +174,13 @@ impl Serializer for VonSerializer {
     fn serialize_seq(self, len: Option<usize>) -> VResult<Self::SerializeSeq> {
         Ok(VList { name: "".to_string(), vec: Vec::with_capacity(len.unwrap_or(0)) })
     }
-
+    #[inline]
     fn serialize_tuple(self, len: usize) -> VResult<Self::SerializeTuple> {
         Ok(VList { name: "".to_string(), vec: Vec::with_capacity(len) })
     }
-
-    fn serialize_tuple_struct(self, _name: &'static str, len: usize) -> VResult<Self::SerializeTupleStruct> {
-        self.serialize_seq(Some(len))
+    #[inline]
+    fn serialize_tuple_struct(self, name: &'static str, len: usize) -> VResult<Self::SerializeTupleStruct> {
+        Ok(VList { name: name.to_string(), vec: Vec::with_capacity(len) })
     }
 
     fn serialize_tuple_variant(
@@ -195,8 +195,7 @@ impl Serializer for VonSerializer {
     }
 
     fn serialize_map(self, len: Option<usize>) -> VResult<Self::SerializeMap> {
-        todo!()
-        // Ok(MapEx { map: Map::new(), next_key: None })
+        Ok(VDict { name: "".to_string(), map: Default::default() })
     }
 
     fn serialize_struct(self, name: &'static str, len: usize) -> VResult<Self::SerializeStruct> {

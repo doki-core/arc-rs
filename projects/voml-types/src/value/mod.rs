@@ -12,7 +12,7 @@ mod ser;
 mod text;
 
 ///
-pub struct VonSerializer {}
+pub struct VonSerializer;
 
 /// Represents an valid [VON]() value.
 ///
