@@ -22,7 +22,7 @@ serde = { version = "1.0.147", features = ["derive"], optional = true }
 version = "0.3.0"
 features = []
 
-[dependencies.voml-error]
+[dependencies.voml-types]
 version = "0.1.0"
 path = "../voml-types"
 features = ["peginator"]

@@ -1,3 +1,5 @@
+use std::fmt::{Debug, Formatter};
+
 use bigdecimal::BigDecimal;
 use num::FromPrimitive;
 use serde::{Deserialize, Serialize};
@@ -5,10 +7,16 @@ use serde::{Deserialize, Serialize};
 mod primitive;
 
 /// An arbitrary-precision decimal with a unit
-#[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Clone, Default, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Decimal {
     /// The unit of the decimal
     pub hint: String,
     /// The value of the decimal
     pub value: BigDecimal,
+}
+
+impl Debug for Decimal {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("Decimal").field("hint", &self.hint).field("value", &self.value.to_string()).finish()
+    }
 }
