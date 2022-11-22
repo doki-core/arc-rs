@@ -1,8 +1,10 @@
 use indexmap::IndexMap;
 use serde::{Deserialize, Serialize};
 
+mod display;
+
 /// A
-#[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Clone, Default, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Table<T> {
     /// The type hint of this table
     pub hint: String,

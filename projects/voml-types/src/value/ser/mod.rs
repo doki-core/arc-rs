@@ -1,4 +1,6 @@
 use std::fmt::Display;
+mod for_dict;
+mod for_list;
 
 use indexmap::IndexMap;
 use serde::{
@@ -11,10 +13,17 @@ use serde::{
 
 use voml_collection::{Bytes, Text};
 
-use crate::{Dict, List, Table, VError, VResult, Von, VonSerializer};
+use crate::{Dict, List, Table, VError, VResult, Von};
 
-mod for_dict;
-mod for_list;
+///
+pub struct VonSerializer {}
+
+impl Default for VonSerializer {
+    fn default() -> Self {
+        Self {}
+    }
+}
+
 
 impl Error for VError {
     fn custom<T>(msg: T) -> Self
@@ -25,7 +34,7 @@ impl Error for VError {
     }
 }
 
-struct STable {
+pub struct STable {
     pub name: String,
     pub vec: List,
     pub map: Dict,

@@ -9,15 +9,15 @@ use voml_collection::{Bytes, Number, Text};
 mod der;
 mod display;
 mod number;
-mod ser;
+pub mod ser;
 mod text;
 
-pub type List = Vec<Von>;
-pub type Dict = IndexMap<String, Von>;
-pub type Table = voml_collection::Table<Von>;
-
 ///
-pub struct VonSerializer;
+pub type List = Vec<Von>;
+///
+pub type Dict = IndexMap<String, Von>;
+///
+pub type Table = voml_collection::Table<Von>;
 
 /// Represents an valid [VON]() value.
 ///
