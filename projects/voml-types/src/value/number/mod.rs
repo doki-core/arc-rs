@@ -1,3 +1,5 @@
+use std::convert::TryFrom;
+
 use super::*;
 
 mod cmp;
@@ -203,18 +205,12 @@ from_string![char, &str, &&str, &String, String];
 impl From<f32> for Von {
     #[inline]
     fn from(value: f32) -> Self {
-        if value.is_nan() {
-            // todo
-        }
-        Von::Number(Box::new(Number::from(value)))
+        Von::Number(Box::new(Number::try_from(value).unwrap_or_default()))
     }
 }
 impl From<f64> for Von {
     #[inline]
     fn from(value: f64) -> Self {
-        if value.is_nan() {
-            // todo
-        }
-        Von::Number(Box::new(Number::from(value)))
+        Von::Number(Box::new(Number::try_from(value).unwrap_or_default()))
     }
 }

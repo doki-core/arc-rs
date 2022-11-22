@@ -1,22 +1,8 @@
 use serde::{ser::Error, Serialize};
 
-use voml_collection::Dict;
-
 use super::*;
 
-pub struct VDict {
-    pub name: String,
-    pub map: IndexMap<String, Von>,
-}
-
-impl VDict {
-    #[inline]
-    fn to_dict(self) -> Von {
-        Von::Dict(Box::new(Dict { hint: self.name, dict: self.map }))
-    }
-}
-
-impl SerializeMap for VDict {
+impl SerializeMap for STable {
     type Ok = Von;
     type Error = VError;
 
@@ -24,30 +10,7 @@ impl SerializeMap for VDict {
     where
         T: Serialize,
     {
-        match key.serialize(VonSerializer {})? {
-            Von::Boolean(_) => {
-                todo!()
-            }
-            Von::Integer(_) => {
-                todo!()
-            }
-            Von::Number(_) => {
-                todo!()
-            }
-            Von::String(s) => {
-                println!("{:#?}", s);
-                todo!()
-            }
-            Von::Binary(_) => {
-                todo!()
-            }
-            Von::Table(_) => {
-                todo!()
-            }
-            Von::Dict(_) => {
-                todo!()
-            }
-        }
+        todo!()
     }
 
     fn serialize_value<T: ?Sized>(&mut self, value: &T) -> Result<(), Self::Error>
@@ -63,12 +26,12 @@ impl SerializeMap for VDict {
     }
 
     #[inline]
-    fn end(self) -> Result<Self::Ok, Self::Error> {
-        Ok(self.to_dict())
+    fn end(self) -> VResult<Self::Ok> {
+        Ok(self.to_table())
     }
 }
 
-impl SerializeStruct for VDict {
+impl SerializeStruct for STable {
     type Ok = Von;
     type Error = VError;
 
@@ -84,12 +47,12 @@ impl SerializeStruct for VDict {
         }
     }
     #[inline]
-    fn end(self) -> Result<Self::Ok, Self::Error> {
-        Ok(self.to_dict())
+    fn end(self) -> VResult<Self::Ok> {
+        Ok(self.to_table())
     }
 }
 
-impl SerializeStructVariant for VDict {
+impl SerializeStructVariant for STable {
     type Ok = Von;
     type Error = VError;
 
@@ -101,7 +64,7 @@ impl SerializeStructVariant for VDict {
         todo!()
     }
     #[inline]
-    fn end(self) -> Result<Self::Ok, Self::Error> {
-        Ok(self.to_dict())
+    fn end(self) -> VResult<Self::Ok> {
+        Ok(self.to_table())
     }
 }

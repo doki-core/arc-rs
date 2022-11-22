@@ -2,22 +2,9 @@ use std::convert::TryFrom;
 
 use serde::Serialize;
 
-use voml_collection::List;
-
 use super::*;
 
-pub struct VList {
-    pub name: String,
-    pub vec: Vec<Von>,
-}
-
-impl VList {
-    fn to_list(self) -> Von {
-        Von::Table(Box::new(List { hint: self.name, list: self.vec }))
-    }
-}
-
-impl SerializeSeq for VList {
+impl SerializeSeq for STable {
     type Ok = Von;
     type Error = VError;
 
@@ -31,12 +18,13 @@ impl SerializeSeq for VList {
         Ok(())
     }
 
+    #[inline]
     fn end(self) -> VResult<Self::Ok> {
-        Ok(self.to_list())
+        Ok(self.to_table())
     }
 }
 
-impl SerializeTuple for VList {
+impl SerializeTuple for STable {
     type Ok = Von;
     type Error = VError;
 
@@ -50,12 +38,13 @@ impl SerializeTuple for VList {
         Ok(())
     }
 
-    fn end(self) -> Result<Self::Ok, Self::Error> {
-        Ok(self.to_list())
+    #[inline]
+    fn end(self) -> VResult<Self::Ok> {
+        Ok(self.to_table())
     }
 }
 
-impl SerializeTupleStruct for VList {
+impl SerializeTupleStruct for STable {
     type Ok = Von;
     type Error = VError;
 
@@ -69,12 +58,13 @@ impl SerializeTupleStruct for VList {
         Ok(())
     }
 
-    fn end(self) -> Result<Self::Ok, Self::Error> {
-        Ok(self.to_list())
+    #[inline]
+    fn end(self) -> VResult<Self::Ok> {
+        Ok(self.to_table())
     }
 }
 
-impl SerializeTupleVariant for VList {
+impl SerializeTupleVariant for STable {
     type Ok = Von;
     type Error = VError;
 
@@ -86,7 +76,8 @@ impl SerializeTupleVariant for VList {
         todo!()
     }
 
-    fn end(self) -> Result<Self::Ok, Self::Error> {
-        Ok(self.to_list())
+    #[inline]
+    fn end(self) -> VResult<Self::Ok> {
+        Ok(self.to_table())
     }
 }

@@ -1,70 +1,78 @@
 use std::ops::Add;
 
+use bigdecimal::ParseBigDecimalError;
 use num::{BigInt, FromPrimitive, ToPrimitive, Zero};
 
 use super::*;
 
-impl From<u8> for Number {
-    fn from(n: u8) -> Self {
-        Number { hint: "".to_string(), value: BigDecimal::new(BigInt::from(n), 0) }
-    }
+macro_rules! from_integer {
+    ($T:ty) => {
+        impl From<$T> for Number {
+            fn from(n: $T) -> Self {
+                Number { hint: "".to_string(), value: BigDecimal::new(BigInt::from(n), 0) }
+            }
+        }
+    };
+    ($($T:ty), +) => {
+        $(from_integer!($T);)+
+    };
 }
 
 impl FromPrimitive for Number {
     fn from_isize(n: isize) -> Option<Self> {
-        Some(Number { hint: "".to_string(), value: BigDecimal::new(BigInt::from(n), 0) })
+        Some(Self::from(n))
     }
-
+    #[inline]
     fn from_i8(n: i8) -> Option<Self> {
-        Some(Number { hint: "".to_string(), value: BigDecimal::new(BigInt::from(n), 0) })
+        Some(Self::from(n))
     }
-
+    #[inline]
     fn from_i16(n: i16) -> Option<Self> {
-        Some(Number { hint: "".to_string(), value: BigDecimal::new(BigInt::from(n), 0) })
+        Some(Self::from(n))
     }
-
+    #[inline]
     fn from_i32(n: i32) -> Option<Self> {
-        Some(Number { hint: "".to_string(), value: BigDecimal::new(BigInt::from(n), 0) })
+        Some(Self::from(n))
     }
-
+    #[inline]
     fn from_i64(n: i64) -> Option<Self> {
-        Some(Number { hint: "".to_string(), value: BigDecimal::new(BigInt::from(n), 0) })
+        Some(Self::from(n))
     }
-
+    #[inline]
     fn from_i128(n: i128) -> Option<Self> {
-        Some(Number { hint: "".to_string(), value: BigDecimal::new(BigInt::from(n), 0) })
+        Some(Self::from(n))
     }
-
+    #[inline]
     fn from_usize(n: usize) -> Option<Self> {
-        Some(Number { hint: "".to_string(), value: BigDecimal::new(BigInt::from(n), 0) })
+        Some(Self::from(n))
     }
-
+    #[inline]
     fn from_u8(n: u8) -> Option<Self> {
-        Some(Number { hint: "".to_string(), value: BigDecimal::new(BigInt::from(n), 0) })
+        Some(Self::from(n))
     }
-
+    #[inline]
     fn from_u16(n: u16) -> Option<Self> {
-        Some(Number { hint: "".to_string(), value: BigDecimal::new(BigInt::from(n), 0) })
+        Some(Self::from(n))
     }
-
+    #[inline]
     fn from_u32(n: u32) -> Option<Self> {
-        Some(Number { hint: "".to_string(), value: BigDecimal::new(BigInt::from(n), 0) })
+        Some(Self::from(n))
     }
-
+    #[inline]
     fn from_u64(n: u64) -> Option<Self> {
-        Some(Number { hint: "".to_string(), value: BigDecimal::new(BigInt::from(n), 0) })
+        Some(Self::from(n))
     }
-
+    #[inline]
     fn from_u128(n: u128) -> Option<Self> {
-        Some(Number { hint: "".to_string(), value: BigDecimal::new(BigInt::from(n), 0) })
+        Some(Self::from(n))
     }
-
+    #[inline]
     fn from_f32(n: f32) -> Option<Self> {
-        Some(Number { hint: "".to_string(), value: BigDecimal::new(BigInt::from(n), 0) })
+        Self::try_from(n).ok()
     }
-
+    #[inline]
     fn from_f64(n: f64) -> Option<Self> {
-        Some(Number { hint: "".to_string(), value: BigDecimal::new(BigInt::from(n), 0) })
+        Self::try_from(n).ok()
     }
 }
 
@@ -85,6 +93,25 @@ impl ToPrimitive for Number {
 
     fn to_f64(&self) -> Option<f64> {
         self.value.to_f64()
+    }
+}
+
+from_integer![u8, u16, u32, u64, u128, usize];
+from_integer![i8, i16, i32, i64, i128, isize];
+
+impl TryFrom<f32> for Number {
+    type Error = ParseBigDecimalError;
+
+    fn try_from(value: f32) -> Result<Self, Self::Error> {
+        Ok(Self { hint: "".to_string(), value: BigDecimal::try_from(value)? })
+    }
+}
+
+impl TryFrom<f64> for Number {
+    type Error = ParseBigDecimalError;
+
+    fn try_from(value: f64) -> Result<Self, Self::Error> {
+        Ok(Self { hint: "".to_string(), value: BigDecimal::try_from(value)? })
     }
 }
 

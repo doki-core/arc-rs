@@ -11,9 +11,7 @@ use serde::{
 
 use voml_collection::{Bytes, Text};
 
-use crate::{VError, VResult, Von, VonSerializer};
-
-pub use self::{for_dict::VDict, for_list::VList};
+use crate::{Dict, List, Table, VError, VResult, Von, VonSerializer};
 
 mod for_dict;
 mod for_list;
@@ -27,17 +25,29 @@ impl Error for VError {
     }
 }
 
+struct STable {
+    pub name: String,
+    pub vec: List,
+    pub map: Dict,
+}
+
+impl STable {
+    fn to_table(self) -> Von {
+        Von::Table(Box::new(Table { hint: self.name, list: self.vec, dict: self.map }))
+    }
+}
+
 impl Serializer for VonSerializer {
     type Ok = Von;
     type Error = VError;
 
-    type SerializeSeq = VList;
-    type SerializeTuple = VList;
-    type SerializeTupleStruct = VList;
-    type SerializeTupleVariant = VList;
-    type SerializeMap = VDict;
-    type SerializeStruct = VDict;
-    type SerializeStructVariant = VDict;
+    type SerializeSeq = STable;
+    type SerializeTuple = STable;
+    type SerializeTupleStruct = STable;
+    type SerializeTupleVariant = STable;
+    type SerializeMap = STable;
+    type SerializeStruct = STable;
+    type SerializeStructVariant = STable;
 
     #[inline]
     fn serialize_bool(self, value: bool) -> VResult<Self::Ok> {
@@ -174,15 +184,15 @@ impl Serializer for VonSerializer {
 
     #[inline]
     fn serialize_seq(self, len: Option<usize>) -> VResult<Self::SerializeSeq> {
-        Ok(VList { name: "".to_string(), vec: Vec::with_capacity(len.unwrap_or(0)) })
+        Ok(STable { name: "".to_string(), vec: Vec::with_capacity(len.unwrap_or(0)), map: Default::default() })
     }
     #[inline]
     fn serialize_tuple(self, len: usize) -> VResult<Self::SerializeTuple> {
-        Ok(VList { name: "".to_string(), vec: Vec::with_capacity(len) })
+        Ok(STable { name: "".to_string(), vec: Vec::with_capacity(len), map: Default::default() })
     }
     #[inline]
     fn serialize_tuple_struct(self, name: &'static str, len: usize) -> VResult<Self::SerializeTupleStruct> {
-        Ok(VList { name: name.to_string(), vec: Vec::with_capacity(len) })
+        Ok(STable { name: name.to_string(), vec: Vec::with_capacity(len), map: Default::default() })
     }
 
     fn serialize_tuple_variant(
@@ -196,11 +206,11 @@ impl Serializer for VonSerializer {
     }
 
     fn serialize_map(self, length: Option<usize>) -> VResult<Self::SerializeMap> {
-        Ok(VDict { name: "".to_string(), map: IndexMap::with_capacity(length.unwrap_or(0)) })
+        Ok(STable { name: "".to_string(), vec: vec![], map: IndexMap::with_capacity(length.unwrap_or(0)) })
     }
 
     fn serialize_struct(self, name: &'static str, length: usize) -> VResult<Self::SerializeStruct> {
-        Ok(VDict { name: name.to_string(), map: IndexMap::with_capacity(length) })
+        Ok(STable { name: name.to_string(), vec: vec![], map: IndexMap::with_capacity(length) })
     }
 
     fn serialize_struct_variant(
