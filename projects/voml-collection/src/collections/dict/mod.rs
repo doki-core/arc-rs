@@ -3,9 +3,12 @@ use std::fmt::{Debug, Formatter, Write};
 use indexmap::IndexMap;
 use serde::{Deserialize, Serialize};
 
+/// A dict with string keys
 #[derive(Clone, Default, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Dict<T> {
+    /// The type hint in this dict
     pub hint: String,
+    /// The key-value pairs in this table
     pub dict: IndexMap<String, T>,
 }
 
@@ -36,9 +39,25 @@ where
 }
 
 impl<T> Dict<T> {
+    /// Remove all key-value pairs in the map, while preserving its capacity.
+    ///
+    /// Computes in **O(n)** time.
     pub fn clear(&mut self) {
         self.dict.clear()
     }
+    /// Insert a key-value pair in the map.
+    ///
+    /// If an equivalent key already exists in the map: the key remains and
+    /// retains in its place in the order, its corresponding value is updated
+    /// with `value` and the older value is returned inside `Some(_)`.
+    ///
+    /// If no equivalent key existed in the map: the new key-value pair is
+    /// inserted, last in order, and `None` is returned.
+    ///
+    /// Computes in **O(1)** time (amortized average).
+    ///
+    /// See also [`entry`](#method.entry) if you you want to insert *or* modify
+    /// or if you need to get the index of the corresponding key-value pair.
     pub fn insert<K, V>(&mut self, k: K, v: V) -> Option<T>
     where
         K: Into<String>,

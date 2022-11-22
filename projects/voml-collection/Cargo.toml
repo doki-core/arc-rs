@@ -1,9 +1,10 @@
 [package]
 name = "voml-collection"
-version = "0.2.2"
+version = "0.3.0"
 authors = ["192607617@qq.com"]
-description = "Collections for [VOML]()"
-repository = "https://github.com/doki-land/arc-rs"
+description = "Collections for [VOML](https://github.com/voml/voml-rs)"
+homepage = "https://github.com/voml/voml-rs"
+repository = "https://github.com/voml/voml-rs"
 documentation = "https://docs.rs/voml-collection"
 readme = "Readme.md"
 license = "MPL-2.0"
@@ -14,7 +15,7 @@ edition = "2021"
 serde = { version = "1.0.147", features = ["derive"] }
 num = { version = "0.4.0", features = ["serde"] }
 bigdecimal = { version = "0.3.0", features = ["serde"] }
-indexmap = { version = "1.9.1", features = ["serde"] }
+indexmap = { version = "1.9.2", features = ["serde"] }
 
 [dev-dependencies]
 

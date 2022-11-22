@@ -4,7 +4,7 @@ default-members = [
 #    "projects/voml-ast",
     "projects/voml-ast",
 #    "projects/arc-fmt",
-    "projects/voml-error",
+    "projects/voml-types",
 #    "projects/voml-from",
 ]
 members = [

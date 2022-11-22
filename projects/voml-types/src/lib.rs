@@ -7,3 +7,4 @@ pub use self::error::{duplicate::DuplicateItem, Result, Validation, VomlError, V
 
 mod error;
 mod for_3rd;
+mod value;

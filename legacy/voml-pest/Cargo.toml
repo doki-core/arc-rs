@@ -11,8 +11,8 @@ edition = "2018"
 
 
 [dependencies]
-pest = "2.4.0"
+pest = "2.4.1"
 
 [dev-dependencies]
-pest_generator = "2.4.0"
+pest_generator = "2.4.1"
 quote = "1.0.21"

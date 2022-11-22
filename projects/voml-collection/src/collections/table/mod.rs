@@ -1,14 +1,21 @@
 use indexmap::IndexMap;
 use serde::{Deserialize, Serialize};
 
+/// A
 #[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Table<T> {
+    /// The type hint of this table
     pub hint: String,
+    /// The items in this table
     pub list: Vec<T>,
+    /// The key-value pairs in this table
     pub dict: IndexMap<String, T>,
 }
 
 impl<T> Table<T> {
+    /// Remove all key-value pairs in the map, while preserving its capacity.
+    ///
+    /// Computes in **O(n)** time.
     pub fn clear(&mut self) {
         self.list.clear();
         self.dict.clear();

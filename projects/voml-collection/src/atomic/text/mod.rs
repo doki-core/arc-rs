@@ -12,6 +12,7 @@ pub struct Text {
 }
 
 impl Text {
+    /// Create a new text
     pub fn new(text: impl Into<String>, hint: impl Into<String>) -> Self {
         Self { hint: hint.into(), text: text.into() }
     }
