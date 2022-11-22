@@ -6,7 +6,7 @@ use crate::{Von, VonSerializer};
 
 impl From<Json> for Von {
     fn from(json: Json) -> Self {
-        match json.serialize(VonSerializer {}) {
+        match json.serialize(VonSerializer::default()) {
             Ok(o) => o,
             Err(e) => {
                 todo!("{e}")

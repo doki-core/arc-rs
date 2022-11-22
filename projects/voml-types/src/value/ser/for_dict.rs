@@ -40,7 +40,7 @@ impl SerializeStruct for STable {
         T: ?Sized,
         T: Serialize,
     {
-        let mut value = value.serialize(VonSerializer {})?;
+        let value = self.serialize(value)?;
         match self.map.insert(key.to_string(), value) {
             None => Ok(()),
             Some(_) => Err(VError::custom("redundant field")),

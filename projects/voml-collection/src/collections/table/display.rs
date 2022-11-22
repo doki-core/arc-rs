@@ -1,10 +1,14 @@
-use std::fmt::{Debug, Formatter};
+use std::fmt::{Debug, Formatter, Write};
 
 use super::*;
 
 impl<T: Debug> Debug for Table<T> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        let mut w = &mut f.debug_struct("Table");
+        let head = match self.hint.as_str() {
+            "_" => "Table",
+            s => s,
+        };
+        let mut w = &mut f.debug_struct(head);
         for (k, v) in self.list.iter().enumerate() {
             w = w.field(&k.to_string(), v)
         }

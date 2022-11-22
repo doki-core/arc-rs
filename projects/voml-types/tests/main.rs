@@ -42,5 +42,12 @@ pub enum TestEnumUnit {}
 #[derive(Serialize, Deserialize)]
 pub enum TestEnum {
     Nothing = 0,
-    Something(bool),
+    Tuple(u8, u8),
+    Struct { x: u8, y: u8 },
+}
+
+#[derive(Serialize, Deserialize)]
+enum TestEnum2 {
+    T(u8, u8),
+    U(String, u32, u32),
 }

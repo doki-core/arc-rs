@@ -13,9 +13,7 @@ impl SerializeSeq for STable {
         T: ?Sized,
         T: Serialize,
     {
-        let item = value.serialize(VonSerializer {})?;
-        self.vec.push(item);
-        Ok(())
+        self.push_serialize(value)
     }
 
     #[inline]
@@ -33,9 +31,7 @@ impl SerializeTuple for STable {
         T: ?Sized,
         T: Serialize,
     {
-        let item = value.serialize(VonSerializer {})?;
-        self.vec.push(item);
-        Ok(())
+        self.push_serialize(value)
     }
 
     #[inline]
@@ -53,9 +49,7 @@ impl SerializeTupleStruct for STable {
         T: ?Sized,
         T: Serialize,
     {
-        let item = value.serialize(VonSerializer {})?;
-        self.vec.push(item);
-        Ok(())
+        self.push_serialize(value)
     }
 
     #[inline]
@@ -73,7 +67,7 @@ impl SerializeTupleVariant for STable {
         T: ?Sized,
         T: Serialize,
     {
-        todo!()
+        self.push_serialize(value)
     }
 
     #[inline]
