@@ -1,5 +1,6 @@
-use super::*;
 use num::ToPrimitive;
+
+use super::*;
 
 impl FromPrimitive for Decimal {
     fn from_isize(n: isize) -> Option<Self> {

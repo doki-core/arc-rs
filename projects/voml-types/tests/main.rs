@@ -8,6 +8,6 @@ fn ready() {
 
 #[test]
 pub fn test() {
-    println!("{:#?}", Von::from_usize(0).unwrap());
+    assert_eq!(Von::from_usize(0).unwrap(), 0usize);
     println!("{:#?}", Von::from_f32(1.0).unwrap())
 }

@@ -2,6 +2,7 @@ use num::{BigInt, FromPrimitive, ToPrimitive};
 use serde::{Deserialize, Serialize};
 
 mod primitive;
+mod cmp;
 
 /// An arbitrary-precision integer with a unit
 #[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]

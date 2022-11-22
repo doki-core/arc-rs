@@ -1,5 +1,7 @@
 use super::*;
 
+mod cmp;
+
 impl FromPrimitive for Von {
     #[inline]
     fn from_isize(n: isize) -> Option<Self> {
@@ -173,3 +175,4 @@ impl ToPrimitive for Von {
         }
     }
 }
+
