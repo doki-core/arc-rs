@@ -1,15 +1,20 @@
 use std::fmt::{Debug, Display, Formatter};
 
+use indexmap::IndexMap;
 use num::{FromPrimitive, ToPrimitive};
-
 use serde::{ser::SerializeSeq, Serialize, Serializer};
-use voml_collection::{Bytes, Dict, Integer, List, Number, Table, Text};
+
+use voml_collection::{Bytes, Number, Text};
 
 mod der;
 mod display;
 mod number;
 mod ser;
 mod text;
+
+pub type List = Vec<Von>;
+pub type Dict = IndexMap<String, Von>;
+pub type Table = voml_collection::Table<Von>;
 
 ///
 pub struct VonSerializer;
@@ -58,5 +63,5 @@ pub enum Von {
     /// #
     /// let v = von!(true);
     /// ```
-    Table(Box<Table<Von>>),
+    Table(Box<Table>),
 }

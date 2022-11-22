@@ -8,7 +8,6 @@ impl Debug for Von {
             Von::String(v) => Debug::fmt(v, f),
             Von::Binary(v) => Debug::fmt(v, f),
             Von::Table(v) => Debug::fmt(v, f),
-            Von::Dict(v) => Debug::fmt(v, f),
         }
     }
 }
@@ -29,11 +28,32 @@ impl Von {
     /// use voml_types::Von;
     /// ```
     #[inline]
-    pub fn list<S>(name: S, items: Vec<Von>) -> Self
+    pub fn list<S>(name: S, items: List) -> Self
     where
         S: Into<String>,
     {
-        Self::Table(Box::new(List { hint: name.into(), list: items }))
+        Self::Table(Box::new(Table { hint: name.into(), list: items, dict: Default::default() }))
+    }
+    /// Get mutable reference if the value is dict
+    ///
+    ///
+    /// # Arguments
+    ///
+    /// * `a`:
+    ///
+    /// returns: Option<&mut Dict<Von>>
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use voml_types::Von;
+    /// ```
+    #[inline]
+    pub fn dict<S>(name: S, items: Dict) -> Self
+    where
+        S: Into<String>,
+    {
+        Self::Table(Box::new(Table { hint: name.into(), list: Default::default(), dict: items }))
     }
 }
 
@@ -150,7 +170,10 @@ impl Von {
     /// ```
     #[inline]
     pub fn is_list(&self) -> bool {
-        matches!(self, Von::Table(_))
+        match self {
+            Von::Table(v) => v.dict.is_empty(),
+            _ => false,
+        }
     }
     /// Get mutable reference if the value is dict
     ///
@@ -168,7 +191,10 @@ impl Von {
     /// ```
     #[inline]
     pub fn is_dict(&self) -> bool {
-        matches!(self, Von::Dict(_))
+        match self {
+            Von::Table(v) => v.list.is_empty(),
+            _ => false,
+        }
     }
 }
 
@@ -272,7 +298,7 @@ impl Von {
     /// use voml_types::Von;
     /// ```
     #[inline]
-    pub fn get_list(&self) -> Option<&Table<Von>> {
+    pub fn get_list(&self) -> Option<&Table> {
         match self {
             Von::Table(v) => Some(&**v),
             _ => None,
@@ -293,9 +319,9 @@ impl Von {
     /// use voml_types::Von;
     /// ```
     #[inline]
-    pub fn mut_list(&mut self) -> Option<&mut List> {
+    pub fn mut_list(&mut self) -> Option<&mut Vec<Von>> {
         match self {
-            Von::Table(v) => Some(&mut **v),
+            Von::Table(v) => Some(&mut v.list),
             _ => None,
         }
     }
@@ -314,9 +340,9 @@ impl Von {
     /// use voml_types::Von;
     /// ```
     #[inline]
-    pub fn get_dict(&self) -> Option<&Dict<Von>> {
+    pub fn get_dict(&self) -> Option<&Dict> {
         match self {
-            Von::Dict(v) => Some(&**v),
+            Von::Table(v) => Some(&v.dict),
             _ => None,
         }
     }
@@ -335,9 +361,9 @@ impl Von {
     /// use voml_types::Von;
     /// ```
     #[inline]
-    pub fn mut_dict(&mut self) -> Option<&mut Dict<Von>> {
+    pub fn mut_dict(&mut self) -> Option<&mut Dict> {
         match self {
-            Von::Dict(v) => Some(&mut **v),
+            Von::Table(v) => Some(&mut v.dict),
             _ => None,
         }
     }

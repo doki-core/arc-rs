@@ -1,33 +1,70 @@
 use std::ops::Add;
 
-use num::{FromPrimitive, ToPrimitive, Zero};
+use num::{BigInt, FromPrimitive, ToPrimitive, Zero};
 
 use super::*;
 
+impl From<u8> for Number {
+    fn from(n: u8) -> Self {
+        Number { hint: "".to_string(), value: BigDecimal::new(BigInt::from(n), 0) }
+    }
+}
+
 impl FromPrimitive for Number {
+    fn from_isize(n: isize) -> Option<Self> {
+        Some(Number { hint: "".to_string(), value: BigDecimal::new(BigInt::from(n), 0) })
+    }
+
+    fn from_i8(n: i8) -> Option<Self> {
+        Some(Number { hint: "".to_string(), value: BigDecimal::new(BigInt::from(n), 0) })
+    }
+
+    fn from_i16(n: i16) -> Option<Self> {
+        Some(Number { hint: "".to_string(), value: BigDecimal::new(BigInt::from(n), 0) })
+    }
+
+    fn from_i32(n: i32) -> Option<Self> {
+        Some(Number { hint: "".to_string(), value: BigDecimal::new(BigInt::from(n), 0) })
+    }
+
     fn from_i64(n: i64) -> Option<Self> {
-        let value = BigDecimal::from_i64(n)?;
-        Some(Number { hint: "".to_string(), value })
+        Some(Number { hint: "".to_string(), value: BigDecimal::new(BigInt::from(n), 0) })
     }
 
     fn from_i128(n: i128) -> Option<Self> {
-        let value = BigDecimal::from_i128(n)?;
-        Some(Number { hint: "".to_string(), value })
+        Some(Number { hint: "".to_string(), value: BigDecimal::new(BigInt::from(n), 0) })
+    }
+
+    fn from_usize(n: usize) -> Option<Self> {
+        Some(Number { hint: "".to_string(), value: BigDecimal::new(BigInt::from(n), 0) })
+    }
+
+    fn from_u8(n: u8) -> Option<Self> {
+        Some(Number { hint: "".to_string(), value: BigDecimal::new(BigInt::from(n), 0) })
+    }
+
+    fn from_u16(n: u16) -> Option<Self> {
+        Some(Number { hint: "".to_string(), value: BigDecimal::new(BigInt::from(n), 0) })
+    }
+
+    fn from_u32(n: u32) -> Option<Self> {
+        Some(Number { hint: "".to_string(), value: BigDecimal::new(BigInt::from(n), 0) })
     }
 
     fn from_u64(n: u64) -> Option<Self> {
-        let value = BigDecimal::from_u64(n)?;
-        Some(Number { hint: "".to_string(), value })
+        Some(Number { hint: "".to_string(), value: BigDecimal::new(BigInt::from(n), 0) })
     }
 
     fn from_u128(n: u128) -> Option<Self> {
-        let value = BigDecimal::from_u128(n)?;
-        Some(Number { hint: "".to_string(), value })
+        Some(Number { hint: "".to_string(), value: BigDecimal::new(BigInt::from(n), 0) })
+    }
+
+    fn from_f32(n: f32) -> Option<Self> {
+        Some(Number { hint: "".to_string(), value: BigDecimal::new(BigInt::from(n), 0) })
     }
 
     fn from_f64(n: f64) -> Option<Self> {
-        let value = BigDecimal::from_f64(n)?;
-        Some(Number { hint: "".to_string(), value })
+        Some(Number { hint: "".to_string(), value: BigDecimal::new(BigInt::from(n), 0) })
     }
 }
 
