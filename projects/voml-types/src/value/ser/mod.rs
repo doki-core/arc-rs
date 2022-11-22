@@ -28,91 +28,78 @@ impl Serializer for VonSerializer {
 
     #[inline]
     fn serialize_bool(self, value: bool) -> VResult<Self::Ok> {
-        Ok(SahaNode::boolean(value))
+        Ok(Von::from(value))
     }
 
     #[inline]
     fn serialize_i8(self, value: i8) -> VResult<Self::Ok> {
-        Ok(SahaNode::number(Decimal::from(value)))
+        Ok(Von::from(value))
     }
 
     #[inline]
     fn serialize_i16(self, value: i16) -> VResult<Self::Ok> {
-        Ok(SahaNode::number(Decimal::from(value)))
+        Ok(Von::from(value))
     }
 
     #[inline]
     fn serialize_i32(self, value: i32) -> VResult<Self::Ok> {
-        Ok(SahaNode::number(Decimal::from(value)))
+        Ok(Von::from(value))
     }
     #[inline]
     fn serialize_i64(self, value: i64) -> VResult<Self::Ok> {
-        Ok(SahaNode::number(Decimal::from(value)))
+        Ok(Von::from(value))
     }
     #[inline]
     fn serialize_i128(self, value: i128) -> Result<Self::Ok, Self::Error> {
-        match Decimal::from_i128(value) {
-            Some(s) => Ok(SahaNode::number(s)),
-            None => Err(QError::syntax_error(format!("{value} can not cast to `Number`"))),
-        }
+        Ok(Von::from(value))
     }
 
     #[inline]
     fn serialize_u8(self, value: u8) -> VResult<Self::Ok> {
-        Ok(SahaNode::number(Decimal::from(value)))
+        Ok(Von::from(value))
     }
 
     #[inline]
     fn serialize_u16(self, value: u16) -> VResult<Self::Ok> {
-        Ok(SahaNode::number(Decimal::from(value)))
+        Ok(Von::from(value))
     }
 
     #[inline]
     fn serialize_u32(self, value: u32) -> VResult<Self::Ok> {
-        Ok(SahaNode::number(Decimal::from(value)))
+        Ok(Von::from(value))
     }
 
     #[inline]
     fn serialize_u64(self, value: u64) -> VResult<Self::Ok> {
-        Ok(SahaNode::number(Decimal::from(value)))
+        Ok(Von::from(value))
     }
     #[inline]
     fn serialize_u128(self, value: u128) -> Result<Self::Ok, Self::Error> {
-        match Decimal::from_u128(value) {
-            Some(s) => Ok(SahaNode::number(s)),
-            None => Err(QError::syntax_error(format!("{value} can not cast to `Number`"))),
-        }
+        Ok(Von::from(value))
     }
 
     #[inline]
     fn serialize_f32(self, value: f32) -> VResult<Self::Ok> {
-        match Decimal::from_f32(value) {
-            Some(s) => Ok(SahaNode::number(s)),
-            None => Err(QError::syntax_error(format!("{value} can not cast to `Number`"))),
-        }
+        Ok(Von::from(value))
     }
 
     #[inline]
     fn serialize_f64(self, value: f64) -> VResult<Self::Ok> {
-        match Decimal::from_f64(value) {
-            Some(s) => Ok(SahaNode::number(s)),
-            None => Err(QError::syntax_error(format!("{value} can not cast to `Number`"))),
-        }
+        Ok(Von::from(value))
     }
 
     #[inline]
     fn serialize_char(self, value: char) -> VResult<Self::Ok> {
-        todo!("{value}")
+        // Ok(Von::from(value))
     }
 
     #[inline]
     fn serialize_str(self, value: &str) -> VResult<Self::Ok> {
-        todo!("{value}")
+        Ok(Von::from(value))
     }
 
     fn serialize_bytes(self, value: &[u8]) -> VResult<Self::Ok> {
-        let vec = value.iter().map(|&b| Value::Number(b.into())).collect();
-        Ok(Value::Array(vec))
+        Ok(Von::from(value))
     }
 
     #[inline]

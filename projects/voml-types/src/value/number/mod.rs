@@ -2,62 +2,90 @@ use super::*;
 
 mod cmp;
 
+macro_rules! from_integer {
+    ($T:ty) => {
+        impl From<$T> for Von {
+            #[inline]
+            fn from(value: $T) -> Self {
+                Von::Integer(Box::new(Integer::from(value)))
+            }
+        }
+    };
+    ($($T:ty), +) => {
+        $(from_integer!($T);)+
+    };
+}
+
+macro_rules! from_decimal {
+    ($T:ty) => {
+        impl From<$T> for Von {
+            #[inline]
+            fn from(value: $T) -> Self {
+                Von::Decimal(Box::new(Decimal::from(value)))
+            }
+        }
+    };
+    ($($T:ty), +) => {
+        $(from_decimal!($T);)+
+    };
+}
+
 impl FromPrimitive for Von {
     #[inline]
     fn from_isize(n: isize) -> Option<Self> {
-        Some(Von::Integer(Box::new(Integer::from_isize(n)?)))
+        Some(Von::from(n))
     }
     #[inline]
     fn from_i8(n: i8) -> Option<Self> {
-        Some(Von::Integer(Box::new(Integer::from_i8(n)?)))
+        Some(Von::from(n))
     }
     #[inline]
     fn from_i16(n: i16) -> Option<Self> {
-        Some(Von::Integer(Box::new(Integer::from_i16(n)?)))
+        Some(Von::from(n))
     }
     #[inline]
     fn from_i32(n: i32) -> Option<Self> {
-        Some(Von::Integer(Box::new(Integer::from_i32(n)?)))
+        Some(Von::from(n))
     }
     #[inline]
     fn from_i64(n: i64) -> Option<Self> {
-        Some(Von::Integer(Box::new(Integer::from_i64(n)?)))
+        Some(Von::from(n))
     }
     #[inline]
     fn from_i128(n: i128) -> Option<Self> {
-        Some(Von::Integer(Box::new(Integer::from_i128(n)?)))
+        Some(Von::from(n))
     }
     #[inline]
     fn from_usize(n: usize) -> Option<Self> {
-        Some(Von::Integer(Box::new(Integer::from_usize(n)?)))
+        Some(Von::from(n))
     }
     #[inline]
     fn from_u8(n: u8) -> Option<Self> {
-        Some(Von::Integer(Box::new(Integer::from_u8(n)?)))
+        Some(Von::from(n))
     }
     #[inline]
     fn from_u16(n: u16) -> Option<Self> {
-        Some(Von::Integer(Box::new(Integer::from_u16(n)?)))
+        Some(Von::from(n))
     }
     #[inline]
     fn from_u32(n: u32) -> Option<Self> {
-        Some(Von::Integer(Box::new(Integer::from_u32(n)?)))
+        Some(Von::from(n))
     }
     #[inline]
     fn from_u64(n: u64) -> Option<Self> {
-        Some(Von::Integer(Box::new(Integer::from_u64(n)?)))
+        Some(Von::from(n))
     }
     #[inline]
     fn from_u128(n: u128) -> Option<Self> {
-        Some(Von::Integer(Box::new(Integer::from_u128(n)?)))
+        Some(Von::from(n))
     }
     #[inline]
     fn from_f32(n: f32) -> Option<Self> {
-        Some(Von::Decimal(Box::new(Decimal::from_f32(n)?)))
+        Some(Von::from(n))
     }
     #[inline]
     fn from_f64(n: f64) -> Option<Self> {
-        Some(Von::Decimal(Box::new(Decimal::from_f64(n)?)))
+        Some(Von::from(n))
     }
 }
 
@@ -181,3 +209,7 @@ impl From<bool> for Von {
         Von::Boolean(value)
     }
 }
+
+from_integer![u8, u16, u32, u64, u128, usize];
+from_integer![i8, i16, i32, i64, i128, isize];
+from_decimal![f32, f64];
