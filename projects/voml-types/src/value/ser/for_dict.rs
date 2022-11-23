@@ -1,5 +1,6 @@
 use num::ToPrimitive;
 use serde::{ser::Error, Serialize};
+use std::mem::take;
 
 use super::*;
 
@@ -13,22 +14,11 @@ impl SerializeMap for STable {
     {
         let key = self.serialize(key)?;
         match key {
-            Von::Number(v) => {
-                match v.to_usize() {
-                    None => {}
-                    Some(s) => {
-                        self.key = Some(s);
-
-                        self.vec.insert(s, key);
-                        return Ok(());
-                    }
-                }
-
-                todo!()
-            }
-            Von::String(_) => {
-                todo!()
-            }
+            Von::Number(v) => match v.to_usize() {
+                None => {}
+                Some(s) => return Ok(self.next_key = SKey::List(s)),
+            },
+            Von::String(s) => return Ok(self.next_key = SKey::Dict(s.text)),
             _ => {}
         }
         Err(VError::custom(
@@ -40,12 +30,18 @@ impl SerializeMap for STable {
     where
         T: Serialize,
     {
-        // let key = next_key.take();
-        // // Panic because this indicates a bug in the program rather than an
-        // // expected failure.
-        // let key = key.expect("serialize_value called before serialize_key");
-        // map.insert(key, tri!(to_value(value)));
-        Ok(())
+        let value = value.serialize(self.serializer)?;
+        match take(&mut self.next_key) {
+            SKey::None => Err(VError::custom("Could not find next key")),
+            SKey::List(v) => {
+                self.vec.insert(v, value);
+                Ok(())
+            }
+            SKey::Dict(v) => {
+                self.map.insert(v, value);
+                Ok(())
+            }
+        }
     }
 
     #[inline]

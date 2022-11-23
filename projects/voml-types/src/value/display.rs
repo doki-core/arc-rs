@@ -27,6 +27,32 @@ impl Von {
     /// ```
     /// use voml_types::Von;
     /// ```
+    pub const fn type_name(&self) -> &'static str {
+        match self {
+            Von::Boolean(_) => "Boolean",
+            Von::Number(_) => "Number",
+            Von::String(_) => "String",
+            Von::Binary(_) => "Binary",
+            Von::Table(_) => "Table",
+        }
+    }
+}
+
+impl Von {
+    /// Get mutable reference if the value is dict
+    ///
+    ///
+    /// # Arguments
+    ///
+    /// * `a`:
+    ///
+    /// returns: Option<&mut Dict<Von>>
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use voml_types::Von;
+    /// ```
     #[inline]
     pub fn number<S, N>(name: S, n: N) -> Self
     where

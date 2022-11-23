@@ -11,13 +11,32 @@ use serde::{
 
 use voml_collection::{Bytes, Text};
 
-use crate::{Dict, List, Table, VError, VErrorKind, VResult, Von};
+use crate::{value::der::Von2Object, Deserializer, Dict, List, Table, VError, VErrorKind, VResult, Von};
 
 mod for_dict;
 mod for_list;
 
-/// Serialize other formats to Von
-#[derive(Debug, Copy, Clone)]
+impl Deserializer {
+    /// Convert other objects to von object
+    ///
+    /// # Arguments
+    ///
+    /// * `value`:
+    ///
+    /// returns: Result<Von, VError>
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use voml_types::ObjectSerializer;
+    /// ```
+    pub fn deserializer_object<T: Serialize>(&self, value: &T) -> VResult<Von> {
+        let ser = Object2Von { enumeration_as_id: false };
+        value.serialize(ser)
+    }
+}
+
+#[derive(Copy, Clone)]
 pub struct Object2Von {
     pub enumeration_as_id: bool,
 }
@@ -39,7 +58,7 @@ pub struct STable {
     pub vec: List,
     pub map: Dict,
     pub serializer: Object2Von,
-    pub key: SKey,
+    pub next_key: SKey,
 }
 
 pub enum SKey {
@@ -224,7 +243,7 @@ impl serde::Serializer for Object2Von {
             vec: Vec::with_capacity(len.unwrap_or(0)),
             map: Default::default(),
             serializer: self,
-            key: SKey::None,
+            next_key: SKey::None,
         })
     }
     #[inline]
@@ -234,7 +253,7 @@ impl serde::Serializer for Object2Von {
             vec: Vec::with_capacity(len),
             map: Default::default(),
             serializer: self,
-            key: SKey::None,
+            next_key: SKey::None,
         })
     }
     #[inline]
@@ -244,7 +263,7 @@ impl serde::Serializer for Object2Von {
             vec: Vec::with_capacity(len),
             map: Default::default(),
             serializer: self,
-            key: SKey::None,
+            next_key: SKey::None,
         })
     }
 
@@ -266,7 +285,7 @@ impl serde::Serializer for Object2Von {
             vec: Vec::with_capacity(len),
             map: Default::default(),
             serializer: self,
-            key: SKey::None,
+            next_key: SKey::None,
         })
     }
     #[inline]
@@ -276,7 +295,7 @@ impl serde::Serializer for Object2Von {
             vec: vec![],
             map: IndexMap::with_capacity(length.unwrap_or(0)),
             serializer: self,
-            key: SKey::None,
+            next_key: SKey::None,
         })
     }
     #[inline]
@@ -286,7 +305,7 @@ impl serde::Serializer for Object2Von {
             vec: vec![],
             map: IndexMap::with_capacity(length),
             serializer: self,
-            key: SKey::None,
+            next_key: SKey::None,
         })
     }
 
@@ -309,7 +328,7 @@ impl serde::Serializer for Object2Von {
             vec: Vec::with_capacity(len),
             map: Default::default(),
             serializer: self,
-            key: SKey::None,
+            next_key: SKey::None,
         })
     }
     #[inline]
