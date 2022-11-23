@@ -44,11 +44,7 @@ pub struct Von2Object {
     pub von: Von,
 }
 
-impl Von2Object {
-    fn type_mismatch<T>(&self, expected: &str, actual: &str) -> VResult<T> {
-        Err(VError::custom(format!("Expected type `{expected}`, actual type `{actual}`",)))
-    }
-}
+impl Von2Object {}
 
 impl<'de> serde::Deserializer<'de> for Von2Object {
     type Error = VError;
@@ -66,10 +62,7 @@ impl<'de> serde::Deserializer<'de> for Von2Object {
     {
         match self.von {
             Von::Boolean(v) => visitor.visit_bool(v),
-            Von::Number(_) => self.type_mismatch("bool", "Number"),
-            Von::String(_) => self.type_mismatch("bool", "String"),
-            Von::Binary(_) => self.type_mismatch("bool", "Binary"),
-            Von::Table(_) => self.type_mismatch("bool", "Table"),
+            _ => type_mismatch("bool", self.von.type_name()),
         }
     }
 
@@ -136,7 +129,7 @@ impl<'de> serde::Deserializer<'de> for Von2Object {
     {
         match self.von.to_u64() {
             Some(v) => visitor.visit_u64(v),
-            None => self.type_mismatch("u64", "table"),
+            None => type_mismatch("u64", "table"),
         }
     }
 
@@ -165,14 +158,29 @@ impl<'de> serde::Deserializer<'de> for Von2Object {
     where
         V: Visitor<'de>,
     {
-        todo!()
+        match self.von {
+            Von::String(v) => {
+                let mut chars = v.text.chars().peekable();
+                match chars.next() {
+                    Some(s) => match chars.peek() {
+                        Some(_) => custom_error("Too much characters"),
+                        None => visitor.visit_char(s),
+                    },
+                    None => custom_error("Too less characters"),
+                }
+            }
+            _ => type_mismatch("char", self.von.type_name()),
+        }
     }
 
     fn deserialize_str<V>(self, visitor: V) -> Result<V::Value, Self::Error>
     where
         V: Visitor<'de>,
     {
-        todo!()
+        match self.von {
+            Von::String(v) => visitor.visit_string(v.text),
+            _ => type_mismatch("char", self.von.type_name()),
+        }
     }
 
     fn deserialize_string<V>(self, visitor: V) -> Result<V::Value, Self::Error>
@@ -297,4 +305,12 @@ impl<'de> serde::Deserializer<'de> for Von2Object {
     // fn __deserialize_content<V>(self, _: serde::actually_private::T, visitor: V) -> Result<Content<'de>, Self::Error> where V: Visitor<'de, Value=Content<'de>> {
     //     todo!()
     // }
+}
+
+fn custom_error<T>(s: impl Into<String>) -> VResult<T> {
+    Err(VError::custom(s.into()))
+}
+
+fn type_mismatch<T>(expected: &str, actual: &str) -> VResult<T> {
+    Err(VError::custom(format!("Expected type `{expected}`, actual type `{actual}`",)))
 }

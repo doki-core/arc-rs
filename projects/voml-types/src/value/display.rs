@@ -61,7 +61,28 @@ impl Von {
     {
         Self::Number(Box::new(Number { hint: name.into(), value: n.into() }))
     }
-
+    /// Get mutable reference if the value is dict
+    ///
+    ///
+    /// # Arguments
+    ///
+    /// * `a`:
+    ///
+    /// returns: Option<&mut Dict<Von>>
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use voml_types::Von;
+    /// ```
+    #[inline]
+    pub fn string<S, T>(name: S, text: T) -> Self
+    where
+        S: Into<String>,
+        T: Into<String>,
+    {
+        Self::String(Box::new(Text { hint: name.into(), text: text.into() }))
+    }
     /// Get mutable reference if the value is dict
     ///
     ///

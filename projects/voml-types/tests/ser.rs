@@ -22,7 +22,9 @@ fn test_structure2() {
     let ser = Serializer {};
     assert!(ser.serialize_object::<bool>(Von::Boolean(true)).unwrap());
     assert_eq!(1, ser.serialize_object::<usize>(Von::number("ms", 1)).unwrap());
-    assert_eq!('c', ser.serialize_object::<char>(Von::number("c", 1)).unwrap());
+    assert_eq!('c', ser.serialize_object::<char>(Von::string("", "c")).unwrap());
+    assert_eq!("str", ser.serialize_object::<&str>(Von::string("", "str")).unwrap());
+    assert_eq!("String", ser.serialize_object::<String>(Von::string("", "String")).unwrap());
 }
 
 #[test]
