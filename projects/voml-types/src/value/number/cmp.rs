@@ -1,5 +1,3 @@
-use num::BigInt;
-
 use super::*;
 
 impl PartialEq<bool> for Von {

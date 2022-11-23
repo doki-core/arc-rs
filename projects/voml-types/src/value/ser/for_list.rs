@@ -1,5 +1,3 @@
-use std::convert::TryFrom;
-
 use serde::Serialize;
 
 use super::*;
@@ -10,8 +8,7 @@ impl SerializeSeq for STable {
 
     fn serialize_element<T>(&mut self, value: &T) -> Result<(), Self::Error>
     where
-        T: ?Sized,
-        T: Serialize,
+        T: Serialize + ?Sized,
     {
         self.push_serialize(value)
     }
@@ -28,8 +25,7 @@ impl SerializeTuple for STable {
 
     fn serialize_element<T>(&mut self, value: &T) -> Result<(), Self::Error>
     where
-        T: ?Sized,
-        T: Serialize,
+        T: Serialize + ?Sized,
     {
         self.push_serialize(value)
     }
@@ -46,8 +42,7 @@ impl SerializeTupleStruct for STable {
 
     fn serialize_field<T>(&mut self, value: &T) -> Result<(), Self::Error>
     where
-        T: ?Sized,
-        T: Serialize,
+        T: Serialize + ?Sized,
     {
         self.push_serialize(value)
     }
@@ -64,8 +59,7 @@ impl SerializeTupleVariant for STable {
 
     fn serialize_field<T>(&mut self, value: &T) -> Result<(), Self::Error>
     where
-        T: ?Sized,
-        T: Serialize,
+        T: Serialize + ?Sized,
     {
         self.push_serialize(value)
     }

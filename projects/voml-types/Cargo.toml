@@ -1,6 +1,6 @@
 [package]
 name = "voml-types"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["192607617@qq.com"]
 description = "External function system for arc"
 license = "MPL-2.0"
@@ -21,12 +21,12 @@ serde_json = { version = "1.0.89", optional = true }
 serde = { version = "1.0.147", features = ["derive"] }
 
 [dependencies.voml-collection]
-#version = "0.3.0"
-path = "../voml-collection"
+version = "0.3.1"
+#path = "../voml-collection"
 features = ["bigdecimal"]
 
 [dev-dependencies]
 
 
 [features]
-default = ["serde_json"]
+default = []

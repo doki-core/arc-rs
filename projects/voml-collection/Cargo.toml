@@ -1,6 +1,6 @@
 [package]
 name = "voml-collection"
-version = "0.3.0"
+version = "0.3.1"
 authors = ["192607617@qq.com"]
 description = "Collections for [VOML](https://github.com/voml/voml-rs)"
 homepage = "https://github.com/voml/voml-rs"

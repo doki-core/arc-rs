@@ -7,7 +7,7 @@ impl Debug for VErrorKind {
             VErrorKind::IOError(v) => Debug::fmt(v, f),
             VErrorKind::ParseError(v) => Debug::fmt(v, f),
             VErrorKind::Duplicate(v) => Debug::fmt(v, f),
-            VErrorKind::UnknownError => f.write_str("UnknownError"),
+            VErrorKind::Custom(v) => f.write_str(&v),
         }
     }
 }
@@ -36,12 +36,12 @@ impl From<std::io::Error> for VError {
 
 impl From<Infallible> for VError {
     fn from(_: Infallible) -> Self {
-        Self { kind: Box::new(VErrorKind::UnknownError), level: DiagnosticLevel::Error, file: Default::default() }
+        Self { kind: Box::new(VErrorKind::Custom("".to_string())), level: DiagnosticLevel::Error, file: Default::default() }
     }
 }
 
 impl From<()> for VError {
     fn from(_: ()) -> Self {
-        Self { kind: Box::new(VErrorKind::UnknownError), level: DiagnosticLevel::Error, file: Default::default() }
+        Self { kind: Box::new(VErrorKind::Custom("".to_string())), level: DiagnosticLevel::Error, file: Default::default() }
     }
 }

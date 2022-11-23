@@ -1,3 +1,4 @@
+use num::ToPrimitive;
 use serde::{ser::Error, Serialize};
 
 use super::*;
@@ -10,6 +11,25 @@ impl SerializeMap for STable {
     where
         T: Serialize,
     {
+        let key = self.serialize(key)?;
+        match key {
+            Von::Boolean(_) => {
+                todo!()
+            }
+            Von::Number(_) => {
+                todo!()
+            }
+            Von::String(_) => {
+                todo!()
+            }
+            Von::Binary(_) => {
+                todo!()
+            }
+            Von::Table(_) => {
+                todo!()
+            }
+        }
+
         todo!()
     }
 
@@ -37,11 +57,9 @@ impl SerializeStruct for STable {
 
     fn serialize_field<T>(&mut self, key: &'static str, value: &T) -> Result<(), Self::Error>
     where
-        T: ?Sized,
-        T: Serialize,
+        T: Serialize + ?Sized,
     {
-        let value = self.serialize(value)?;
-        match self.map.insert(key.to_string(), value) {
+        match self.map.insert(key.to_string(), self.serialize(value)?) {
             None => Ok(()),
             Some(_) => Err(VError::custom("redundant field")),
         }
@@ -58,10 +76,12 @@ impl SerializeStructVariant for STable {
 
     fn serialize_field<T>(&mut self, key: &'static str, value: &T) -> Result<(), Self::Error>
     where
-        T: ?Sized,
-        T: Serialize,
+        T: Serialize + ?Sized,
     {
-        todo!()
+        match self.map.insert(key.to_string(), self.serialize(value)?) {
+            None => Ok(()),
+            Some(_) => Err(VError::custom("redundant field")),
+        }
     }
     #[inline]
     fn end(self) -> VResult<Self::Ok> {

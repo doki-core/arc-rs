@@ -37,7 +37,7 @@ pub enum VErrorKind {
     /// The error type for I/O operations
     Duplicate(DuplicateItem),
     /// Unknown error
-    UnknownError,
+    Custom(String),
 }
 
 #[derive(Debug)]

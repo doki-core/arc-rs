@@ -1,8 +1,7 @@
-use std::fmt::{Debug, Display, Formatter};
+use std::fmt::{Debug, Formatter};
 
 use indexmap::IndexMap;
 use num::{FromPrimitive, ToPrimitive};
-use serde::{ser::SerializeSeq, Serialize, Serializer};
 
 use voml_collection::{Bytes, Number, Text};
 

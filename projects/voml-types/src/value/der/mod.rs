@@ -1,13 +1,16 @@
-use crate::{VError, Von};
-use serde::{de::Visitor, Deserializer};
+use crate::{VError, VErrorKind, Von};
+use serde::{
+    de::{Error, Visitor},
+    Deserializer,
+};
 use std::fmt::Display;
 
-impl serde::de::Error for VError {
+impl Error for VError {
     fn custom<T>(msg: T) -> Self
     where
         T: Display,
     {
-        todo!()
+        VError { kind: Box::new(VErrorKind::Custom(msg.to_string())), level: Default::default(), file: Default::default() }
     }
 }
 
