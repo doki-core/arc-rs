@@ -4,8 +4,9 @@ use std::{
     fmt::{Debug, Display, Formatter},
 };
 
-use crate::DuplicateItem;
 use diagnostic::{DiagnosticLevel, FileID, Span};
+
+use crate::DuplicateItem;
 
 mod for_std;
 
@@ -21,11 +22,11 @@ pub type Validation<T> = diagnostic::Validation<T, VError>;
 #[derive(Debug)]
 pub struct VError {
     /// Actual error kind
-    pub kind: Box<VErrorKind>,
+    kind: Box<VErrorKind>,
     /// Error level for report
-    pub level: DiagnosticLevel,
-    /// File name where error occurred
-    pub file: FileID,
+    level: DiagnosticLevel,
+
+    source: Option<Box<dyn Error>>,
 }
 
 /// Actual error data for the error
@@ -44,4 +45,21 @@ pub enum VErrorKind {
 pub struct ParseFail {
     pub message: String,
     pub span: Span,
+}
+
+impl VError {
+    #[inline]
+    pub fn custom_error<S>(message: S) -> Self
+    where
+        S: Into<String>,
+    {
+        VError { kind: Box::new(VErrorKind::Custom(message.into())), level: Default::default(), source: None }
+    }
+    #[inline]
+    pub fn custom_result<T, S>(message: S) -> VResult<T>
+    where
+        S: Into<String>,
+    {
+        Err(VError::custom_error(message))
+    }
 }

@@ -1,4 +1,10 @@
+use std::fmt::Display;
+
 use super::*;
+
+struct WrapDisplay<'i> {
+    inner: &'i BigDecimal,
+}
 
 impl Debug for Number {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
@@ -6,12 +12,14 @@ impl Debug for Number {
     }
 }
 
-struct WrapDisplay<'i> {
-    inner: &'i BigDecimal,
-}
-
 impl Debug for WrapDisplay<'_> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         f.write_str(&self.inner.to_string())
+    }
+}
+
+impl Display for Number {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}{}", self.value, self.hint)
     }
 }

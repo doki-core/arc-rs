@@ -6,7 +6,7 @@ use serde::{
     Deserialize, Serialize,
 };
 
-use crate::{Serializer, VError, VErrorKind, VResult, Von};
+use crate::{SerializeDecimalToInteger, Serializer, VError, VErrorKind, VResult, Von};
 
 mod methods;
 
@@ -25,11 +25,9 @@ impl Serializer {
     /// use voml_types::ObjectSerializer;
     /// ```
     pub fn serialize_object<'de, T: Deserialize<'de>>(&self, value: Von) -> VResult<T> {
-        T::deserialize(Von2Object { von: value })
+        T::deserialize(Von2Object { von: value, decimal_to_integer: self.decimal_to_integer })
     }
 }
-
-fn test() {}
 
 impl Error for VError {
     fn custom<T>(msg: T) -> Self
@@ -42,6 +40,7 @@ impl Error for VError {
 
 pub struct Von2Object {
     pub von: Von,
+    pub decimal_to_integer: SerializeDecimalToInteger,
 }
 
 impl Von2Object {}
@@ -127,10 +126,28 @@ impl<'de> serde::Deserializer<'de> for Von2Object {
     where
         V: Visitor<'de>,
     {
-        match self.von.to_u64() {
-            Some(v) => visitor.visit_u64(v),
-            None => type_mismatch("u64", "table"),
-        }
+        
+        
+        let number = match self.von {
+            Von::Number(v) => match self.decimal_to_integer {
+                SerializeDecimalToInteger::Prohibit => {
+                    if !v.is_integer() {
+                        custom_error("TODO")
+                    }
+                    else {
+                        v.value
+                    }
+                }
+                SerializeDecimalToInteger::Round => {
+                    
+                }
+                SerializeDecimalToInteger::Ceil => {}
+                SerializeDecimalToInteger::Floor => {}
+            },
+            _ => return type_mismatch("u64", self.von.type_name()),
+        };
+        
+        
     }
 
     fn deserialize_u128<V>(self, visitor: V) -> Result<V::Value, Self::Error>
@@ -177,9 +194,9 @@ impl<'de> serde::Deserializer<'de> for Von2Object {
     where
         V: Visitor<'de>,
     {
-        match self.von {
-            Von::String(v) => visitor.visit_string(v.text),
-            _ => type_mismatch("char", self.von.type_name()),
+        match &self.von {
+            Von::String(v) => visitor.visit_str(&v.text),
+            _ => type_mismatch("&str", self.von.type_name()),
         }
     }
 
@@ -187,7 +204,10 @@ impl<'de> serde::Deserializer<'de> for Von2Object {
     where
         V: Visitor<'de>,
     {
-        todo!()
+        match self.von {
+            Von::String(v) => visitor.visit_string(v.text),
+            _ => type_mismatch("String", self.von.type_name()),
+        }
     }
 
     fn deserialize_bytes<V>(self, visitor: V) -> Result<V::Value, Self::Error>
@@ -305,10 +325,6 @@ impl<'de> serde::Deserializer<'de> for Von2Object {
     // fn __deserialize_content<V>(self, _: serde::actually_private::T, visitor: V) -> Result<Content<'de>, Self::Error> where V: Visitor<'de, Value=Content<'de>> {
     //     todo!()
     // }
-}
-
-fn custom_error<T>(s: impl Into<String>) -> VResult<T> {
-    Err(VError::custom(s.into()))
 }
 
 fn type_mismatch<T>(expected: &str, actual: &str) -> VResult<T> {

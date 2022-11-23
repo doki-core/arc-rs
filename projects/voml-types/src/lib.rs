@@ -1,11 +1,14 @@
-#![forbid(missing_docs)]
+// #![forbid(missing_docs)]
 #![doc = include_str!("../Readme.md")]
 
 pub use diagnostic::{Diagnostic, DiagnosticLevel, FileID, Span, TextStorage};
 
 pub use self::{
     error::{duplicate::DuplicateItem, VError, VErrorKind, VResult, Validation},
-    value::{Deserializer, Dict, List, Serializer, Table, Von},
+    value::{
+        ser::{SerializeDecimalToInteger, Serializer},
+        Deserializer, Dict, List, Table, Von,
+    },
 };
 
 mod convert;

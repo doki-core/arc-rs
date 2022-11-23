@@ -1,5 +1,15 @@
 use super::*;
-impl Error for VError {}
+
+impl Error for VError {
+    fn source(&self) -> Option<&(dyn Error + 'static)> {
+        match &self.source {
+            Some(s) => Some(&**s),
+            None => None,
+        }
+    }
+}
+
+
 
 impl Debug for VErrorKind {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {

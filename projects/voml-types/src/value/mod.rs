@@ -4,6 +4,7 @@ use indexmap::IndexMap;
 use num::{FromPrimitive, ToPrimitive};
 
 use voml_collection::{BigDecimal, Bytes, Number, Text};
+
 pub mod der;
 mod display;
 mod number;
@@ -140,21 +141,7 @@ pub enum Von {
     Table(Box<Table>),
 }
 
-/// Convert other objects to von object
-///
-/// # Arguments
-///
-/// * `value`:
-///
-/// returns: Result<Von, VError>
-///
-/// # Examples
-///
-/// ```
-/// use voml_types::ObjectSerializer;
-/// ```
-#[derive(Debug, Copy, Clone)]
-pub struct Serializer {}
+
 
 /// Convert other objects to von object
 ///
