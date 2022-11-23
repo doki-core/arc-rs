@@ -5,7 +5,7 @@ pub use diagnostic::{Diagnostic, DiagnosticLevel, FileID, Span, TextStorage};
 
 pub use self::{
     error::{duplicate::DuplicateItem, VError, VErrorKind, VResult, Validation},
-    value::{ser::Serializer, Dict, List, Table, Von},
+    value::{der::Deserializer, Dict, List, Table, Von},
 };
 
 mod convert;

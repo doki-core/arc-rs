@@ -1,11 +1,11 @@
 use serde::Serialize;
 pub use serde_json::Value as Json;
 
-use crate::{Serializer, Von};
+use crate::{ObjectSerializer, Von};
 
 impl From<Json> for Von {
     fn from(json: Json) -> Self {
-        match json.serialize(Serializer::default()) {
+        match json.serialize(ObjectSerializer::default()) {
             Ok(o) => o,
             Err(e) => {
                 todo!("{e}")

@@ -3,9 +3,8 @@ use std::fmt::{Debug, Formatter};
 use indexmap::IndexMap;
 use num::{FromPrimitive, ToPrimitive};
 
-use voml_collection::{Bytes, Number, Text};
-
-mod der;
+use voml_collection::{BigDecimal, Bytes, Number, Text};
+pub mod der;
 mod display;
 mod number;
 pub mod ser;

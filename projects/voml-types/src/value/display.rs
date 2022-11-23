@@ -28,12 +28,36 @@ impl Von {
     /// use voml_types::Von;
     /// ```
     #[inline]
+    pub fn number<S, N>(name: S, n: N) -> Self
+    where
+        S: Into<String>,
+        N: Into<BigDecimal>,
+    {
+        Self::Number(Box::new(Number { hint: name.into(), value: n.into() }))
+    }
+
+    /// Get mutable reference if the value is dict
+    ///
+    ///
+    /// # Arguments
+    ///
+    /// * `a`:
+    ///
+    /// returns: Option<&mut Dict<Von>>
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use voml_types::Von;
+    /// ```
+    #[inline]
     pub fn list<S>(name: S, items: List) -> Self
     where
         S: Into<String>,
     {
         Self::Table(Box::new(Table { hint: name.into(), list: items, dict: Default::default() }))
     }
+
     /// Get mutable reference if the value is dict
     ///
     ///

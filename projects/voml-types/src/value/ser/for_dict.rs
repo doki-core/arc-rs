@@ -13,24 +13,27 @@ impl SerializeMap for STable {
     {
         let key = self.serialize(key)?;
         match key {
-            Von::Boolean(_) => {
-                todo!()
-            }
-            Von::Number(_) => {
+            Von::Number(v) => {
+                match v.to_usize() {
+                    None => {}
+                    Some(s) => {
+                        self.key = Some(s);
+
+                        self.vec.insert(s, key);
+                        return Ok(());
+                    }
+                }
+
                 todo!()
             }
             Von::String(_) => {
                 todo!()
             }
-            Von::Binary(_) => {
-                todo!()
-            }
-            Von::Table(_) => {
-                todo!()
-            }
+            _ => {}
         }
-
-        todo!()
+        Err(VError::custom(
+            "Table keys must be strings, if you really need non-string keys, consider using `serde_with::serde_as`",
+        ))
     }
 
     fn serialize_value<T: ?Sized>(&mut self, value: &T) -> Result<(), Self::Error>

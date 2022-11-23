@@ -1,6 +1,6 @@
 use std::fmt::{Debug, Formatter};
 
-use bigdecimal::BigDecimal;
+pub use bigdecimal::BigDecimal;
 use serde::{Deserialize, Serialize};
 
 mod display;

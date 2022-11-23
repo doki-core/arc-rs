@@ -1,7 +1,8 @@
 #[cfg(feature = "rust_decimal")]
-pub use self::decimal::Decimal;
+pub use self::decimal::*;
 #[cfg(feature = "bigdecimal")]
-pub use self::number::Number;
+pub use self::number::*;
+
 pub use self::{bytes::Bytes, integer::Integer, namespace::Namespace, text::Text};
 
 #[cfg(feature = "rust_decimal")]
