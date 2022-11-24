@@ -1,7 +1,7 @@
 use super::*;
 
 struct WrapDisplay<'i> {
-    inner: &'i BigFloatNumber,
+    inner: &'i FBig<Zero, 2>,
 }
 
 impl Debug for Number {

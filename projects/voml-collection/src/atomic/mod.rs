@@ -1,5 +1,3 @@
-pub use dashu::DBig;
-
 pub use self::{bytes::Bytes, integer::Integer, namespace::Namespace, number::Number, text::Text};
 
 // mod decimal;

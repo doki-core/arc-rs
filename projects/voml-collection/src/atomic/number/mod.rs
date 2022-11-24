@@ -1,11 +1,8 @@
-use crate::DBig;
 use serde::{Deserialize, Serialize};
 use std::fmt::{Debug, Display, Formatter};
 mod display;
 mod primitive;
 use dashu::float::{round::mode::Zero, FBig};
-use dashu_float::FBig;
-use num::{FromPrimitive, ToPrimitive};
 use std::ops::Add;
 
 /// An arbitrary-precision integer with a unit

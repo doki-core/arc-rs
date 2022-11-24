@@ -1,4 +1,7 @@
 use super::*;
+use dashu::base::ConversionError;
+
+use num_traits::FromPrimitive;
 
 macro_rules! from_integer {
     ($T:ty) => {
@@ -91,22 +94,22 @@ impl ToPrimitive for Number {
     }
 }
 
-from_integer![u8, u16, u32, u64, u128, usize];
-from_integer![i8, i16, i32, i64, i128, isize];
+// from_integer![u8, u16, u32, u64, u128, usize];
+// from_integer![i8, i16, i32, i64, i128, isize];
 
 impl TryFrom<f32> for Number {
-    type Error = ParseBigDecimalError;
+    type Error = ConversionError;
 
     fn try_from(value: f32) -> Result<Self, Self::Error> {
-        Ok(Self { hint: "".to_string(), value: DBig::try_from(value)? })
+        Ok(Self { hint: "".to_string(), value: FBig::try_from(value)? })
     }
 }
 
 impl TryFrom<f64> for Number {
-    type Error = ParseBigDecimalError;
+    type Error = ConversionError;
 
     fn try_from(value: f64) -> Result<Self, Self::Error> {
-        Ok(Self { hint: "".to_string(), value: BigFloatNumber::try_from(value)? })
+        Ok(Self { hint: "".to_string(), value: FBig::try_from(value)? })
     }
 }
 
@@ -120,7 +123,7 @@ impl Add<Self> for Number {
 
 impl Zero for Number {
     fn zero() -> Self {
-        Number { hint: "".to_string(), value: BigFloatNumber::zero() }
+        Number { hint: "".to_string(), value: FBig::zero() }
     }
 
     fn is_zero(&self) -> bool {
