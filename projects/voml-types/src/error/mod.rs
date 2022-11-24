@@ -4,9 +4,9 @@ use std::{
     fmt::{Debug, Display, Formatter},
 };
 
-use diagnostic::{DiagnosticLevel, FileID, Span};
+use diagnostic::{DiagnosticLevel, Span};
 
-use crate::DuplicateItem;
+use crate::VErrorKind::TypeMismatch;
 
 mod for_std;
 
@@ -19,32 +19,43 @@ pub type VResult<T = ()> = Result<T, VError>;
 pub type Validation<T> = diagnostic::Validation<T, VError>;
 
 /// Error type for all Notedown operators
-#[derive(Debug)]
+
 pub struct VError {
     /// Actual error kind
-    kind: Box<VErrorKind>,
+    pub kind: Box<VErrorKind>,
     /// Error level for report
-    level: DiagnosticLevel,
-
-    source: Option<Box<dyn Error>>,
+    pub level: DiagnosticLevel,
 }
 
 /// Actual error data for the error
 pub enum VErrorKind {
     /// The error type for I/O operations
-    IOError(std::io::Error),
+    IOError {
+        error: std::io::Error,
+        file: String,
+    },
     /// The error type for I/O operations
-    ParseError(ParseFail),
+    ParseError {
+        message: String,
+        span: Span,
+    },
     /// The error type for I/O operations
-    Duplicate(DuplicateItem),
+    Duplicate {
+        /// kind
+        kind: &'static str,
+        /// item
+        item: String,
+        /// lsh
+        lhs: Span,
+        /// rhs
+        rhs: Span,
+    },
+    TypeMismatch {
+        expected: &'static str,
+        actual: String,
+    },
     /// Unknown error
     Custom(String),
-}
-
-#[derive(Debug)]
-pub struct ParseFail {
-    pub message: String,
-    pub span: Span,
 }
 
 impl VError {
@@ -53,13 +64,13 @@ impl VError {
     where
         S: Into<String>,
     {
-        VError { kind: Box::new(VErrorKind::Custom(message.into())), level: Default::default(), source: None }
+        VError { kind: Box::new(VErrorKind::Custom(message.into())), level: Default::default() }
     }
     #[inline]
-    pub fn custom_result<T, S>(message: S) -> VResult<T>
+    pub fn type_mismatch<S>(expected: &str, actual: S) -> Self
     where
         S: Into<String>,
     {
-        Err(VError::custom_error(message))
+        VError { kind: Box::new(TypeMismatch { expected, actual: actual.into() }), level: Default::default() }
     }
 }

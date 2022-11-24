@@ -1,9 +1,7 @@
-use std::fmt::Display;
-
 use super::*;
 
 struct WrapDisplay<'i> {
-    inner: &'i BigDecimal,
+    inner: &'i BigFloatNumber,
 }
 
 impl Debug for Number {

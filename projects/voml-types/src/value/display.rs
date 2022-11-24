@@ -36,6 +36,29 @@ impl Von {
             Von::Table(_) => "Table",
         }
     }
+    /// Get mutable reference if the value is dict
+    ///
+    ///
+    /// # Arguments
+    ///
+    /// * `a`:
+    ///
+    /// returns: Option<&mut Dict<Von>>
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use voml_types::Von;
+    /// ```
+    pub fn type_detail(&self) -> String {
+        match self {
+            Von::Boolean(v) => v.to_string(),
+            Von::Number(v) => v.to_string(),
+            Von::String(v) => v.to_string(),
+            Von::Binary(v) => v.to_string(),
+            Von::Table(v) => v.to_string(),
+        }
+    }
 }
 
 impl Von {

@@ -4,7 +4,7 @@
 pub use diagnostic::{Diagnostic, DiagnosticLevel, FileID, Span, TextStorage};
 
 pub use self::{
-    error::{duplicate::DuplicateItem, VError, VErrorKind, VResult, Validation},
+    error::{VError, VErrorKind, VResult, Validation},
     value::{
         ser::{SerializeDecimalToInteger, Serializer},
         Deserializer, Dict, List, Table, Von,

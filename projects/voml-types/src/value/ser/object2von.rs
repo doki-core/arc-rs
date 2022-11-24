@@ -1,48 +1,38 @@
-
+use crate::value::type_mismatch;
 use serde::{ser::Error, Serializer};
 use voml_collection::BigDecimal;
 
 use super::*;
 
 impl SerializeDecimalToInteger {
-    pub fn extra_integer(&self, von: Von) -> VResult<BigDecimal> {
-        let number = match von {
-            Von::Number(v) => {
-                v.value
-            }
-           _=> {
-               type_mismatch("u64", self.von.type_name())
-           }
+    pub fn extra_integer(&self, von: Von, typing: &'static str) -> VResult<BigDecimal> {
+        let n = match von {
+            Von::Number(v) => v.value,
+            _ => type_mismatch(typing, von.type_detail()),
         };
-        
+
         match self {
             SerializeDecimalToInteger::Prohibit => {
-                
+                match n.is_integer() {
+
+                }
             }
             SerializeDecimalToInteger::Round => {
-                
+                match n.is_integer() {
+
+                }
+
             }
             SerializeDecimalToInteger::Ceil => {
-                
+                n.round()
+                0.0.ceil()
             }
             SerializeDecimalToInteger::Floor => {
-                
+                match n.is_integer() {
+
+                }
             }
         }
-        
-        let number = match self.von {
-            Von::Number(v) => match self.decimal_to_integer {
-                SerializeDecimalToInteger::Prohibit => {
-
-                }
-                SerializeDecimalToInteger::Round => {
-
-                }
-                SerializeDecimalToInteger::Ceil => {}
-                SerializeDecimalToInteger::Floor => {}
-            },
-            _ => return type_mismatch("u64", self.von.type_name()),
-        };
     }
 }
 

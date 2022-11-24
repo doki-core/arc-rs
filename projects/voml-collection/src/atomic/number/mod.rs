@@ -1,10 +1,12 @@
-use std::fmt::{Debug, Formatter};
-
-pub use bigdecimal::BigDecimal;
+use crate::DBig;
 use serde::{Deserialize, Serialize};
-
+use std::fmt::{Debug, Display, Formatter};
 mod display;
 mod primitive;
+use dashu::float::{round::mode::Zero, FBig};
+use dashu_float::FBig;
+use num::{FromPrimitive, ToPrimitive};
+use std::ops::Add;
 
 /// An arbitrary-precision integer with a unit
 #[derive(Clone, Default, PartialEq, Eq, Serialize, Deserialize)]
@@ -12,7 +14,7 @@ pub struct Number {
     /// The unit of this number
     pub hint: String,
     /// The value of this number
-    pub value: BigDecimal,
+    pub value: FBig<Zero, 2>,
 }
 
 impl Number {

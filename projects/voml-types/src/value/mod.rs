@@ -5,6 +5,8 @@ use num::{FromPrimitive, ToPrimitive};
 
 use voml_collection::{BigDecimal, Bytes, Number, Text};
 
+use crate::{VError, VResult};
+
 pub mod der;
 mod display;
 mod number;
@@ -141,8 +143,6 @@ pub enum Von {
     Table(Box<Table>),
 }
 
-
-
 /// Convert other objects to von object
 ///
 /// # Arguments
@@ -172,4 +172,14 @@ pub struct Deserializer {
     /// use voml_types::ObjectSerializer;
     /// ```
     pub enumeration_as_integer: bool,
+}
+
+#[inline]
+fn custom_error<T, S: Into<String>>(msg: S) -> VResult<T> {
+    Err(VError::custom_error(msg))
+}
+
+#[inline]
+fn type_mismatch<T, S: Into<String>>(expected: &str, actual: S) -> VResult<T> {
+    Err(VError::type_mismatch(expected, actual))
 }

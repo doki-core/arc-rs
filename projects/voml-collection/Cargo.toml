@@ -14,7 +14,7 @@ edition = "2021"
 [dependencies]
 serde = { version = "1.0.147", features = ["derive"] }
 num = { version = "0.4.0", features = ["serde"] }
-bigdecimal = { version = "0.3.0", features = ["serde"], optional = true }
+dashu = { version = "0.3.0", features = ["serde"] }
 rust_decimal = { version = "1.26.1", features = ["serde"], optional = true }
 indexmap = { version = "1.9.2", features = ["serde"] }
 

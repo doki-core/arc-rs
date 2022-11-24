@@ -6,7 +6,8 @@ use serde::{
     Deserialize, Serialize,
 };
 
-use crate::{SerializeDecimalToInteger, Serializer, VError, VErrorKind, VResult, Von};
+use crate::{value::type_mismatch, SerializeDecimalToInteger, Serializer, VError, VErrorKind, VResult, Von};
+use crate::value::custom_error;
 
 mod methods;
 
@@ -34,7 +35,7 @@ impl Error for VError {
     where
         T: Display,
     {
-        VError { kind: Box::new(VErrorKind::Custom(msg.to_string())), level: Default::default(), file: Default::default() }
+        VError { kind: Box::new(VErrorKind::Custom(msg.to_string())), level: Default::default() }
     }
 }
 
@@ -126,27 +127,11 @@ impl<'de> serde::Deserializer<'de> for Von2Object {
     where
         V: Visitor<'de>,
     {
-        
-        
-        let number = match self.von {
-            Von::Number(v) => match self.decimal_to_integer {
-                SerializeDecimalToInteger::Prohibit => {
-                    if !v.is_integer() {
-                        custom_error("TODO")
-                    }
-                    else {
-                        v.value
-                    }
-                }
-                SerializeDecimalToInteger::Round => {
-                    
-                }
-                SerializeDecimalToInteger::Ceil => {}
-                SerializeDecimalToInteger::Floor => {}
-            },
-            _ => return type_mismatch("u64", self.von.type_name()),
-        };
-        
+        let int = self.decimal_to_integer.extra_integer(self.von)?;
+        match int.to_u64() {
+            None => {}
+            Some(_) => {}
+        }
         
     }
 
@@ -180,10 +165,10 @@ impl<'de> serde::Deserializer<'de> for Von2Object {
                 let mut chars = v.text.chars().peekable();
                 match chars.next() {
                     Some(s) => match chars.peek() {
-                        Some(_) => custom_error("Too much characters"),
+                        Some(_) => VError::custom_result("Too much characters"),
                         None => visitor.visit_char(s),
                     },
-                    None => custom_error("Too less characters"),
+                    None => VError::custom_result("Too less characters"),
                 }
             }
             _ => type_mismatch("char", self.von.type_name()),
@@ -325,8 +310,4 @@ impl<'de> serde::Deserializer<'de> for Von2Object {
     // fn __deserialize_content<V>(self, _: serde::actually_private::T, visitor: V) -> Result<Content<'de>, Self::Error> where V: Visitor<'de, Value=Content<'de>> {
     //     todo!()
     // }
-}
-
-fn type_mismatch<T>(expected: &str, actual: &str) -> VResult<T> {
-    Err(VError::custom(format!("Expected type `{expected}`, actual type `{actual}`",)))
 }

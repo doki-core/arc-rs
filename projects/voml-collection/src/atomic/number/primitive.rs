@@ -1,15 +1,10 @@
-use std::ops::Add;
-
-use bigdecimal::ParseBigDecimalError;
-use num::{BigInt, FromPrimitive, ToPrimitive, Zero};
-
 use super::*;
 
 macro_rules! from_integer {
     ($T:ty) => {
         impl From<$T> for Number {
             fn from(n: $T) -> Self {
-                Number { hint: "".to_string(), value: BigDecimal::new(BigInt::from(n), 0) }
+                Number { hint: "".to_string(), value: BigFloatNumber::new(BigInt::from(n), 0) }
             }
         }
     };
@@ -103,7 +98,7 @@ impl TryFrom<f32> for Number {
     type Error = ParseBigDecimalError;
 
     fn try_from(value: f32) -> Result<Self, Self::Error> {
-        Ok(Self { hint: "".to_string(), value: BigDecimal::try_from(value)? })
+        Ok(Self { hint: "".to_string(), value: DBig::try_from(value)? })
     }
 }
 
@@ -111,7 +106,7 @@ impl TryFrom<f64> for Number {
     type Error = ParseBigDecimalError;
 
     fn try_from(value: f64) -> Result<Self, Self::Error> {
-        Ok(Self { hint: "".to_string(), value: BigDecimal::try_from(value)? })
+        Ok(Self { hint: "".to_string(), value: BigFloatNumber::try_from(value)? })
     }
 }
 
@@ -125,7 +120,7 @@ impl Add<Self> for Number {
 
 impl Zero for Number {
     fn zero() -> Self {
-        Number { hint: "".to_string(), value: BigDecimal::zero() }
+        Number { hint: "".to_string(), value: BigFloatNumber::zero() }
     }
 
     fn is_zero(&self) -> bool {

@@ -81,7 +81,7 @@ impl Default for Object2Von {
 
 impl Error for VError {
     fn custom<T: Display>(msg: T) -> Self {
-        VError { kind: Box::new(VErrorKind::Custom(msg.to_string())), level: Default::default(), file: Default::default() }
+        VError { kind: Box::new(VErrorKind::Custom(msg.to_string())), level: Default::default() }
     }
 }
 
