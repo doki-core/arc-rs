@@ -1,6 +1,6 @@
 use dashu::integer::IBig;
+use num_traits::ToPrimitive;
 use serde::{Deserialize, Serialize};
-
 mod cmp;
 mod primitive;
 

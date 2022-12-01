@@ -12,10 +12,10 @@ exclude = ["/tests/*"]
 edition = "2021"
 
 [dependencies]
-serde = { version = "1.0.147", features = ["derive"] }
+serde = { version = "1.0.148", features = ["derive"] }
 num-traits = "0.2.15"
 dashu = { version = "0.3.0", features = ["serde"] }
-rust_decimal = { version = "1.26.1", features = ["serde"], optional = true }
+rust_decimal = { version = "1.27.0", features = ["serde"], optional = true }
 indexmap = { version = "1.9.2", features = ["serde"] }
 
 [dev-dependencies]

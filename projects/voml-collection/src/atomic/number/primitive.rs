@@ -1,13 +1,13 @@
-use super::*;
 use dashu::base::ConversionError;
+use num_traits::{FromPrimitive, ToPrimitive};
 
-use num_traits::FromPrimitive;
+use super::*;
 
 macro_rules! from_integer {
     ($T:ty) => {
         impl From<$T> for Number {
             fn from(n: $T) -> Self {
-                Number { hint: "".to_string(), value: BigFloatNumber::new(BigInt::from(n), 0) }
+                Number { hint: "".to_string(), value: FBig::from(n) }
             }
         }
     };
@@ -17,6 +17,7 @@ macro_rules! from_integer {
 }
 
 impl FromPrimitive for Number {
+    #[inline]
     fn from_isize(n: isize) -> Option<Self> {
         Some(Self::from(n))
     }
@@ -94,8 +95,8 @@ impl ToPrimitive for Number {
     }
 }
 
-// from_integer![u8, u16, u32, u64, u128, usize];
-// from_integer![i8, i16, i32, i64, i128, isize];
+from_integer![u8, u16, u32, u64, u128, usize];
+from_integer![i8, i16, i32, i64, i128, isize];
 
 impl TryFrom<f32> for Number {
     type Error = ConversionError;
@@ -120,7 +121,7 @@ impl Add<Self> for Number {
         todo!()
     }
 }
-
+use num_traits::Zero;
 impl Zero for Number {
     fn zero() -> Self {
         Number { hint: "".to_string(), value: FBig::zero() }

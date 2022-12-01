@@ -1,5 +1,5 @@
 use super::*;
-use num_traits::ToPrimitive;
+use num_traits::{FromPrimitive, ToPrimitive};
 
 macro_rules! from_integer {
     ($T:ty) => {
@@ -64,12 +64,12 @@ impl FromPrimitive for Integer {
         Some(Integer { hint: "".to_string(), value: IBig::from(n) })
     }
     #[inline]
-    fn from_f32(n: f32) -> Option<Self> {
-        Some(Integer { hint: "".to_string(), value: IBig::from(n) })
+    fn from_f32(_: f32) -> Option<Self> {
+        todo!()
     }
     #[inline]
-    fn from_f64(n: f64) -> Option<Self> {
-        Some(Integer { hint: "".to_string(), value: IBig::from(n) })
+    fn from_f64(_: f64) -> Option<Self> {
+        todo!()
     }
 }
 
