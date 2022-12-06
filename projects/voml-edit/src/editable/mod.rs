@@ -1,16 +1,16 @@
-use std::convert::{TryFrom, TryInto};
+use std::convert::TryInto;
 
 use serde::{Deserialize, Serialize};
 
 use crate::VQuery;
 
-/// Configuration of [`VModel`]
+/// Configuration of [`VomlModel`]
 #[derive(Default, Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub struct VEditor {}
+pub struct VomlEditor {}
 
-pub struct VModel {}
+pub struct VomlModel {}
 
-impl VModel {
+impl VomlModel {
     pub fn get_value<Q, V>(&self, query: Q) -> Option<&V>
     where
         Q: TryInto<VQuery>,

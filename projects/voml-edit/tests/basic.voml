@@ -1,10 +1,2 @@
 ^literals
 boolean = [true, false]
-
-^literals.number
-integer = 10cm
-decimal = 0.1m
-
-^literals.string
-string  = "string"
-escape  = "\n"

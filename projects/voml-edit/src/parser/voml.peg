@@ -1,10 +1,24 @@
 @export
-VomlParser = statements:Statement $;
+VomlParser = {statements:Statement} $;
 
 Statement =
 	@:ScopeNode |
 	@:KeyValueNode
 	;
+
+KeyValueNode =
+	key:KeyNode '=' value:ValueNode;
+
+KeyNode = path:KeyNodeItem {Dot path:KeyNodeItem};
+
+
+@position
+KeyNodeItem =
+	@:IdentifierNode |
+	@:IntegerNode |
+	@:StringNode
+	;
+
 
 ValueNode =
 	@:TableNode |
@@ -15,10 +29,11 @@ ValueNode =
 
 ScopeNode = '^' namespace:NamespaceNode;
 
-
-
-
-TableNode = [hint:IdentifierNode] '(' {items:TableItem} ')' ;
+TableNode = [hint:IdentifierNode] (
+	'(' {items:TableItem} ')' |
+	'[' {items:TableItem} ']' |
+	'{' {items:TableItem} '}'
+) ;
 
 TableItem =
 	@:KeyValueNode |
@@ -26,13 +41,7 @@ TableItem =
 	@:Split
 	;
 
-KeyValueNode = key:KeyNode ':' value:ValueNode;
 
-@position
-KeyNode =
-	@:IdentifierNode |
-	@:StringNode
-	;
 
 @position
 StringNode = [hint:IdentifierNode] '\"' '\"';
@@ -45,6 +54,11 @@ NumberNode = num:Num [hint:IdentifierNode];
 @position
 @no_skip_ws
 Num = ['+'|'-'] {'0'..'9'}+ [Dot {'0'..'9'}+];
+
+@string
+@position
+@no_skip_ws
+IntegerNode = '0' | '1'..'9' {'0'..'9'}+;
 
 @position
 NamespaceNode = path:IdentifierNode {Dot path:IdentifierNode};

@@ -1,5 +1,5 @@
 pub use self::{
-    editable::{VEditor, VModel},
+    editable::{VomlEditor, VomlModel},
     query::VQuery,
 };
 
