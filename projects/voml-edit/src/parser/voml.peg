@@ -2,11 +2,14 @@
 VomlParser = value:ValueNode $;
 
 ValueNode =
+	@:ScopeNode |
 	@:TableNode |
 	@:SpecialNode |
 	@:NumberNode |
 	@:StringNode
 	;
+
+ScopeNode = '^' namespace:NamespaceNode;
 
 TableNode = [hint:IdentifierNode] '(' {items:TableItem} ')' ;
 

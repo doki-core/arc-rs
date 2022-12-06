@@ -8,7 +8,7 @@ use voml_edit::VomlEditor;
 
 //
 #[test]
-fn byte_parse() -> QResult {
+fn parse_basic() -> QResult {
     let mut store = TextStorage::default();
     let id = store.file("tests/basic.voml")?;
     let text = store.get_text(&id)?;

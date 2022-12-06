@@ -40,6 +40,7 @@ fn test_dict() {
 }
 
 #[test]
+#[ignore]
 fn peg_codegen() -> QResult {
     let dir = current_dir()?.join("../von-ast/").canonicalize()?;
     Compile::file(dir.join("src/parser/von.peg")).destination(dir.join("src/parser/von.rs")).format().run().unwrap();
