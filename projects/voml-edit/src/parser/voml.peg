@@ -1,8 +1,12 @@
 @export
-VomlParser = value:ValueNode $;
+VomlParser = statements:Statement $;
+
+Statement =
+	@:ScopeNode |
+	@:KeyValueNode
+	;
 
 ValueNode =
-	@:ScopeNode |
 	@:TableNode |
 	@:SpecialNode |
 	@:NumberNode |
@@ -10,6 +14,9 @@ ValueNode =
 	;
 
 ScopeNode = '^' namespace:NamespaceNode;
+
+
+
 
 TableNode = [hint:IdentifierNode] '(' {items:TableItem} ')' ;
 

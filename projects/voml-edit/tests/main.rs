@@ -4,7 +4,7 @@ use std::str::FromStr;
 
 use diagnostic_quick::{print_errors, Failure, QResult, Success, TextStorage};
 
-use voml_edit::VomlEditor;
+use voml_edit::VEditor;
 
 //
 #[test]
@@ -12,7 +12,7 @@ fn parse_basic() -> QResult {
     let mut store = TextStorage::default();
     let id = store.file("tests/basic.voml")?;
     let text = store.get_text(&id)?;
-    let editor = VomlEditor::default();
+    let editor = VEditor::default();
     match editor.parse(text, &id) {
         Success { value: _, diagnostics } => print_errors(&store, &diagnostics)?,
         Failure { fatal, diagnostics } => {

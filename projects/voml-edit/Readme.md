@@ -1,14 +1,6 @@
+## Literals
 
-
-
-```txt
-@inherit user;
-
-@include json "some/path/test.json" as json;
-@include "https://example.org/test.voml" {
-    external_key as external
-}
-
+```voml
 ^literals
 boolean = [true, false]
 
@@ -23,6 +15,15 @@ escape  = "\n"
 ^keywords
 // remove this key-value pair
 key = null
+```
+
+```txt
+@inherit user;
+
+@include json "some/path/test.json" as json;
+@include "https://example.org/test.voml" {
+    external_key as external
+}
 
 ^scopes
     >a1 // 增加层级
@@ -49,9 +50,10 @@ merge = [
 ]
 
 ^name
-~ a = 2
-* $name.a
-* $name.1
+~ a = 1
+  b = 2
+- $name.a
+- $name.1
 
 <<<
 
@@ -71,12 +73,6 @@ VON = (
        field = 2
     )
 )
-
-keyword mod1 mod2 mod3 {
-    mod1 = "mod1"
-    mod2 = "mod2"
-    mod3 = "mod3"
-}
 ```
 
 

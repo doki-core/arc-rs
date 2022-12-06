@@ -1,5 +1,8 @@
-mod parser;
+pub use self::{
+    editable::{VEditor, VModel},
+    query::VQuery,
+};
+
 mod editable;
-
-
-pub use self::editable::{VomlModel, VomlEditor};
+mod parser;
+mod query;
