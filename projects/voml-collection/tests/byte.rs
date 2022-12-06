@@ -1,3 +1,8 @@
+use std::env::current_dir;
+
+use diagnostic_quick::QResult;
+use peginator_codegen::Compile;
+
 use voml_collection::{Dict, List, Namespace};
 
 #[test]
@@ -32,4 +37,11 @@ fn test_dict() {
     println!("{:#?}", dict);
     dict.clear();
     println!("{:#?}", dict);
+}
+
+#[test]
+fn peg_codegen() -> QResult {
+    let dir = current_dir()?.join("../von-ast/").canonicalize()?;
+    Compile::file(dir.join("src/parser/von.peg")).destination(dir.join("src/parser/von.rs")).format().run().unwrap();
+    Ok(())
 }

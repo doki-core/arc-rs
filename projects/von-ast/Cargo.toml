@@ -16,7 +16,7 @@ num = "0.4.0"
 bigdecimal = "0.3.0"
 peginator = "0.6.0"
 unicode-ident = "1.0.5"
-serde = { version = "1.0.148", features = ["derive"], optional = true }
+serde = { version = "1.0.149", features = ["derive"], optional = true }
 
 [dependencies.voml-collection]
 version = "0.3.1"
@@ -29,9 +29,6 @@ features = ["peginator"]
 
 [dev-dependencies]
 serde_json = "1.0.89"
-
-[build-dependencies]
-peginator = "0.6.0"
 
 [features]
 default = []

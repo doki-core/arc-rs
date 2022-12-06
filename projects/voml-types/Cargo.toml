@@ -18,13 +18,14 @@ indexmap = { version = "1.9.2", features = ["serde"] }
 #bigdecimal = { version = "0.3.0" }
 rust_decimal = "1.27.0"
 serde_json = { version = "1.0.89", optional = true }
-serde = { version = "1.0.148", features = ["derive"] }
+serde = { version = "1.0.149", features = ["derive"] }
 
 [dependencies.voml-collection]
 features = []
 version = "0.3.1"
 
 [dev-dependencies]
+peginator_codegen = "0.6.0"
 
 
 [features]
