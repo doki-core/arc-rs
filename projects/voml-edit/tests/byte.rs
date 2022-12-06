@@ -1,22 +1,27 @@
 // use arc_number::Number;
 // use std::converter::TryInto;
 use std::str::FromStr;
+
+use diagnostic_quick::{print_errors, Failure, QResult, Success, TextStorage};
+
+use voml_edit::VomlEditor;
+
 //
-// #[test]
-// fn byte_parse() {
-//     let x = Number::parse("x0", "1111").unwrap();
-//     let o = Number::parse("o0", "1111").unwrap();
-//     let b = Number::parse("b0", "1111").unwrap();
-//     println!("{}", x);
-//     println!("{}", o);
-//     println!("{}", b);
-// }
-//
-// #[test]
-// fn add() {
-//     let x: i32 = Number::Integer8(100).into();
-//     println!("{}", x);
-// }
+#[test]
+fn byte_parse() -> QResult {
+    let mut store = TextStorage::default();
+    let id = store.file("tests/basic.voml")?;
+    let text = store.get_text(&id)?;
+    let editor = VomlEditor::default();
+    match editor.parse(text, &id) {
+        Success { value: _, diagnostics } => print_errors(&store, &diagnostics)?,
+        Failure { fatal, diagnostics } => {
+            print_errors(&store, &diagnostics)?;
+            print_errors(&store, &[fatal])?
+        }
+    }
+    Ok(())
+}
 
 #[test]
 fn te() {

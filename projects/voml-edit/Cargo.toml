@@ -2,16 +2,22 @@
 name = "voml-edit"
 version = "0.1.0"
 authors = ["192607617@qq.com"]
-description = "External function system for arc"
+description = "Voml edit tools"
 license = "MPL-2.0"
 readme = "Readme.md"
-repository = "https://github.com/doki-land/arc-rs"
-documentation = "https://docs.rs/voml-parser"
+repository = "https://github.com/voml/voml-rs"
+documentation = "https://docs.rs/voml-edit"
 exclude = ["/tests/*"]
 edition = "2018"
 
 [dependencies]
 serde = "1.0.149"
+peginator = "0.6.0"
+unicode-ident = "1.0.5"
+
+[dependencies.diagnostic-quick]
+version = "0.2.6"
+features = ["peginator"]
 
 
 [dev-dependencies]

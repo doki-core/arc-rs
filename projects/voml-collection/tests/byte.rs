@@ -43,5 +43,7 @@ fn test_dict() {
 fn peg_codegen() -> QResult {
     let dir = current_dir()?.join("../von-ast/").canonicalize()?;
     Compile::file(dir.join("src/parser/von.peg")).destination(dir.join("src/parser/von.rs")).format().run().unwrap();
+    let dir = current_dir()?.join("../voml-edit/").canonicalize()?;
+    Compile::file(dir.join("src/parser/voml.peg")).destination(dir.join("src/parser/voml.rs")).format().run().unwrap();
     Ok(())
 }
