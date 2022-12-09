@@ -1,6 +1,6 @@
 [package]
 name = "voml-collection"
-version = "0.3.1"
+version = "0.3.2"
 authors = ["192607617@qq.com"]
 description = "Collections for [VOML](https://github.com/voml/voml-rs)"
 homepage = "https://github.com/voml/voml-rs"
@@ -13,14 +13,14 @@ edition = "2021"
 
 [dependencies]
 serde = { version = "1.0.149", features = ["derive"] }
-num-traits = "0.2.15"
-dashu = { version = "0.3.0", features = ["serde"] }
+num = { version = "0.4.0", features = ["serde"] }
+dashu = { version = "0.3.1", features = ["serde"], optional = true }
 rust_decimal = { version = "1.27.0", features = ["serde"], optional = true }
 indexmap = { version = "1.9.2", features = ["serde"] }
 
 [dev-dependencies]
 peginator_codegen = "0.6.0"
-diagnostic-quick = { version = "0.2.6", features = ["peginator"] }
+diagnostic-quick = { version = "0.2.8", features = ["peginator"] }
 
 [features]
 default = []

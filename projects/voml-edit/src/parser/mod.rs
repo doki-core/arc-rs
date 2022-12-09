@@ -25,7 +25,9 @@ impl VomlEditor {
 impl ParseContext {
     fn parse(&self, text: &str) -> QResult {
         let parsed = VomlParser::parse(text)?;
-
+        for statement in parsed.statements {
+            println!("{:#?}", statement);
+        }
         Ok(())
     }
 }

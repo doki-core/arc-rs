@@ -1,7 +1,6 @@
 use dashu::base::ConversionError;
-use num_traits::{FromPrimitive, ToPrimitive};
 
-use super::*;
+use num::{FromPrimitive, ToPrimitive, Zero};
 
 macro_rules! from_integer {
     ($T:ty) => {
@@ -121,7 +120,7 @@ impl Add<Self> for Number {
         todo!()
     }
 }
-use num_traits::Zero;
+
 impl Zero for Number {
     fn zero() -> Self {
         Number { hint: "".to_string(), value: FBig::zero() }

@@ -1,67 +1,53 @@
 use super::*;
-use num_traits::{FromPrimitive, ToPrimitive};
-
-macro_rules! from_integer {
-    ($T:ty) => {
-        impl From<$T> for Integer {
-            fn from(value: $T) -> Self {
-                Self { hint: "".to_string(), value: IBig::from(value) }
-            }
-        }
-    };
-    ($($T:ty), +) => {
-        $(from_integer!($T);)+
-    };
-}
 
 impl FromPrimitive for Integer {
     #[inline]
     fn from_isize(n: isize) -> Option<Self> {
-        Some(Integer { hint: "".to_string(), value: IBig::from(n) })
+        Some(Self::from(n))
     }
     #[inline]
     fn from_i8(n: i8) -> Option<Self> {
-        Some(Integer { hint: "".to_string(), value: IBig::from(n) })
+        Some(Self::from(n))
     }
     #[inline]
     fn from_i16(n: i16) -> Option<Self> {
-        Some(Integer { hint: "".to_string(), value: IBig::from(n) })
+        Some(Self::from(n))
     }
     #[inline]
     fn from_i32(n: i32) -> Option<Self> {
-        Some(Integer { hint: "".to_string(), value: IBig::from(n) })
+        Some(Self::from(n))
     }
     #[inline]
     fn from_i64(n: i64) -> Option<Self> {
-        Some(Integer { hint: "".to_string(), value: IBig::from(n) })
+        Some(Self::from(n))
     }
     #[inline]
     fn from_i128(n: i128) -> Option<Self> {
-        Some(Integer { hint: "".to_string(), value: IBig::from(n) })
+        Some(Self::from(n))
     }
     #[inline]
     fn from_usize(n: usize) -> Option<Self> {
-        Some(Integer { hint: "".to_string(), value: IBig::from(n) })
+        Some(Self::from(n))
     }
     #[inline]
     fn from_u8(n: u8) -> Option<Self> {
-        Some(Integer { hint: "".to_string(), value: IBig::from(n) })
+        Some(Self::from(n))
     }
     #[inline]
     fn from_u16(n: u16) -> Option<Self> {
-        Some(Integer { hint: "".to_string(), value: IBig::from(n) })
+        Some(Self::from(n))
     }
     #[inline]
     fn from_u32(n: u32) -> Option<Self> {
-        Some(Integer { hint: "".to_string(), value: IBig::from(n) })
+        Some(Self::from(n))
     }
     #[inline]
     fn from_u64(n: u64) -> Option<Self> {
-        Some(Integer { hint: "".to_string(), value: IBig::from(n) })
+        Some(Self::from(n))
     }
     #[inline]
     fn from_u128(n: u128) -> Option<Self> {
-        Some(Integer { hint: "".to_string(), value: IBig::from(n) })
+        Some(Self::from(n))
     }
     #[inline]
     fn from_f32(_: f32) -> Option<Self> {
@@ -124,12 +110,25 @@ impl ToPrimitive for Integer {
     }
     #[inline]
     fn to_f32(&self) -> Option<f32> {
-        todo!()
+        self.value.to_f32()
     }
     #[inline]
     fn to_f64(&self) -> Option<f64> {
-        todo!()
+        self.value.to_f64()
     }
+}
+
+macro_rules! from_integer {
+    ($($t:ty),*) => {
+        $(
+            impl From<$t> for Integer {
+                #[inline]
+                fn from(n: $t) -> Self {
+                    Integer { hint: "".to_string(), value: BigInt::from(n) }
+                }
+            }
+        )*
+    };
 }
 
 from_integer![u8, u16, u32, u64, u128, usize];

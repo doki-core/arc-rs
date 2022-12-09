@@ -29,11 +29,13 @@ ValueNode =
 
 ScopeNode = '^' namespace:NamespaceNode;
 
-TableNode = [hint:IdentifierNode] (
+TableNode = [hint:IdentifierNode] block:TableNodeBlock ;
+
+TableNodeBlock =
 	'(' {items:TableItem} ')' |
 	'[' {items:TableItem} ']' |
 	'{' {items:TableItem} '}'
-) ;
+;
 
 TableItem =
 	@:KeyValueNode |

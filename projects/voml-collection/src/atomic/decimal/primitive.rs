@@ -1,131 +1,147 @@
-use super::*;
-use crate::DBig;
-use num::ToPrimitive;
+use rust_decimal::Decimal;
 
-impl FromPrimitive for Decimal {
+use super::*;
+
+impl FromPrimitive for super::Decimal {
     fn from_isize(n: isize) -> Option<Self> {
-        Some(Decimal { hint: "".to_string(), value: DBig::from(n)? })
+        Some(Self::from(n))
     }
 
     fn from_i8(n: i8) -> Option<Self> {
-        Some(Decimal { hint: "".to_string(), value: DBig::from(n)? })
+        Some(Self::from(n))
     }
 
     fn from_i16(n: i16) -> Option<Self> {
-        Some(Decimal { hint: "".to_string(), value: DBig::from(n)? })
+        Some(Self::from(n))
     }
 
     fn from_i32(n: i32) -> Option<Self> {
-        Some(Decimal { hint: "".to_string(), value: DBig::from(n)? })
+        Some(Self::from(n))
     }
 
     fn from_i64(n: i64) -> Option<Self> {
-        Some(Decimal { hint: "".to_string(), value: DBig::from(n)? })
+        Some(Self::from(n))
     }
 
     fn from_i128(n: i128) -> Option<Self> {
-        Some(Decimal { hint: "".to_string(), value: DBig::from(n)? })
+        Some(Self::from(n))
     }
 
     fn from_usize(n: usize) -> Option<Self> {
-        Some(Decimal { hint: "".to_string(), value: DBig::from(n)? })
+        Some(Self::from(n))
     }
 
     fn from_u8(n: u8) -> Option<Self> {
-        Some(Decimal { hint: "".to_string(), value: DBig::from(n)? })
+        Some(Self::from(n))
     }
 
     fn from_u16(n: u16) -> Option<Self> {
-        Some(Decimal { hint: "".to_string(), value: DBig::from(n)? })
+        Some(Self::from(n))
     }
 
     fn from_u32(n: u32) -> Option<Self> {
-        Some(Decimal { hint: "".to_string(), value: DBig::from(n)? })
+        Some(Self::from(n))
     }
 
     fn from_u64(n: u64) -> Option<Self> {
-        Some(Decimal { hint: "".to_string(), value: DBig::from(n)? })
+        Some(Self::from(n))
     }
 
     fn from_u128(n: u128) -> Option<Self> {
-        Some(Decimal { hint: "".to_string(), value: DBig::from(n)? })
+        Some(Self::from(n))
     }
 
     fn from_f32(n: f32) -> Option<Self> {
-        Some(Decimal { hint: "".to_string(), value: DBig::from(n)? })
+        Some(Self { hint: "".to_string(), value: Decimal::from_f32(n)? })
     }
 
     fn from_f64(n: f64) -> Option<Self> {
-        Some(Decimal { hint: "".to_string(), value: BigFloatNumber::from_f64(n)? })
+        Some(Self { hint: "".to_string(), value: Decimal::from_f64(n)? })
     }
 }
 
-impl ToPrimitive for Decimal {
+impl ToPrimitive for super::Decimal {
+    #[inline]
     fn to_isize(&self) -> Option<isize> {
-        todo!()
+        self.value.to_isize()
     }
-
+    #[inline]
     fn to_i8(&self) -> Option<i8> {
-        todo!()
+        self.value.to_i8()
     }
-
+    #[inline]
     fn to_i16(&self) -> Option<i16> {
-        todo!()
+        self.value.to_i16()
     }
-
+    #[inline]
     fn to_i32(&self) -> Option<i32> {
-        todo!()
+        self.value.to_i32()
     }
-
+    #[inline]
     fn to_i64(&self) -> Option<i64> {
-        todo!()
+        self.value.to_i64()
     }
-
+    #[inline]
     fn to_i128(&self) -> Option<i128> {
-        todo!()
+        self.value.to_i128()
     }
-
+    #[inline]
     fn to_usize(&self) -> Option<usize> {
-        todo!()
+        self.value.to_usize()
     }
-
+    #[inline]
     fn to_u8(&self) -> Option<u8> {
-        todo!()
+        self.value.to_u8()
     }
-
+    #[inline]
     fn to_u16(&self) -> Option<u16> {
-        todo!()
+        self.value.to_u16()
     }
-
+    #[inline]
     fn to_u32(&self) -> Option<u32> {
-        todo!()
+        self.value.to_u32()
     }
-
+    #[inline]
     fn to_u64(&self) -> Option<u64> {
-        todo!()
+        self.value.to_u64()
     }
-
+    #[inline]
     fn to_u128(&self) -> Option<u128> {
-        todo!()
+        self.value.to_u128()
     }
-
+    #[inline]
     fn to_f32(&self) -> Option<f32> {
-        todo!()
+        self.value.to_f32()
     }
-
+    #[inline]
     fn to_f64(&self) -> Option<f64> {
-        todo!()
+        self.value.to_f64()
     }
 }
 
-impl From<f32> for Decimal {
+macro_rules! from_integer {
+    ($($t:ty),*) => {
+        $(
+            impl From<$t> for super::Decimal {
+                fn from(n: $t) -> Self {
+                    Self { hint: "".to_string(), value: Decimal::from(n) }
+                }
+            }
+        )*
+    };
+}
+
+from_integer![usize, u8, u16, u32, u64, u128];
+from_integer![isize, i8, i16, i32, i64, i128];
+
+impl From<f32> for super::Decimal {
     fn from(value: f32) -> Self {
-        Decimal { hint: "".to_string(), value: BigFloatNumber::from_f32(value).unwrap_or_default() }
+        Self { hint: "".to_string(), value: Decimal::from_f32(value).unwrap_or_default() }
     }
 }
 
-impl From<f64> for Decimal {
+impl From<f64> for super::Decimal {
     fn from(value: f64) -> Self {
-        Decimal { hint: "".to_string(), value: BigFloatNumber::from_f64(value).unwrap_or_default() }
+        Self { hint: "".to_string(), value: Decimal::from_f64(value).unwrap_or_default() }
     }
 }

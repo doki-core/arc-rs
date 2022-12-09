@@ -1,8 +1,9 @@
 use std::fmt::{Debug, Formatter};
 
-use crate::BigFloatNumber;
-use num::FromPrimitive;
 use serde::{Deserialize, Serialize};
+
+use num::{FromPrimitive, ToPrimitive};
+
 mod primitive;
 
 /// An arbitrary-precision decimal with a unit
@@ -11,7 +12,7 @@ pub struct Decimal {
     /// The unit of the decimal
     pub hint: String,
     /// The value of the decimal
-    pub value: BigFloatNumber,
+    pub value: rust_decimal::Decimal,
 }
 
 impl Debug for Decimal {

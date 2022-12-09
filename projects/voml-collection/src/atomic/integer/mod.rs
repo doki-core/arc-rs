@@ -1,5 +1,4 @@
-use dashu::integer::IBig;
-use num_traits::ToPrimitive;
+use num::{BigInt, FromPrimitive, ToPrimitive};
 use serde::{Deserialize, Serialize};
 mod cmp;
 mod primitive;
@@ -10,5 +9,5 @@ pub struct Integer {
     /// The unit of this integer
     pub hint: String,
     /// The value of this integer
-    pub value: IBig,
+    pub value: BigInt,
 }

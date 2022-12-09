@@ -1,5 +1,5 @@
 #[cfg(feature = "rust_decimal")]
-pub use decimal::Decimal;
+pub use self::decimal::Decimal;
 
 pub use self::{bytes::Bytes, integer::Integer, namespace::Namespace, text::Text};
 
@@ -10,5 +10,6 @@ mod integer;
 mod namespace;
 
 mod bytes;
-// mod number;
+#[cfg(feature = "dashu")]
+mod number;
 mod text;

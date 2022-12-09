@@ -16,7 +16,7 @@ peginator = "0.6.0"
 unicode-ident = "1.0.5"
 
 [dependencies.diagnostic-quick]
-version = "0.2.6"
+version = "0.2.8"
 features = ["peginator"]
 
 
